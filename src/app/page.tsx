@@ -30,24 +30,36 @@ export default function HomePage() {
     if (status === "authenticated") loadItems();
   }, [status, loadItems]);
 
-  async function handleAnalyze(url: string) {
+  async function analyzeContent(payload: { url?: string; text?: string }, extra?: Partial<AnalysisResult>) {
     setLoading(true);
     setPendingAnalysis(null);
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (data.analysis) {
-        setPendingAnalysis({ ...data.analysis, sourceUrl: url, _isNew: true });
+        setPendingAnalysis({ ...data.analysis, ...extra, _isNew: true });
       } else {
         alert("שגיאה בניתוח: " + (data.error ?? "Unknown error"));
       }
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleAnalyze(url: string) {
+    analyzeContent({ url }, { sourceUrl: url });
+  }
+
+  async function handleAnalyzeScreenshot(screenshotUrl: string, fileName: string) {
+    const sourceUrl = prompt("הוסף קישור מקור לידיעה (לא חובה):", "") ?? "";
+    analyzeContent(
+      { text: `צילום מסך מהפוסט: ${screenshotUrl}` },
+      { screenshotPath: screenshotUrl, sourceUrl: sourceUrl || screenshotUrl }
+    );
   }
 
   async function handleSave(analysis: AnalysisResult) {
@@ -75,7 +87,7 @@ export default function HomePage() {
     const ext = format === "word" ? "docx" : "xlsx";
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `health-news-${today}.${ext}`;
+    a.download = `daily-report-${today}.${ext}`;
     a.click();
     setReportLoading(null);
   }
@@ -100,16 +112,10 @@ export default function HomePage() {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-600">{session.user?.name ?? session.user?.email}</span>
-            <Link
-              href="/admin"
-              className="text-sm text-gray-500 hover:text-gray-700 border rounded-lg px-3 py-1.5 hover:bg-gray-50 transition"
-            >
+            <Link href="/admin" className="text-sm text-gray-500 hover:text-gray-700 border rounded-lg px-3 py-1.5 hover:bg-gray-50 transition">
               משתמשים
             </Link>
-            <button
-              onClick={() => signOut()}
-              className="text-sm text-gray-500 hover:text-gray-700 border rounded-lg px-3 py-1.5 hover:bg-gray-50 transition"
-            >
+            <button onClick={() => signOut()} className="text-sm text-gray-500 hover:text-gray-700 border rounded-lg px-3 py-1.5 hover:bg-gray-50 transition">
               יציאה
             </button>
           </div>
@@ -117,14 +123,10 @@ export default function HomePage() {
       </header>
 
       <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-        <InputPanel onAnalyze={handleAnalyze} loading={loading} />
+        <InputPanel onAnalyze={handleAnalyze} onAnalyzeScreenshot={handleAnalyzeScreenshot} loading={loading} />
 
         {pendingAnalysis && (
-          <AnalysisPanel
-            analysis={pendingAnalysis}
-            onSave={handleSave}
-            onDiscard={() => setPendingAnalysis(null)}
-          />
+          <AnalysisPanel analysis={pendingAnalysis} onSave={handleSave} onDiscard={() => setPendingAnalysis(null)} />
         )}
 
         <div className="bg-white rounded-xl shadow-sm border">
@@ -138,14 +140,14 @@ export default function HomePage() {
                 <button
                   onClick={() => downloadReport("word")}
                   disabled={reportLoading === "word"}
-                  className="flex items-center gap-1.5 bg-blue-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition"
+                  className="bg-blue-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition"
                 >
                   {reportLoading === "word" ? "מייצר..." : "הורד Word"}
                 </button>
                 <button
                   onClick={() => downloadReport("excel")}
                   disabled={reportLoading === "excel"}
-                  className="flex items-center gap-1.5 bg-green-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 transition"
+                  className="bg-green-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 transition"
                 >
                   {reportLoading === "excel" ? "מייצר..." : "הורד Excel"}
                 </button>
@@ -156,7 +158,7 @@ export default function HomePage() {
           {items.length === 0 ? (
             <div className="text-center py-16 text-gray-400">
               <p className="text-lg">אין ידיעות שמורות להיום</p>
-              <p className="text-sm mt-1">הדבק קישור למעלה כדי להתחיל</p>
+              <p className="text-sm mt-1">הדבק קישור או העלה צילום מסך</p>
             </div>
           ) : (
             <div className="divide-y">
