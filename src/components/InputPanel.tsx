@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface Props {
   onAnalyze: (url: string) => void;
@@ -44,6 +44,26 @@ export function InputPanel({ onAnalyze, onAnalyzeScreenshot, loading }: Props) {
   }
 
   const busy = loading || uploading;
+
+  // Paste from clipboard (Ctrl+V anywhere on the page)
+  useEffect(() => {
+    async function handlePaste(e: ClipboardEvent) {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const item of Array.from(items)) {
+        if (item.type.startsWith("image/")) {
+          const file = item.getAsFile();
+          if (file) {
+            setTab("screenshot");
+            await handleFile(file);
+          }
+        }
+      }
+    }
+    window.addEventListener("paste", handlePaste);
+    return () => window.removeEventListener("paste", handlePaste);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border p-5">
@@ -108,6 +128,7 @@ export function InputPanel({ onAnalyze, onAnalyzeScreenshot, loading }: Props) {
               <div className="text-gray-500">
                 <p className="text-base font-medium">גרור צילום מסך לכאן</p>
                 <p className="text-sm mt-1">או לחץ לבחירת קובץ</p>
+                <p className="text-sm mt-2 text-blue-500 font-medium">או הדבק עם Ctrl+V</p>
               </div>
             )}
           </div>
