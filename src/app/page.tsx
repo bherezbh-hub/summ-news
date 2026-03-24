@@ -30,7 +30,7 @@ export default function HomePage() {
     if (status === "authenticated") loadItems();
   }, [status, loadItems]);
 
-  async function analyzeContent(payload: { url?: string; text?: string }, extra?: Partial<AnalysisResult>) {
+  async function analyzeContent(payload: { url?: string; imageUrl?: string }, extra?: Partial<AnalysisResult>) {
     setLoading(true);
     setPendingAnalysis(null);
     try {
@@ -54,11 +54,11 @@ export default function HomePage() {
     analyzeContent({ url }, { sourceUrl: url });
   }
 
-  async function handleAnalyzeScreenshot(screenshotUrl: string, fileName: string) {
-    const sourceUrl = prompt("הוסף קישור מקור לידיעה (לא חובה):", "") ?? "";
+  function handleAnalyzeScreenshot(screenshotUrl: string) {
+    // מתחילים בניתוח מיידי — הקישור יתווסף אחר כך בפאנל
     analyzeContent(
-      { text: `צילום מסך מהפוסט: ${screenshotUrl}` },
-      { screenshotPath: screenshotUrl, sourceUrl: sourceUrl || screenshotUrl }
+      { imageUrl: screenshotUrl },
+      { screenshotPath: screenshotUrl, sourceUrl: "" }
     );
   }
 

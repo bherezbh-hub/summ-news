@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 
 interface Props {
   onAnalyze: (url: string) => void;
-  onAnalyzeScreenshot: (screenshotUrl: string, fileName: string) => void;
+  onAnalyzeScreenshot: (screenshotUrl: string) => void;
   loading: boolean;
 }
 
@@ -30,7 +30,7 @@ export function InputPanel({ onAnalyze, onAnalyzeScreenshot, loading }: Props) {
     const data = await res.json();
     setUploading(false);
     if (data.url) {
-      onAnalyzeScreenshot(data.url, data.fileName);
+      onAnalyzeScreenshot(data.url);
     } else {
       alert("שגיאה בהעלאת הקובץ: " + (data.error ?? ""));
     }
@@ -45,7 +45,7 @@ export function InputPanel({ onAnalyze, onAnalyzeScreenshot, loading }: Props) {
 
   const busy = loading || uploading;
 
-  // Paste from clipboard (Ctrl+V anywhere on the page)
+  // הדבקה עם Ctrl+V מכל מקום בעמוד
   useEffect(() => {
     async function handlePaste(e: ClipboardEvent) {
       const items = e.clipboardData?.items;
@@ -56,6 +56,7 @@ export function InputPanel({ onAnalyze, onAnalyzeScreenshot, loading }: Props) {
           if (file) {
             setTab("screenshot");
             await handleFile(file);
+            return;
           }
         }
       }
@@ -109,9 +110,11 @@ export function InputPanel({ onAnalyze, onAnalyzeScreenshot, loading }: Props) {
             onDragOver={e => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
-            onClick={() => fileRef.current?.click()}
+            onClick={() => !busy && fileRef.current?.click()}
             className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition ${
-              dragOver ? "border-blue-500 bg-blue-50" : "border-gray-300 hover:border-blue-400 hover:bg-gray-50"
+              dragOver ? "border-blue-500 bg-blue-50" :
+              busy ? "border-blue-300 bg-blue-50 cursor-wait" :
+              "border-gray-300 hover:border-blue-400 hover:bg-gray-50"
             }`}
           >
             <input
@@ -123,7 +126,9 @@ export function InputPanel({ onAnalyze, onAnalyzeScreenshot, loading }: Props) {
               disabled={busy}
             />
             {uploading ? (
-              <Spinner text="מעלה..." />
+              <Spinner text="מעלה ומנתח..." />
+            ) : loading ? (
+              <Spinner text="מנתח צילום מסך..." />
             ) : (
               <div className="text-gray-500">
                 <p className="text-base font-medium">גרור צילום מסך לכאן</p>
@@ -132,7 +137,7 @@ export function InputPanel({ onAnalyze, onAnalyzeScreenshot, loading }: Props) {
               </div>
             )}
           </div>
-          <p className="text-xs text-gray-400 text-center">לאחר ניתוח צילום המסך תתבקש להוסיף קישור מקור</p>
+          <p className="text-xs text-gray-400 text-center">הניתוח יתחיל מיד — קישור המקור יתווסף בפאנל</p>
         </div>
       )}
     </div>
