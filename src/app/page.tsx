@@ -2,6 +2,7 @@
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import { AnalysisResult, NewsItemRow } from "@/components/NewsItemRow";
 import { AnalysisPanel } from "@/components/AnalysisPanel";
 import { InputPanel } from "@/components/InputPanel";
@@ -99,6 +100,12 @@ export default function HomePage() {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-600">{session.user?.name ?? session.user?.email}</span>
+            <Link
+              href="/admin"
+              className="text-sm text-gray-500 hover:text-gray-700 border rounded-lg px-3 py-1.5 hover:bg-gray-50 transition"
+            >
+              משתמשים
+            </Link>
             <button
               onClick={() => signOut()}
               className="text-sm text-gray-500 hover:text-gray-700 border rounded-lg px-3 py-1.5 hover:bg-gray-50 transition"
