@@ -2,16 +2,34 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { SYSTEM_PROMPT } from "@/lib/analysisPrompt";
 
+function extractFirstJson(str: string): string | null {
+  const start = str.indexOf("{");
+  if (start === -1) return null;
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  for (let i = start; i < str.length; i++) {
+    const c = str[i];
+    if (escape) { escape = false; continue; }
+    if (c === "\\" && inString) { escape = true; continue; }
+    if (c === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (c === "{") depth++;
+    else if (c === "}") { depth--; if (depth === 0) return str.substring(start, i + 1); }
+  }
+  return null;
+}
+
 function parseAnalysis(raw: string): Record<string, unknown> {
   // ניסיון 1: קריאת JSON ישיר
-  try { return JSON.parse(raw); } catch {}
+  try { return JSON.parse(raw.trim()); } catch {}
   // ניסיון 2: חילוץ מתוך code block (```json ... ```)
   const codeBlock = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
   if (codeBlock) try { return JSON.parse(codeBlock[1].trim()); } catch {}
-  // ניסיון 3: חילוץ אובייקט JSON עם regex
-  const jsonMatch = raw.match(/\{[\s\S]*\}/);
-  if (jsonMatch) try { return JSON.parse(jsonMatch[0]); } catch {}
-  throw new Error("Failed to parse analysis: " + raw.substring(0, 200));
+  // ניסיון 3: חילוץ מדויק של אובייקט JSON הראשון לפי עומק סוגריים
+  const extracted = extractFirstJson(raw);
+  if (extracted) try { return JSON.parse(extracted); } catch {}
+  throw new Error("Failed to parse analysis: " + raw.substring(0, 300));
 }
 
 export async function POST(req: Request) {
