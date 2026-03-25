@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { SYSTEM_PROMPT } from "@/lib/analysisPrompt";
+import { Readability } from "@mozilla/readability";
+import { JSDOM } from "jsdom";
 
 function extractFirstJson(str: string): string | null {
   const start = str.indexOf("{");
@@ -77,40 +79,35 @@ export async function POST(req: Request) {
     // --- קישור: שליפת תוכן האתר ---
     let pageText = "";
     if (url) {
-      // ניסיון 1: Jina Reader — ממיר כל URL לטקסט נקי
       try {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 20000);
-        const jinaRes = await fetch(`https://r.jina.ai/${url}`, {
+        const timeout = setTimeout(() => controller.abort(), 15000);
+        const pageRes = await fetch(url, {
           headers: {
-            "Accept": "text/plain",
-            "X-Return-Format": "text",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "he-IL,he;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Cache-Control": "no-cache",
           },
           signal: controller.signal,
         });
         clearTimeout(timeout);
-        if (jinaRes.ok) {
-          pageText = (await jinaRes.text()).substring(0, 30000);
-        }
-      } catch {
-        pageText = "";
-      }
+        const html = await pageRes.text();
 
-      // ניסיון 2: fetch ישיר אם Jina נכשל
-      if (!pageText) {
+        // ניסיון 1: Mozilla Readability — מחלץ את גוף המאמר בלבד
         try {
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 12000);
-          const pageRes = await fetch(url, {
-            headers: {
-              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-              "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-              "Accept-Language": "he-IL,he;q=0.9,en;q=0.8",
-            },
-            signal: controller.signal,
-          });
-          clearTimeout(timeout);
-          const html = await pageRes.text();
+          const dom = new JSDOM(html, { url });
+          const reader = new Readability(dom.window.document);
+          const article = reader.parse();
+          if (article?.textContent) {
+            pageText = article.textContent.replace(/\s+/g, " ").trim().substring(0, 30000);
+          }
+        } catch {
+          pageText = "";
+        }
+
+        // ניסיון 2: strip HTML רגיל אם Readability נכשל
+        if (!pageText) {
           pageText = html
             .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
             .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
@@ -122,9 +119,9 @@ export async function POST(req: Request) {
             .replace(/\s+/g, " ")
             .trim()
             .substring(0, 25000);
-        } catch {
-          pageText = "";
         }
+      } catch {
+        pageText = "";
       }
     }
 
