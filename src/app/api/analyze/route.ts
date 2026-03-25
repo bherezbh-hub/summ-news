@@ -94,19 +94,36 @@ export async function POST(req: Request) {
         clearTimeout(timeout);
         const html = await pageRes.text();
 
-        // ניסיון 1: Mozilla Readability — מחלץ את גוף המאמר בלבד
+          // ניסיון 1: JSON-LD articleBody — הכי מדויק לאתרי חדשות
         try {
-          const dom = new JSDOM(html, { url });
-          const reader = new Readability(dom.window.document);
-          const article = reader.parse();
-          if (article?.textContent) {
-            pageText = article.textContent.replace(/\s+/g, " ").trim().substring(0, 30000);
+          const jsonLdMatches = html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi);
+          for (const match of jsonLdMatches) {
+            const data = JSON.parse(match[1]);
+            const body = data.articleBody || data.description;
+            if (body && body.length > 100) {
+              pageText = body.substring(0, 30000);
+              break;
+            }
           }
         } catch {
           pageText = "";
         }
 
-        // ניסיון 2: strip HTML רגיל אם Readability נכשל
+        // ניסיון 2: Mozilla Readability
+        if (!pageText) {
+          try {
+            const dom = new JSDOM(html, { url });
+            const reader = new Readability(dom.window.document);
+            const article = reader.parse();
+            if (article?.textContent) {
+              pageText = article.textContent.replace(/\s+/g, " ").trim().substring(0, 30000);
+            }
+          } catch {
+            pageText = "";
+          }
+        }
+
+        // ניסיון 3: strip HTML רגיל
         if (!pageText) {
           pageText = html
             .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
