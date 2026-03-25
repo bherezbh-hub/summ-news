@@ -148,12 +148,11 @@ export async function POST(req: Request) {
     });
 
     const raw = "{" + (message.content[0] as { type: string; text: string }).text;
-    console.log("RAW RESPONSE:", raw.substring(0, 500));
     try {
       const analysis = parseAnalysis(raw);
-      return NextResponse.json({ analysis, sourceUrl: url });
+      return NextResponse.json({ analysis, sourceUrl: url, _debug_page: pageText.substring(0, 300) });
     } catch (e) {
-      return NextResponse.json({ error: String(e), raw: raw.substring(0, 500) }, { status: 500 });
+      return NextResponse.json({ error: String(e), raw: raw.substring(0, 500), _debug_page: pageText.substring(0, 300) }, { status: 500 });
     }
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
