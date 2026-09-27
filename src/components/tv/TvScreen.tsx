@@ -1,7 +1,15 @@
 "use client";
 
-import { CSSProperties, useCallback, useEffect, useRef, useState } from "react";
-import { BROADCAST_DATE_LABEL, CHANNELS, Durations, parseClock } from "@/lib/tv/schedule";
+import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  BROADCAST_DATE_LABEL,
+  CHANNELS,
+  Calibration,
+  Durations,
+  applyCalibration,
+  parseClock,
+} from "@/lib/tv/schedule";
+import { loadCalibration } from "@/lib/tv/calibration";
 import { broadcastSecondsOfDay, formatClock } from "@/lib/tv/clock";
 import { ChannelTile } from "./ChannelTile";
 
@@ -44,6 +52,9 @@ export function TvScreen() {
   const [previewTime, setPreviewTime] = useState<string | null>(null);
   // Video lengths reported by the players; they place the parts that follow.
   const [durations, setDurations] = useState<Durations>({});
+  // Anchors set on /tv/calibrate in this browser, applied on top of the schedule.
+  const [calibration, setCalibration] = useState<Calibration>({});
+  const channels = useMemo(() => applyCalibration(CHANNELS, calibration), [calibration]);
   const offsetRef = useRef(0);
 
   const reportDuration = useCallback((key: string, seconds: number) => {
@@ -68,6 +79,7 @@ export function TvScreen() {
     const tick = () => setNowSec(getNow());
     const frame = requestAnimationFrame(() => {
       setDurations(loadDurations());
+      setCalibration(loadCalibration());
       tick();
       if (requested) setPreviewTime(requested);
     });
@@ -115,7 +127,7 @@ export function TvScreen() {
         <div className="rounded-[22px] border border-neutral-700/60 bg-gradient-to-b from-neutral-800 to-neutral-950 p-2 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.08)] sm:rounded-[30px] sm:p-4">
           <div className="relative aspect-video overflow-hidden rounded-lg bg-black ring-1 ring-black sm:rounded-xl">
             <div className={`absolute inset-0 ${powered ? "tv-power-on" : ""}`}>
-              {CHANNELS.map((channel, index) => (
+              {channels.map((channel, index) => (
                 <ChannelTile
                   key={channel.number}
                   channel={channel}
@@ -188,6 +200,11 @@ export function TvScreen() {
           ? "לחצו על ערוץ כדי לשמוע אותו · ⛶ להגדלה · מקשים 1–4"
           : "מקשים 1–4 להחלפת ערוץ · Esc למסך מפוצל"}
         {previewTime && <span className="mr-2 text-amber-400">· תצוגה מקדימה משעה {previewTime}</span>}
+        {Object.keys(calibration).length > 0 && (
+          <a href="/tv/calibrate" className="mr-2 text-sky-400 underline">
+            · כיול מקומי פעיל
+          </a>
+        )}
       </p>
     </main>
   );

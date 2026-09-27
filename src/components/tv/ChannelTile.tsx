@@ -179,7 +179,7 @@ function VideoBody({
       key={schedule.segmentIndex}
       channel={channel}
       segmentIndex={schedule.segmentIndex}
-      startSec={schedule.startSec}
+      beginSec={schedule.beginSec}
       nowSec={nowSec}
       getNow={getNow}
       onDuration={onDuration}
@@ -191,7 +191,7 @@ function VideoBody({
 function VideoFeed({
   channel,
   segmentIndex,
-  startSec,
+  beginSec,
   nowSec,
   getNow,
   onDuration,
@@ -199,8 +199,8 @@ function VideoFeed({
 }: {
   channel: VideoChannel;
   segmentIndex: number;
-  /** Clock time (seconds since midnight) at which this segment's `offset` plays. */
-  startSec: number;
+  /** Clock time (seconds since today's midnight) at which the video's second 0 plays. */
+  beginSec: number;
   nowSec: number;
   getNow: () => number;
   onDuration: (key: string, seconds: number) => void;
@@ -215,7 +215,7 @@ function VideoFeed({
   const source = segment.sources[sourceIndex];
   const ready = readySource === sourceIndex;
 
-  const videoTimeNow = () => getNow() - startSec + (segment.offset ?? 0);
+  const videoTimeNow = () => getNow() - beginSec;
 
   // Only the primary source's length decides when the next part starts.
   const reportDuration = (seconds: number) => {

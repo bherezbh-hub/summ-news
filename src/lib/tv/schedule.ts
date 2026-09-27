@@ -1,20 +1,19 @@
 // Broadcast schedule for the 7.10 "four channels" TV screen.
 //
-// Every channel plays in sync with the current time of day in Israel. For a
-// video segment, the position in the video is:
+// Every channel plays in sync with the current time of day in Israel.
 //
-//   videoTime = (now - segment.start) + segment.offset
+// Each video is placed on the day by an anchor: a moment in the video and the
+// clock time the channel's on-screen clock shows at that moment. From it, the
+// video's second 0 falls at `anchor.clock - anchor.video`. Anchors are best
+// set on the calibration page (/tv/calibrate) by reading the on-screen clock.
 //
-// Calibrating: find a moment in the video where you know the real clock time
-// (most news channels show a clock on screen). If at second 754 of the video
-// the on-screen clock reads 06:43:10, set start: "06:43:10", offset: 754.
+// A segment without an anchor follows the previous one: it begins the moment
+// the previous video ends. A segment ends at `end`, when its video ends
+// (`duration`, or the length reported by the player), or when the next
+// anchored segment begins, whichever comes first.
 //
 // Each segment can list several sources: if the first cannot be embedded or
 // fails to load, the next one is used.
-//
-// A segment without `start` follows the previous one: it begins the moment the
-// previous video ends. Its length comes from `duration` when set, otherwise
-// from the player (reported once it loads, then cached in the browser).
 //
 // Other recordings, not used (a different cut, or no player that can be synced):
 //   כאן 11  – https://www.facebook.com/100064467291406/videos/1053680356460383/
@@ -29,15 +28,22 @@ export type Source =
   | { type: "youtube"; id: string }
   | { type: "facebook"; href: string };
 
+export type Anchor = {
+  /** Seconds into the video. */
+  video: number;
+  /** What the on-screen clock shows at that moment, "HH:MM" or "HH:MM:SS". */
+  clock: string;
+};
+
 export type Segment = {
-  /** Clock time (Israel) when this segment begins, "HH:MM" or "HH:MM:SS". Omit to follow the previous segment. */
-  start?: string;
-  /** Clock time (Israel) when this segment ends. Omit to run until the video ends. */
+  /** Shown on the calibration page, e.g. "חלק א". */
+  label: string;
+  /** Places the video on the day. Omit to follow the previous segment. */
+  anchor?: Anchor;
+  /** Clock time (Israel) after which this segment stops, if earlier than the video's end. */
   end?: string;
   /** Length of the video in seconds, when known. */
   duration?: number;
-  /** Seconds into the video that correspond to `start`. Defaults to 0. */
-  offset?: number;
   sources: Source[];
 };
 
@@ -69,22 +75,21 @@ export const CHANNELS: Channel[] = [
     kind: "video",
     segments: [
       {
-        // The night broadcast before the attack. The on-screen clock reads
-        // 00:00 at the start of the video; hands over to part 1 at 06:29.
-        start: "00:00",
-        end: "06:29",
-        offset: 0,
+        // The night broadcast before the attack. Assumed to start at 00:00.
+        label: "לילה, לפני המתקפה",
+        anchor: { video: 0, clock: "00:00" },
         sources: [{ type: "youtube", id: "NHl3QpflwQY" }],
       },
       {
-        // Part 1 runs 10:30:55 from 06:29, until 16:59:55.
-        start: "06:29",
+        // 10:30:55 long. Assumed to start at 06:29.
+        label: "חלק א",
+        anchor: { video: 0, clock: "06:29" },
         duration: 10 * 3600 + 30 * 60 + 55,
-        offset: 0,
         sources: [{ type: "youtube", id: "0j3y7j-Jkgw" }],
       },
       {
-        // Part 2 runs 7:19:40, until 00:19:35.
+        // 7:19:40 long, follows part 1.
+        label: "חלק ב",
         duration: 7 * 3600 + 19 * 60 + 40,
         sources: [{ type: "youtube", id: "8ETKqE81YlU" }],
       },
@@ -97,22 +102,21 @@ export const CHANNELS: Channel[] = [
     kind: "video",
     segments: [
       {
-        // The night broadcast before the attack. The on-screen clock reads
-        // 00:00 at the start of the video; hands over to part 1 at 06:29.
-        start: "00:00",
-        end: "06:29",
-        offset: 0,
+        // The night broadcast before the attack. Assumed to start at 00:00.
+        label: "לילה, לפני המתקפה",
+        anchor: { video: 0, clock: "00:00" },
         sources: [{ type: "youtube", id: "BLUqgw6yh5Q" }],
       },
       {
-        // Part 1 starts exactly at 06:29 and runs 8:30:55, until 14:59:55.
-        start: "06:29",
+        // 8:30:55 long. Starts exactly at 06:29.
+        label: "חלק א",
+        anchor: { video: 0, clock: "06:29" },
         duration: 8 * 3600 + 30 * 60 + 55,
-        offset: 0,
         sources: [{ type: "youtube", id: "WvvsUzeA_CE" }],
       },
       {
-        // Part 2 runs 9:01:25, until 00:01:20.
+        // 9:01:25 long, follows part 1.
+        label: "חלק ב",
         duration: 9 * 3600 + 1 * 60 + 25,
         sources: [{ type: "youtube", id: "a_7bknTP8Rs" }],
       },
@@ -125,22 +129,21 @@ export const CHANNELS: Channel[] = [
     kind: "video",
     segments: [
       {
-        // The night broadcast before the attack. The on-screen clock reads
-        // 00:00 at the start of the video; hands over to part 1 at 06:29.
-        start: "00:00",
-        end: "06:29",
-        offset: 0,
+        // The night broadcast before the attack. Assumed to start at 00:00.
+        label: "לילה, לפני המתקפה",
+        anchor: { video: 0, clock: "00:00" },
         sources: [{ type: "youtube", id: "2OZP-wU-aW4" }],
       },
       {
-        // Part 1 runs 8:31:43 from 06:29, until 15:00:43.
-        start: "06:29",
+        // 8:31:43 long. Assumed to start at 06:29.
+        label: "חלק א",
+        anchor: { video: 0, clock: "06:29" },
         duration: 8 * 3600 + 31 * 60 + 43,
-        offset: 0,
         sources: [{ type: "youtube", id: "agry5NpSGAE" }],
       },
       {
-        // Part 2 runs 8:56:35, until 23:57:18.
+        // 8:56:35 long, follows part 1.
+        label: "חלק ב",
         duration: 8 * 3600 + 56 * 60 + 35,
         sources: [{ type: "youtube", id: "DN915_qbKA4" }],
       },
@@ -170,46 +173,94 @@ export function segmentKey(segment: Segment): string {
 
 export type Durations = Record<string, number>;
 
+/** Anchors set on the calibration page, by segment key. */
+export type Calibration = Record<string, Anchor>;
+
+export function applyCalibration(channels: Channel[], calibration: Calibration): Channel[] {
+  if (Object.keys(calibration).length === 0) return channels;
+  return channels.map((channel) =>
+    channel.kind !== "video"
+      ? channel
+      : {
+          ...channel,
+          segments: channel.segments.map((seg) => {
+            const anchor = calibration[segmentKey(seg)];
+            return anchor ? { ...seg, anchor } : seg;
+          }),
+        },
+  );
+}
+
+const DAY = 24 * 3600;
+
+/**
+ * Clock time (seconds since midnight; negative means the evening before) at
+ * which the video's second 0 plays. On the first segment of a channel, a clock
+ * reading after 18:00 belongs to the evening before.
+ */
+export function anchorBegin(anchor: Anchor, firstSegment: boolean): number {
+  let clock = parseClock(anchor.clock);
+  if (firstSegment && clock >= 18 * 3600) clock -= DAY;
+  return clock - anchor.video;
+}
+
+export type SegmentWindow = { begin: number | null; end: number | null };
+
+/** When each segment plays, as far as it is known. */
+export function segmentWindows(channel: VideoChannel, durations: Durations = {}): SegmentWindow[] {
+  const windows: SegmentWindow[] = [];
+  let cursor: number | null = null;
+  channel.segments.forEach((seg, i) => {
+    const begin: number | null = seg.anchor ? anchorBegin(seg.anchor, i === 0) : cursor;
+    const candidates: number[] = [];
+    if (seg.end !== undefined) candidates.push(parseClock(seg.end));
+    const duration = seg.duration ?? durations[segmentKey(seg)];
+    if (begin !== null && duration !== undefined) candidates.push(begin + duration);
+    const next = channel.segments[i + 1];
+    if (next?.anchor) candidates.push(anchorBegin(next.anchor, false));
+    const end = candidates.length ? Math.min(...candidates) : null;
+    windows.push({ begin, end });
+    cursor = end;
+  });
+  return windows;
+}
+
 export type ScheduleState =
   | { status: "before"; startsAt: string }
   | { status: "after" }
-  | { status: "on"; segmentIndex: number; startSec: number; videoTime: number };
-
-const DAY = 24 * 3600;
+  /** `beginSec`: clock time (seconds since today's midnight) at which the video's second 0 plays. */
+  | { status: "on"; segmentIndex: number; beginSec: number; videoTime: number };
 
 /**
  * Where a video channel should be at `nowSec` (seconds since midnight). A
  * broadcast that runs past midnight carries on into the small hours.
  */
 export function resolveSchedule(channel: VideoChannel, nowSec: number, durations: Durations = {}): ScheduleState {
-  const state = resolveDay(channel, nowSec, durations);
+  const windows = segmentWindows(channel, durations);
+  const state = resolveAt(windows, nowSec);
   if (state.status === "before") {
-    const overnight = resolveDay(channel, nowSec + DAY, durations);
-    if (overnight.status === "on") return overnight;
+    const overnight = resolveAt(windows, nowSec + DAY);
+    if (overnight.status === "on") return { ...overnight, beginSec: overnight.beginSec - DAY };
   }
   return state;
 }
 
-function resolveDay(channel: VideoChannel, nowSec: number, durations: Durations): ScheduleState {
-  let cursor: number | null = null;
-  for (let i = 0; i < channel.segments.length; i++) {
-    const seg = channel.segments[i];
-    const offset = seg.offset ?? 0;
-    const start: number | null = seg.start !== undefined ? parseClock(seg.start) : cursor;
+function resolveAt(windows: SegmentWindow[], nowSec: number): ScheduleState {
+  for (let i = 0; i < windows.length; i++) {
+    const { begin, end } = windows[i];
     // The previous segment's length is still unknown: its player will report it.
-    if (start === null) break;
-    if (nowSec < start) return { status: "before", startsAt: formatStart(start) };
-    const duration = seg.duration ?? durations[segmentKey(seg)];
-    const end: number | null = seg.end !== undefined ? parseClock(seg.end) : duration !== undefined ? start + duration - offset : null;
+    if (begin === null) break;
+    if (end !== null && end <= begin) continue;
+    if (nowSec < begin) return { status: "before", startsAt: formatClockShort(begin) };
     if (end === null || nowSec < end) {
-      return { status: "on", segmentIndex: i, startSec: start, videoTime: nowSec - start + offset };
+      return { status: "on", segmentIndex: i, beginSec: begin, videoTime: nowSec - begin };
     }
-    cursor = end;
   }
   return { status: "after" };
 }
 
-function formatStart(sec: number): string {
+export function formatClockShort(sec: number): string {
+  const t = ((Math.floor(sec) % DAY) + DAY) % DAY;
   const pad = (n: number) => String(n).padStart(2, "0");
-  return `${pad(Math.floor(sec / 3600))}:${pad(Math.floor((sec % 3600) / 60))}`;
+  return `${pad(Math.floor(t / 3600))}:${pad(Math.floor((t % 3600) / 60))}`;
 }
