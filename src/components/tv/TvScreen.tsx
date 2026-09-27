@@ -12,6 +12,10 @@ import {
 import { loadCalibration } from "@/lib/tv/calibration";
 import { broadcastSecondsOfDay, formatClock } from "@/lib/tv/clock";
 import { ChannelTile } from "./ChannelTile";
+import { TimeControls } from "./TimeControls";
+
+// Temporary: shows a bar under the TV for moving the clock while checking the sync.
+const SHOW_TIME_CONTROLS = true;
 
 const DURATIONS_STORAGE_KEY = "tv-video-durations";
 
@@ -56,6 +60,7 @@ export function TvScreen() {
   const [calibration, setCalibration] = useState<Calibration>({});
   const channels = useMemo(() => applyCalibration(CHANNELS, calibration), [calibration]);
   const offsetRef = useRef(0);
+  const [shifted, setShifted] = useState(false);
 
   const reportDuration = useCallback((key: string, seconds: number) => {
     setDurations((current) => {
@@ -70,6 +75,22 @@ export function TvScreen() {
 
   const getNow = useCallback(() => (broadcastSecondsOfDay() + offsetRef.current + 86400) % 86400, []);
 
+  const setClock = useCallback(
+    (secondsOfDay: number) => {
+      offsetRef.current = secondsOfDay - broadcastSecondsOfDay();
+      setShifted(true);
+      setNowSec(getNow());
+    },
+    [getNow],
+  );
+
+  const resetClock = useCallback(() => {
+    offsetRef.current = 0;
+    setShifted(false);
+    setPreviewTime(null);
+    setNowSec(getNow());
+  }, [getNow]);
+
   useEffect(() => {
     // ?time=HH:MM starts the clock at another time of day, for previewing.
     const requested = new URLSearchParams(window.location.search).get("time");
@@ -81,7 +102,10 @@ export function TvScreen() {
       setDurations(loadDurations());
       setCalibration(loadCalibration());
       tick();
-      if (requested) setPreviewTime(requested);
+      if (requested) {
+        setPreviewTime(requested);
+        setShifted(true);
+      }
     });
     const id = window.setInterval(tick, 500);
     return () => {
@@ -122,7 +146,10 @@ export function TvScreen() {
       dir="rtl"
       className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-[radial-gradient(ellipse_at_top,#2a2522,#0c0b0a_70%)] px-4 py-6 text-white"
     >
-      <div className="w-full" style={{ maxWidth: "min(100%, calc((100dvh - 230px) * 16 / 9))", minWidth: "min(100%, 320px)" }}>
+      <div className="w-full" style={{
+          maxWidth: `min(100%, calc((100dvh - ${SHOW_TIME_CONTROLS ? 380 : 230}px) * 16 / 9))`,
+          minWidth: "min(100%, 320px)",
+        }}>
         {/* TV set */}
         <div className="rounded-[22px] border border-neutral-700/60 bg-gradient-to-b from-neutral-800 to-neutral-950 p-2 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.08)] sm:rounded-[30px] sm:p-4">
           <div className="relative aspect-video overflow-hidden rounded-lg bg-black ring-1 ring-black sm:rounded-xl">
@@ -194,6 +221,8 @@ export function TvScreen() {
           {soundOn ? "🔊" : "🔇"}
         </RemoteButton>
       </nav>
+
+      {SHOW_TIME_CONTROLS && <TimeControls nowSec={nowSec} shifted={shifted} onSet={setClock} onReset={resetClock} />}
 
       <p className="text-center text-xs text-neutral-500">
         {focused === null
