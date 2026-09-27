@@ -259,7 +259,7 @@ function SlideBody({ channel, nowSec }: { channel: SlideChannel; nowSec: number 
           onError={() => setImageFailed(true)}
         />
       )}
-      <div dir="ltr" className="absolute bottom-[6%] left-[4%] rounded bg-black/75 px-[0.6em] py-[0.25em] font-mono text-[4.4cqw] font-bold tabular-nums tracking-wider text-white shadow-lg">
+      <div dir="ltr" className="absolute left-[3%] top-[4%] rounded bg-black/75 px-[0.6em] py-[0.25em] font-mono text-[3.2cqw] font-bold tabular-nums tracking-wider text-white shadow-lg">
         {BROADCAST_DATE_SHORT} {formatClock(nowSec)}
       </div>
     </div>
