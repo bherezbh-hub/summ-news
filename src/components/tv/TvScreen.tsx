@@ -18,6 +18,17 @@ import { TimeControls } from "./TimeControls";
 const SHOW_TIME_CONTROLS = true;
 
 const DURATIONS_STORAGE_KEY = "tv-video-durations";
+// Per-channel fine-tuning set from the time bar, in seconds, kept in this browser.
+const SHIFTS_STORAGE_KEY = "tv-channel-shifts";
+const DAY = 24 * 3600;
+
+function loadShifts(): Record<string, number> {
+  try {
+    return JSON.parse(window.localStorage.getItem(SHIFTS_STORAGE_KEY) ?? "{}");
+  } catch {
+    return {};
+  }
+}
 
 function loadDurations(): Durations {
   try {
@@ -79,6 +90,32 @@ export function TvScreen() {
 
   const getNow = useCallback(() => (broadcastSecondsOfDay() + offsetRef.current + 86400) % 86400, []);
 
+  const [localShifts, setLocalShifts] = useState<Record<string, number>>({});
+  const shiftOf = useCallback(
+    (index: number) => {
+      const channel = channels[index];
+      return (channel.kind === "video" ? (channel.shift ?? 0) : 0) + (localShifts[channel.number] ?? 0);
+    },
+    [channels, localShifts],
+  );
+  // Each channel runs on the shared clock plus its own fine-tuning.
+  const channelClocks = useMemo(
+    () => channels.map((_, index) => () => (getNow() + shiftOf(index) + DAY) % DAY),
+    [channels, getNow, shiftOf],
+  );
+
+  const nudgeChannel = useCallback((number: string, delta: number | null) => {
+    setLocalShifts((current) => {
+      const next = { ...current };
+      if (delta === null) delete next[number];
+      else next[number] = (next[number] ?? 0) + delta;
+      try {
+        window.localStorage.setItem(SHIFTS_STORAGE_KEY, JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  }, []);
+
   const setClock = useCallback(
     (secondsOfDay: number) => {
       offsetRef.current = secondsOfDay - broadcastSecondsOfDay();
@@ -105,6 +142,7 @@ export function TvScreen() {
     const frame = requestAnimationFrame(() => {
       setDurations(loadDurations());
       setCalibration(loadCalibration());
+      setLocalShifts(loadShifts());
       tick();
       if (requested) {
         setPreviewTime(requested);
@@ -163,8 +201,8 @@ export function TvScreen() {
                 <ChannelTile
                   key={channel.number}
                   channel={channel}
-                  nowSec={nowSec}
-                  getNow={getNow}
+                  nowSec={nowSec === null ? null : (nowSec + shiftOf(index) + DAY) % DAY}
+                  getNow={channelClocks[index]}
                   durations={durations}
                   onDuration={reportDuration}
                   powered={powered}
@@ -231,7 +269,18 @@ export function TvScreen() {
         </RemoteButton>
       </nav>
 
-      {SHOW_TIME_CONTROLS && <TimeControls nowSec={nowSec} shifted={shifted} onSet={setClock} onReset={resetClock} />}
+      {SHOW_TIME_CONTROLS && (
+        <TimeControls
+          nowSec={nowSec}
+          shifted={shifted}
+          onSet={setClock}
+          onReset={resetClock}
+          channels={channels
+            .filter((c) => c.kind === "video")
+            .map((c) => ({ number: c.number, name: c.name, shift: shiftOf(channels.indexOf(c)) }))}
+          onNudge={nudgeChannel}
+        />
+      )}
 
       <p className="text-center text-xs text-neutral-500">
         {focused === null

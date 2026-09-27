@@ -54,7 +54,12 @@ type ChannelBase = {
   accent: string;
 };
 
-export type VideoChannel = ChannelBase & { kind: "video"; segments: Segment[] };
+export type VideoChannel = ChannelBase & {
+  kind: "video";
+  segments: Segment[];
+  /** Fine-tuning in seconds for the whole channel: negative plays it behind the clock. */
+  shift?: number;
+};
 
 export type SlideChannel = ChannelBase & {
   kind: "slide";

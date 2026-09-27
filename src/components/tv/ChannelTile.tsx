@@ -15,7 +15,7 @@ import { formatClock } from "@/lib/tv/clock";
 import { SyncPlayer, createPlayer } from "@/lib/tv/players";
 
 // How far a player may drift from the schedule before it is re-seeked.
-const MAX_DRIFT_SEC = 4;
+const MAX_DRIFT_SEC = 2;
 const SEEK_COOLDOWN_MS = 6000;
 
 type TileProps = {
