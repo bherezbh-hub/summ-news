@@ -1,4 +1,4 @@
-import { Gender, fixedLineParts } from "./content";
+import { Gender, fixedLineText } from "./content";
 
 export const FORMAT_SIZES = {
   post: { width: 1080, height: 1080 },
@@ -9,6 +9,9 @@ export type Format = keyof typeof FORMAT_SIZES;
 
 const BG_COLOR = "#173463";
 const SCRIM_COLOR = "rgba(10, 20, 45, 0.45)";
+
+/** Aspect ratio (height / width) of the public/democrats/ballot-slip.png asset. */
+const SLIP_ASPECT = 856 / 671;
 
 export interface ImageTransform {
   /** Zoom multiplier on top of the cover-fit scale. 1 = just covers the canvas. */
@@ -131,6 +134,8 @@ export interface RenderOptions {
   headlineColor: string;
   subColor: string;
   textTransform: TextTransform;
+  /** The public/democrats/ballot-slip.png asset, preloaded by the caller. */
+  ballotSlipImage: HTMLImageElement | null;
 }
 
 export function renderGraphic(canvas: HTMLCanvasElement, opts: RenderOptions) {
@@ -165,63 +170,21 @@ export function renderGraphic(canvas: HTMLCanvasElement, opts: RenderOptions) {
   ctx.font = `${Math.round(W * 0.046 * textScale)}px Arial, sans-serif`;
   drawWrappedText(ctx, opts.subtitle, textCenterX, y, W * 0.8, W * 0.062 * textScale);
 
-  // The ballot line, footnote and wordmark stay anchored independently of the
-  // draggable/resizable headline+subtitle block above.
-  let fixedLineY = opts.format === "story" ? H * 0.46 : H * 0.72;
+  // The "בגלל זה אני שם/שמה" line + ballot slip image, and the footnote and
+  // wordmark below it, stay anchored independently of the draggable/resizable
+  // headline+subtitle block above.
+  let anchorY = opts.format === "story" ? H * 0.5 : H * 0.62;
 
-  const { pre, verb, ballot, suffix } = fixedLineParts(opts.gender);
-  const preText = `${pre} ${verb}`;
-  const ballotFont = `bold ${Math.round(W * 0.06)}px Arial, sans-serif`;
-  const suffixFont = `${Math.round(W * 0.036)}px Arial, sans-serif`;
-
-  ctx.font = ballotFont;
-  const ballotWidth = ctx.measureText(ballot).width;
-  ctx.font = `bold ${Math.round(W * 0.05)}px Arial, sans-serif`;
-  const preWidth = ctx.measureText(preText).width;
-  ctx.font = suffixFont;
-  const suffixWidth = ctx.measureText(suffix).width;
-
-  const gap = W * 0.02;
-  const boxPaddingX = W * 0.025;
-  const boxWidth = ballotWidth + boxPaddingX * 2;
-  const boxHeight = W * 0.09;
-  const totalWidth = preWidth + gap + boxWidth + gap + suffixWidth;
-  let cursorX = centerX + totalWidth / 2;
-
-  ctx.textAlign = "right";
   ctx.fillStyle = opts.headlineColor;
   ctx.font = `bold ${Math.round(W * 0.05)}px Arial, sans-serif`;
-  ctx.fillText(preText, cursorX, fixedLineY + boxHeight * 0.68);
-  cursorX -= preWidth + gap;
+  ctx.fillText(fixedLineText(opts.gender), centerX, anchorY);
+  anchorY += W * 0.05;
 
-  const boxX = cursorX - boxWidth;
-  ctx.fillStyle = "#ffffff";
-  ctx.beginPath();
-  const r = W * 0.012;
-  ctx.moveTo(boxX + r, fixedLineY);
-  ctx.arcTo(boxX + boxWidth, fixedLineY, boxX + boxWidth, fixedLineY + boxHeight, r);
-  ctx.arcTo(boxX + boxWidth, fixedLineY + boxHeight, boxX, fixedLineY + boxHeight, r);
-  ctx.arcTo(boxX, fixedLineY + boxHeight, boxX, fixedLineY, r);
-  ctx.arcTo(boxX, fixedLineY, boxX + boxWidth, fixedLineY, r);
-  ctx.closePath();
-  ctx.fill();
-  ctx.strokeStyle = BG_COLOR;
-  ctx.lineWidth = W * 0.006;
-  ctx.stroke();
-
-  ctx.fillStyle = BG_COLOR;
-  ctx.textAlign = "center";
-  ctx.font = ballotFont;
-  ctx.fillText(ballot, boxX + boxWidth / 2, fixedLineY + boxHeight * 0.68);
-  cursorX = boxX - gap;
-
-  ctx.fillStyle = opts.subColor;
-  ctx.textAlign = "right";
-  ctx.font = suffixFont;
-  ctx.fillText(suffix, cursorX, fixedLineY + boxHeight * 0.68);
-
-  ctx.textAlign = "center";
-  fixedLineY += boxHeight + W * 0.05;
+  if (opts.ballotSlipImage) {
+    const slipWidth = W * 0.16;
+    const slipHeight = slipWidth * SLIP_ASPECT;
+    ctx.drawImage(opts.ballotSlipImage, centerX - slipWidth / 2, anchorY, slipWidth, slipHeight);
+  }
 
   if (opts.footnote) {
     const footnoteY = H - (opts.format === "story" ? H * 0.1 : H * 0.11);

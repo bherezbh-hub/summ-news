@@ -49,6 +49,8 @@ export default function DemocratsGeneratorPage() {
   const [footnoteId, setFootnoteId] = useState<string | null>(null);
   const [customFootnote, setCustomFootnote] = useState("");
 
+  const [ballotSlipImage, setBallotSlipImage] = useState<HTMLImageElement | null>(null);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragRef = useRef<{ x: number; y: number; offsetX: number; offsetY: number; mode: DragMode } | null>(null);
@@ -76,6 +78,12 @@ export default function DemocratsGeneratorPage() {
   }, [footnoteId, customFootnote, gender]);
 
   useEffect(() => {
+    const img = new Image();
+    img.onload = () => setBallotSlipImage(img);
+    img.src = "/democrats/ballot-slip.png";
+  }, []);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !format || !gender) return;
     renderGraphic(canvas, {
@@ -89,8 +97,21 @@ export default function DemocratsGeneratorPage() {
       headlineColor,
       subColor,
       textTransform,
+      ballotSlipImage,
     });
-  }, [format, gender, imageEl, imageTransform, title, subtitle, footnote, headlineColor, subColor, textTransform]);
+  }, [
+    format,
+    gender,
+    imageEl,
+    imageTransform,
+    title,
+    subtitle,
+    footnote,
+    headlineColor,
+    subColor,
+    textTransform,
+    ballotSlipImage,
+  ]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];

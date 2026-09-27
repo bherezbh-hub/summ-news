@@ -50,11 +50,6 @@ export const FOOTNOTE_OPTIONS: FootnoteOption[] = [
   { id: "final", label: () => "זה סופי!" },
 ];
 
-export function fixedLineParts(gender: Gender) {
-  return {
-    pre: "בגלל זה אני",
-    verb: gender === "female" ? "שמה" : "שם",
-    ballot: "אמת",
-    suffix: "(פתק)",
-  };
+export function fixedLineText(gender: Gender): string {
+  return gender === "female" ? "בגלל זה אני שמה אמת" : "בגלל זה אני שם אמת";
 }
