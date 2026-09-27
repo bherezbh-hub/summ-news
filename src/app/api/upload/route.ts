@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { supabase, SCREENSHOTS_BUCKET } from "@/lib/supabase";
+import { getSupabase, SCREENSHOTS_BUCKET } from "@/lib/supabase";
 
 export async function POST(req: Request) {
   try {
+    const supabase = getSupabase();
     const formData = await req.formData();
     const file = formData.get("file") as File;
     if (!file) return NextResponse.json({ error: "No file" }, { status: 400 });
