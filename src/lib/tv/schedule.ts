@@ -109,11 +109,17 @@ export const CHANNELS: Channel[] = [
     kind: "video",
     segments: [
       {
+        // Part 1 runs 8:31:43 from 06:29, until 15:00:43.
         start: "06:29",
+        duration: 8 * 3600 + 31 * 60 + 43,
         offset: 0,
         sources: [{ type: "youtube", id: "agry5NpSGAE" }],
       },
-      { sources: [{ type: "youtube", id: "DN915_qbKA4" }] },
+      {
+        // Part 2 runs 8:56:35, until 23:57:18.
+        duration: 8 * 3600 + 56 * 60 + 35,
+        sources: [{ type: "youtube", id: "DN915_qbKA4" }],
+      },
     ],
   },
   {
