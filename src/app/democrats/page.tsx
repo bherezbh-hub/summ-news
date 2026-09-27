@@ -10,12 +10,19 @@ import {
 } from "@/lib/democrats/content";
 import {
   DEFAULT_IMAGE_TRANSFORM,
+  DEFAULT_TEXT_TRANSFORM,
   FORMAT_SIZES,
   Format,
   ImageTransform,
+  TEXT_SCALE_MAX,
+  TEXT_SCALE_MIN,
+  TextTransform,
   clampImageOffset,
+  clampTextOffset,
   renderGraphic,
 } from "@/lib/democrats/canvas";
+
+type DragMode = "image" | "text";
 
 const TOTAL_STEPS = 6;
 
@@ -28,6 +35,8 @@ export default function DemocratsGeneratorPage() {
   const [imageEl, setImageEl] = useState<HTMLImageElement | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [imageTransform, setImageTransform] = useState<ImageTransform>(DEFAULT_IMAGE_TRANSFORM);
+  const [textTransform, setTextTransform] = useState<TextTransform>(DEFAULT_TEXT_TRANSFORM);
+  const [dragMode, setDragMode] = useState<DragMode>("text");
   const [headlineColor, setHeadlineColor] = useState("#ffffff");
   const [subColor, setSubColor] = useState("#c9d6ec");
 
@@ -42,7 +51,7 @@ export default function DemocratsGeneratorPage() {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const dragRef = useRef<{ x: number; y: number; offsetX: number; offsetY: number } | null>(null);
+  const dragRef = useRef<{ x: number; y: number; offsetX: number; offsetY: number; mode: DragMode } | null>(null);
 
   const selectedHeadline = useMemo(
     () => HEADLINE_OPTIONS.find((h) => h.id === headlineId) ?? null,
@@ -79,8 +88,9 @@ export default function DemocratsGeneratorPage() {
       footnote,
       headlineColor,
       subColor,
+      textTransform,
     });
-  }, [format, gender, imageEl, imageTransform, title, subtitle, footnote, headlineColor, subColor]);
+  }, [format, gender, imageEl, imageTransform, title, subtitle, footnote, headlineColor, subColor, textTransform]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -93,6 +103,7 @@ export default function DemocratsGeneratorPage() {
         setImageEl(img);
         setImagePreviewUrl(url);
         setImageTransform(DEFAULT_IMAGE_TRANSFORM);
+        setDragMode("image");
       };
       img.src = url;
     };
@@ -108,29 +119,41 @@ export default function DemocratsGeneratorPage() {
     });
   }
 
+  function handleTextSizeChange(scale: number) {
+    setTextTransform((t) => ({ ...t, scale }));
+  }
+
   function handlePointerDown(e: React.PointerEvent<HTMLCanvasElement>) {
-    if (!imageEl) return;
+    if (dragMode === "image" && !imageEl) return;
     e.currentTarget.setPointerCapture(e.pointerId);
-    dragRef.current = { x: e.clientX, y: e.clientY, offsetX: imageTransform.offsetX, offsetY: imageTransform.offsetY };
+    const base = dragMode === "image" ? imageTransform : textTransform;
+    dragRef.current = { x: e.clientX, y: e.clientY, offsetX: base.offsetX, offsetY: base.offsetY, mode: dragMode };
   }
 
   function handlePointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
-    if (!dragRef.current || !imageEl || !format) return;
+    if (!dragRef.current || !format) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const ratio = FORMAT_SIZES[format].width / rect.width;
     const dx = (e.clientX - dragRef.current.x) * ratio;
     const dy = (e.clientY - dragRef.current.y) * ratio;
-    const size = FORMAT_SIZES[format];
-    const clamped = clampImageOffset(
-      size.width,
-      size.height,
-      imageEl.width,
-      imageEl.height,
-      imageTransform.scale,
-      dragRef.current.offsetX + dx,
-      dragRef.current.offsetY + dy
-    );
-    setImageTransform((t) => ({ ...t, offsetX: clamped.x, offsetY: clamped.y }));
+
+    if (dragRef.current.mode === "image") {
+      if (!imageEl) return;
+      const size = FORMAT_SIZES[format];
+      const clamped = clampImageOffset(
+        size.width,
+        size.height,
+        imageEl.width,
+        imageEl.height,
+        imageTransform.scale,
+        dragRef.current.offsetX + dx,
+        dragRef.current.offsetY + dy
+      );
+      setImageTransform((t) => ({ ...t, offsetX: clamped.x, offsetY: clamped.y }));
+    } else {
+      const clamped = clampTextOffset(format, dragRef.current.offsetX + dx, dragRef.current.offsetY + dy);
+      setTextTransform((t) => ({ ...t, offsetX: clamped.x, offsetY: clamped.y }));
+    }
   }
 
   function handlePointerUp() {
@@ -189,13 +212,38 @@ export default function DemocratsGeneratorPage() {
         className="w-full max-w-[320px] rounded-2xl shadow-lg border border-white/10"
         style={{
           aspectRatio: format === "story" ? "9 / 16" : "1 / 1",
-          cursor: imageEl ? "grab" : "default",
+          cursor: dragMode === "image" && !imageEl ? "default" : "grab",
           touchAction: "none",
         }}
       />
-      {imageEl && (
-        <div className="w-full max-w-[320px] text-blue-200 text-xs space-y-1">
-          <p className="text-center opacity-80">גררו על התמונה כדי למקם אותה</p>
+
+      <div className="w-full max-w-[320px] flex rounded-lg overflow-hidden border border-white/20 text-xs">
+        <button
+          type="button"
+          onClick={() => imageEl && setDragMode("image")}
+          disabled={!imageEl}
+          className={`flex-1 py-2 transition ${
+            dragMode === "image" ? "bg-blue-600 text-white" : "text-blue-200 disabled:opacity-30"
+          }`}
+        >
+          הזזת תמונה
+        </button>
+        <button
+          type="button"
+          onClick={() => setDragMode("text")}
+          className={`flex-1 py-2 transition ${
+            dragMode === "text" ? "bg-blue-600 text-white" : "text-blue-200"
+          }`}
+        >
+          הזזת כותרות
+        </button>
+      </div>
+
+      <div className="w-full max-w-[320px] text-blue-200 text-xs space-y-1">
+        <p className="text-center opacity-80">
+          {dragMode === "image" ? "גררו על התמונה כדי למקם אותה" : "גררו את הכותרות כדי למקם אותן"}
+        </p>
+        {dragMode === "image" && imageEl && (
           <label className="flex items-center gap-2">
             <span className="whitespace-nowrap">התקרבות</span>
             <input
@@ -208,8 +256,22 @@ export default function DemocratsGeneratorPage() {
               className="w-full"
             />
           </label>
-        </div>
-      )}
+        )}
+        {dragMode === "text" && (
+          <label className="flex items-center gap-2">
+            <span className="whitespace-nowrap">גודל כותרות</span>
+            <input
+              type="range"
+              min={TEXT_SCALE_MIN}
+              max={TEXT_SCALE_MAX}
+              step={0.01}
+              value={textTransform.scale}
+              onChange={(e) => handleTextSizeChange(Number(e.target.value))}
+              className="w-full"
+            />
+          </label>
+        )}
+      </div>
 
       <div className="w-full max-w-[320px] flex gap-4 justify-center text-blue-200 text-xs">
         <label className="flex items-center gap-2">

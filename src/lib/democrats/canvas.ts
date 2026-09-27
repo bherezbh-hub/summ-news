@@ -20,17 +20,18 @@ export interface ImageTransform {
 
 export const DEFAULT_IMAGE_TRANSFORM: ImageTransform = { scale: 1, offsetX: 0, offsetY: 0 };
 
-export interface RenderOptions {
-  format: Format;
-  gender: Gender;
-  image: HTMLImageElement | null;
-  imageTransform: ImageTransform;
-  title: string;
-  subtitle: string;
-  footnote: string;
-  headlineColor: string;
-  subColor: string;
+export interface TextTransform {
+  /** Pan offset in canvas pixels, applied to the headline + subtitle block. */
+  offsetX: number;
+  offsetY: number;
+  /** Font-size multiplier for the headline + subtitle block. */
+  scale: number;
 }
+
+export const DEFAULT_TEXT_TRANSFORM: TextTransform = { offsetX: 0, offsetY: 0, scale: 1 };
+
+export const TEXT_SCALE_MIN = 0.6;
+export const TEXT_SCALE_MAX = 1.8;
 
 /** Clamp a pan offset so the zoomed image still fully covers the canvas. */
 export function clampImageOffset(
@@ -51,6 +52,18 @@ export function clampImageOffset(
   return {
     x: Math.min(maxX, Math.max(-maxX, offsetX)),
     y: Math.min(maxY, Math.max(-maxY, offsetY)),
+  };
+}
+
+/** Keep the draggable headline/subtitle block from being dragged fully off canvas. */
+export function clampTextOffset(format: Format, offsetX: number, offsetY: number): { x: number; y: number } {
+  const { width: W, height: H } = FORMAT_SIZES[format];
+  const maxX = W * 0.32;
+  const minY = -H * 0.22;
+  const maxY = H * 0.32;
+  return {
+    x: Math.min(maxX, Math.max(-maxX, offsetX)),
+    y: Math.min(maxY, Math.max(minY, offsetY)),
   };
 }
 
@@ -107,6 +120,19 @@ function drawWrappedText(
   return y;
 }
 
+export interface RenderOptions {
+  format: Format;
+  gender: Gender;
+  image: HTMLImageElement | null;
+  imageTransform: ImageTransform;
+  title: string;
+  subtitle: string;
+  footnote: string;
+  headlineColor: string;
+  subColor: string;
+  textTransform: TextTransform;
+}
+
 export function renderGraphic(canvas: HTMLCanvasElement, opts: RenderOptions) {
   const { width: W, height: H } = FORMAT_SIZES[opts.format];
   canvas.width = W;
@@ -126,18 +152,22 @@ export function renderGraphic(canvas: HTMLCanvasElement, opts: RenderOptions) {
 
   ctx.textAlign = "center";
   const centerX = W / 2;
-  let y = opts.format === "story" ? H * 0.24 : H * 0.36;
+  const textScale = opts.textTransform.scale;
+  const textCenterX = centerX + opts.textTransform.offsetX;
+  let y = (opts.format === "story" ? H * 0.24 : H * 0.36) + opts.textTransform.offsetY;
 
   ctx.fillStyle = opts.headlineColor;
-  ctx.font = `bold ${Math.round(W * 0.078)}px Arial, sans-serif`;
-  y = drawWrappedText(ctx, opts.title, centerX, y, W * 0.86, W * 0.092);
+  ctx.font = `bold ${Math.round(W * 0.078 * textScale)}px Arial, sans-serif`;
+  y = drawWrappedText(ctx, opts.title, textCenterX, y, W * 0.86, W * 0.092 * textScale);
 
-  y += W * 0.035;
+  y += W * 0.035 * textScale;
   ctx.fillStyle = opts.subColor;
-  ctx.font = `${Math.round(W * 0.046)}px Arial, sans-serif`;
-  y = drawWrappedText(ctx, opts.subtitle, centerX, y, W * 0.8, W * 0.062);
+  ctx.font = `${Math.round(W * 0.046 * textScale)}px Arial, sans-serif`;
+  drawWrappedText(ctx, opts.subtitle, textCenterX, y, W * 0.8, W * 0.062 * textScale);
 
-  y += W * 0.08;
+  // The ballot line, footnote and wordmark stay anchored independently of the
+  // draggable/resizable headline+subtitle block above.
+  let fixedLineY = opts.format === "story" ? H * 0.46 : H * 0.72;
 
   const { pre, verb, ballot, suffix } = fixedLineParts(opts.gender);
   const preText = `${pre} ${verb}`;
@@ -161,18 +191,18 @@ export function renderGraphic(canvas: HTMLCanvasElement, opts: RenderOptions) {
   ctx.textAlign = "right";
   ctx.fillStyle = opts.headlineColor;
   ctx.font = `bold ${Math.round(W * 0.05)}px Arial, sans-serif`;
-  ctx.fillText(preText, cursorX, y + boxHeight * 0.68);
+  ctx.fillText(preText, cursorX, fixedLineY + boxHeight * 0.68);
   cursorX -= preWidth + gap;
 
   const boxX = cursorX - boxWidth;
   ctx.fillStyle = "#ffffff";
   ctx.beginPath();
   const r = W * 0.012;
-  ctx.moveTo(boxX + r, y);
-  ctx.arcTo(boxX + boxWidth, y, boxX + boxWidth, y + boxHeight, r);
-  ctx.arcTo(boxX + boxWidth, y + boxHeight, boxX, y + boxHeight, r);
-  ctx.arcTo(boxX, y + boxHeight, boxX, y, r);
-  ctx.arcTo(boxX, y, boxX + boxWidth, y, r);
+  ctx.moveTo(boxX + r, fixedLineY);
+  ctx.arcTo(boxX + boxWidth, fixedLineY, boxX + boxWidth, fixedLineY + boxHeight, r);
+  ctx.arcTo(boxX + boxWidth, fixedLineY + boxHeight, boxX, fixedLineY + boxHeight, r);
+  ctx.arcTo(boxX, fixedLineY + boxHeight, boxX, fixedLineY, r);
+  ctx.arcTo(boxX, fixedLineY, boxX + boxWidth, fixedLineY, r);
   ctx.closePath();
   ctx.fill();
   ctx.strokeStyle = BG_COLOR;
@@ -182,16 +212,16 @@ export function renderGraphic(canvas: HTMLCanvasElement, opts: RenderOptions) {
   ctx.fillStyle = BG_COLOR;
   ctx.textAlign = "center";
   ctx.font = ballotFont;
-  ctx.fillText(ballot, boxX + boxWidth / 2, y + boxHeight * 0.68);
+  ctx.fillText(ballot, boxX + boxWidth / 2, fixedLineY + boxHeight * 0.68);
   cursorX = boxX - gap;
 
   ctx.fillStyle = opts.subColor;
   ctx.textAlign = "right";
   ctx.font = suffixFont;
-  ctx.fillText(suffix, cursorX, y + boxHeight * 0.68);
+  ctx.fillText(suffix, cursorX, fixedLineY + boxHeight * 0.68);
 
   ctx.textAlign = "center";
-  y += boxHeight + W * 0.05;
+  fixedLineY += boxHeight + W * 0.05;
 
   if (opts.footnote) {
     const footnoteY = H - (opts.format === "story" ? H * 0.1 : H * 0.11);
