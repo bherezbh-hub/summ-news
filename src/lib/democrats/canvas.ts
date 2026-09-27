@@ -8,42 +8,67 @@ export const FORMAT_SIZES = {
 export type Format = keyof typeof FORMAT_SIZES;
 
 const BG_COLOR = "#173463";
-const TEXT_COLOR = "#ffffff";
-const MUTED_TEXT_COLOR = "#c9d6ec";
+const SCRIM_COLOR = "rgba(10, 20, 45, 0.45)";
+
+export interface ImageTransform {
+  /** Zoom multiplier on top of the cover-fit scale. 1 = just covers the canvas. */
+  scale: number;
+  /** Pan offset in canvas pixels. */
+  offsetX: number;
+  offsetY: number;
+}
+
+export const DEFAULT_IMAGE_TRANSFORM: ImageTransform = { scale: 1, offsetX: 0, offsetY: 0 };
 
 export interface RenderOptions {
   format: Format;
   gender: Gender;
   image: HTMLImageElement | null;
+  imageTransform: ImageTransform;
   title: string;
   subtitle: string;
   footnote: string;
+  headlineColor: string;
+  subColor: string;
 }
 
-function drawCoverImage(
+/** Clamp a pan offset so the zoomed image still fully covers the canvas. */
+export function clampImageOffset(
+  canvasW: number,
+  canvasH: number,
+  imgW: number,
+  imgH: number,
+  scale: number,
+  offsetX: number,
+  offsetY: number
+): { x: number; y: number } {
+  const coverScale = Math.max(canvasW / imgW, canvasH / imgH);
+  const s = coverScale * Math.max(1, scale);
+  const dw = imgW * s;
+  const dh = imgH * s;
+  const maxX = Math.max(0, (dw - canvasW) / 2);
+  const maxY = Math.max(0, (dh - canvasH) / 2);
+  return {
+    x: Math.min(maxX, Math.max(-maxX, offsetX)),
+    y: Math.min(maxY, Math.max(-maxY, offsetY)),
+  };
+}
+
+function drawFullBleedImage(
   ctx: CanvasRenderingContext2D,
   img: HTMLImageElement,
-  dx: number,
-  dy: number,
-  dWidth: number,
-  dHeight: number
+  W: number,
+  H: number,
+  transform: ImageTransform
 ) {
-  const imgRatio = img.width / img.height;
-  const targetRatio = dWidth / dHeight;
-  let sx = 0;
-  let sy = 0;
-  let sWidth = img.width;
-  let sHeight = img.height;
-
-  if (imgRatio > targetRatio) {
-    sWidth = img.height * targetRatio;
-    sx = (img.width - sWidth) / 2;
-  } else {
-    sHeight = img.width / targetRatio;
-    sy = (img.height - sHeight) / 2;
-  }
-
-  ctx.drawImage(img, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+  const coverScale = Math.max(W / img.width, H / img.height);
+  const s = coverScale * Math.max(1, transform.scale);
+  const dw = img.width * s;
+  const dh = img.height * s;
+  const clamped = clampImageOffset(W, H, img.width, img.height, transform.scale, transform.offsetX, transform.offsetY);
+  const x = (W - dw) / 2 + clamped.x;
+  const y = (H - dh) / 2 + clamped.y;
+  ctx.drawImage(img, x, y, dw, dh);
 }
 
 function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
@@ -92,47 +117,29 @@ export function renderGraphic(canvas: HTMLCanvasElement, opts: RenderOptions) {
   ctx.clearRect(0, 0, W, H);
   ctx.fillStyle = BG_COLOR;
   ctx.fillRect(0, 0, W, H);
-  ctx.textAlign = "center";
-
-  const centerX = W / 2;
-  const topMargin = opts.format === "story" ? H * 0.1 : H * 0.08;
-  let y = topMargin;
-
-  const photoDiameter = W * 0.42;
-  const photoRadius = photoDiameter / 2;
 
   if (opts.image) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(centerX, y + photoRadius, photoRadius, 0, Math.PI * 2);
-    ctx.closePath();
-    ctx.clip();
-    drawCoverImage(ctx, opts.image, centerX - photoRadius, y, photoDiameter, photoDiameter);
-    ctx.restore();
-
-    ctx.beginPath();
-    ctx.arc(centerX, y + photoRadius, photoRadius, 0, Math.PI * 2);
-    ctx.lineWidth = W * 0.012;
-    ctx.strokeStyle = TEXT_COLOR;
-    ctx.stroke();
-
-    y += photoDiameter + W * 0.07;
-  } else {
-    y += W * 0.04;
+    drawFullBleedImage(ctx, opts.image, W, H, opts.imageTransform);
+    ctx.fillStyle = SCRIM_COLOR;
+    ctx.fillRect(0, 0, W, H);
   }
 
-  ctx.fillStyle = TEXT_COLOR;
+  ctx.textAlign = "center";
+  const centerX = W / 2;
+  let y = opts.format === "story" ? H * 0.24 : H * 0.36;
+
+  ctx.fillStyle = opts.headlineColor;
   ctx.font = `bold ${Math.round(W * 0.078)}px Arial, sans-serif`;
   y = drawWrappedText(ctx, opts.title, centerX, y, W * 0.86, W * 0.092);
 
   y += W * 0.035;
+  ctx.fillStyle = opts.subColor;
   ctx.font = `${Math.round(W * 0.046)}px Arial, sans-serif`;
   y = drawWrappedText(ctx, opts.subtitle, centerX, y, W * 0.8, W * 0.062);
 
   y += W * 0.08;
 
   const { pre, verb, ballot, suffix } = fixedLineParts(opts.gender);
-  ctx.font = `bold ${Math.round(W * 0.05)}px Arial, sans-serif`;
   const preText = `${pre} ${verb}`;
   const ballotFont = `bold ${Math.round(W * 0.06)}px Arial, sans-serif`;
   const suffixFont = `${Math.round(W * 0.036)}px Arial, sans-serif`;
@@ -152,7 +159,7 @@ export function renderGraphic(canvas: HTMLCanvasElement, opts: RenderOptions) {
   let cursorX = centerX + totalWidth / 2;
 
   ctx.textAlign = "right";
-  ctx.fillStyle = TEXT_COLOR;
+  ctx.fillStyle = opts.headlineColor;
   ctx.font = `bold ${Math.round(W * 0.05)}px Arial, sans-serif`;
   ctx.fillText(preText, cursorX, y + boxHeight * 0.68);
   cursorX -= preWidth + gap;
@@ -178,7 +185,7 @@ export function renderGraphic(canvas: HTMLCanvasElement, opts: RenderOptions) {
   ctx.fillText(ballot, boxX + boxWidth / 2, y + boxHeight * 0.68);
   cursorX = boxX - gap;
 
-  ctx.fillStyle = MUTED_TEXT_COLOR;
+  ctx.fillStyle = opts.subColor;
   ctx.textAlign = "right";
   ctx.font = suffixFont;
   ctx.fillText(suffix, cursorX, y + boxHeight * 0.68);
@@ -188,12 +195,12 @@ export function renderGraphic(canvas: HTMLCanvasElement, opts: RenderOptions) {
 
   if (opts.footnote) {
     const footnoteY = H - (opts.format === "story" ? H * 0.1 : H * 0.11);
-    ctx.fillStyle = MUTED_TEXT_COLOR;
+    ctx.fillStyle = opts.subColor;
     ctx.font = `italic ${Math.round(W * 0.033)}px Arial, sans-serif`;
     drawWrappedText(ctx, `* ${opts.footnote}`, centerX, footnoteY, W * 0.85, W * 0.045);
   }
 
-  ctx.fillStyle = TEXT_COLOR;
+  ctx.fillStyle = opts.headlineColor;
   ctx.font = `bold ${Math.round(W * 0.036)}px Arial, sans-serif`;
   ctx.fillText("הדמוקרטים", centerX, H - H * 0.035);
 }

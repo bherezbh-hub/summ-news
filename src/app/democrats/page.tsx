@@ -8,7 +8,14 @@ import {
   HEADLINE_OPTIONS,
   Gender,
 } from "@/lib/democrats/content";
-import { Format, renderGraphic } from "@/lib/democrats/canvas";
+import {
+  DEFAULT_IMAGE_TRANSFORM,
+  FORMAT_SIZES,
+  Format,
+  ImageTransform,
+  clampImageOffset,
+  renderGraphic,
+} from "@/lib/democrats/canvas";
 
 const TOTAL_STEPS = 6;
 
@@ -20,6 +27,9 @@ export default function DemocratsGeneratorPage() {
 
   const [imageEl, setImageEl] = useState<HTMLImageElement | null>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [imageTransform, setImageTransform] = useState<ImageTransform>(DEFAULT_IMAGE_TRANSFORM);
+  const [headlineColor, setHeadlineColor] = useState("#ffffff");
+  const [subColor, setSubColor] = useState("#c9d6ec");
 
   const [headlineId, setHeadlineId] = useState<string | null>(null);
   const [customHeadline, setCustomHeadline] = useState("");
@@ -32,6 +42,7 @@ export default function DemocratsGeneratorPage() {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dragRef = useRef<{ x: number; y: number; offsetX: number; offsetY: number } | null>(null);
 
   const selectedHeadline = useMemo(
     () => HEADLINE_OPTIONS.find((h) => h.id === headlineId) ?? null,
@@ -62,11 +73,14 @@ export default function DemocratsGeneratorPage() {
       format,
       gender,
       image: imageEl,
+      imageTransform,
       title: title || "הכותרת שלך תופיע כאן",
       subtitle: subtitle || "כותרת המשנה שלך",
       footnote,
+      headlineColor,
+      subColor,
     });
-  }, [format, gender, imageEl, title, subtitle, footnote]);
+  }, [format, gender, imageEl, imageTransform, title, subtitle, footnote, headlineColor, subColor]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -78,10 +92,49 @@ export default function DemocratsGeneratorPage() {
       img.onload = () => {
         setImageEl(img);
         setImagePreviewUrl(url);
+        setImageTransform(DEFAULT_IMAGE_TRANSFORM);
       };
       img.src = url;
     };
     reader.readAsDataURL(file);
+  }
+
+  function handleZoomChange(scale: number) {
+    setImageTransform((t) => {
+      if (!imageEl || !format) return { ...t, scale };
+      const size = FORMAT_SIZES[format];
+      const clamped = clampImageOffset(size.width, size.height, imageEl.width, imageEl.height, scale, t.offsetX, t.offsetY);
+      return { scale, offsetX: clamped.x, offsetY: clamped.y };
+    });
+  }
+
+  function handlePointerDown(e: React.PointerEvent<HTMLCanvasElement>) {
+    if (!imageEl) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    dragRef.current = { x: e.clientX, y: e.clientY, offsetX: imageTransform.offsetX, offsetY: imageTransform.offsetY };
+  }
+
+  function handlePointerMove(e: React.PointerEvent<HTMLCanvasElement>) {
+    if (!dragRef.current || !imageEl || !format) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const ratio = FORMAT_SIZES[format].width / rect.width;
+    const dx = (e.clientX - dragRef.current.x) * ratio;
+    const dy = (e.clientY - dragRef.current.y) * ratio;
+    const size = FORMAT_SIZES[format];
+    const clamped = clampImageOffset(
+      size.width,
+      size.height,
+      imageEl.width,
+      imageEl.height,
+      imageTransform.scale,
+      dragRef.current.offsetX + dx,
+      dragRef.current.offsetY + dy
+    );
+    setImageTransform((t) => ({ ...t, offsetX: clamped.x, offsetY: clamped.y }));
+  }
+
+  function handlePointerUp() {
+    dragRef.current = null;
   }
 
   function handleDownload() {
@@ -126,12 +179,59 @@ export default function DemocratsGeneratorPage() {
   }
 
   const previewCanvas = (
-    <div className="flex flex-col items-center gap-3">
+    <div className="flex flex-col items-center gap-3 w-full">
       <canvas
         ref={canvasRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerUp}
         className="w-full max-w-[320px] rounded-2xl shadow-lg border border-white/10"
-        style={{ aspectRatio: format === "story" ? "9 / 16" : "1 / 1" }}
+        style={{
+          aspectRatio: format === "story" ? "9 / 16" : "1 / 1",
+          cursor: imageEl ? "grab" : "default",
+          touchAction: "none",
+        }}
       />
+      {imageEl && (
+        <div className="w-full max-w-[320px] text-blue-200 text-xs space-y-1">
+          <p className="text-center opacity-80">גררו על התמונה כדי למקם אותה</p>
+          <label className="flex items-center gap-2">
+            <span className="whitespace-nowrap">התקרבות</span>
+            <input
+              type="range"
+              min={1}
+              max={2.5}
+              step={0.01}
+              value={imageTransform.scale}
+              onChange={(e) => handleZoomChange(Number(e.target.value))}
+              className="w-full"
+            />
+          </label>
+        </div>
+      )}
+
+      <div className="w-full max-w-[320px] flex gap-4 justify-center text-blue-200 text-xs">
+        <label className="flex items-center gap-2">
+          <span>צבע כותרת</span>
+          <input
+            type="color"
+            value={headlineColor}
+            onChange={(e) => setHeadlineColor(e.target.value)}
+            className="w-8 h-8 rounded border border-white/20 bg-transparent p-0"
+          />
+        </label>
+        <label className="flex items-center gap-2">
+          <span>צבע כותרת משנה</span>
+          <input
+            type="color"
+            value={subColor}
+            onChange={(e) => setSubColor(e.target.value)}
+            className="w-8 h-8 rounded border border-white/20 bg-transparent p-0"
+          />
+        </label>
+      </div>
+
       {step > TOTAL_STEPS && (
         <button
           onClick={handleDownload}
