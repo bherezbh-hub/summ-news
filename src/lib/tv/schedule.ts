@@ -16,7 +16,8 @@
 // previous video ends. Its length comes from `duration` when set, otherwise
 // from the player (reported once it loads, then cached in the browser).
 //
-// Reference pages that cannot be embedded (no player API / blocked in iframes):
+// Other recordings, not used (a different cut, or no player that can be synced):
+//   כאן 11  – https://www.facebook.com/100064467291406/videos/1053680356460383/
 //   כאן 11  – https://www.kan.org.il/content/kan/kan-actual/october7/769174/
 //   ערוץ 12 – https://www.mako.co.il/mako-vod-keshet/october_7
 
@@ -68,17 +69,16 @@ export const CHANNELS: Channel[] = [
     kind: "video",
     segments: [
       {
-        // Facebook upload of the full broadcast day, 06:29 until 00:00.
+        // Part 1 runs 10:30:55 from 06:29, until 16:59:55.
         start: "06:29",
-        end: "23:59:59",
+        duration: 10 * 3600 + 30 * 60 + 55,
         offset: 0,
-        sources: [
-          {
-            type: "facebook",
-            href: "https://www.facebook.com/100064467291406/videos/1053680356460383/",
-          },
-          { type: "youtube", id: "tvuVM2-g5GA" },
-        ],
+        sources: [{ type: "youtube", id: "0j3y7j-Jkgw" }],
+      },
+      {
+        // Part 2 runs 7:19:40, until 00:19:35.
+        duration: 7 * 3600 + 19 * 60 + 40,
+        sources: [{ type: "youtube", id: "8ETKqE81YlU" }],
       },
     ],
   },
