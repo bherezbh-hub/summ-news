@@ -12,6 +12,10 @@ import {
 import { loadCalibration } from "@/lib/tv/calibration";
 import { broadcastSecondsOfDay, formatClock } from "@/lib/tv/clock";
 import { ChannelTile } from "./ChannelTile";
+import { TimeControls } from "./TimeControls";
+
+// Temporary: shows a bar under the TV for moving the clock while checking the sync.
+const SHOW_TIME_CONTROLS = true;
 
 const DURATIONS_STORAGE_KEY = "tv-video-durations";
 
@@ -35,11 +39,13 @@ function tileStyle(index: number, focusedIndex: number | null): CSSProperties {
       zIndex: 1,
     };
   }
+  // One channel enlarged: the other three sit in a row above it, so they never
+  // cover it. Both keep the screen's 16:9 shape.
   if (index === focusedIndex) {
-    return { right: 0, top: 0, width: "100%", height: "100%", zIndex: 1 };
+    return { right: "12.5%", top: "24%", width: "75%", height: "75%", zIndex: 1 };
   }
   const slot = index < focusedIndex ? index : index - 1;
-  return { right: `${2 + slot * 20}%`, top: "76%", width: "18%", height: "18%", zIndex: 2 };
+  return { right: `${16.5 + slot * 23}%`, top: "1.5%", width: "21%", height: "21%", zIndex: 2 };
 }
 
 export function TvScreen() {
@@ -48,6 +54,8 @@ export function TvScreen() {
   // The one channel whose sound is on; the others keep playing muted.
   const [audio, setAudio] = useState<number | null>(null);
   const [soundOn, setSoundOn] = useState(true);
+  // Subtitles of the recordings; off by default so the split screen stays clean.
+  const [captions, setCaptions] = useState(false);
   const [nowSec, setNowSec] = useState<number | null>(null);
   const [previewTime, setPreviewTime] = useState<string | null>(null);
   // Video lengths reported by the players; they place the parts that follow.
@@ -56,6 +64,7 @@ export function TvScreen() {
   const [calibration, setCalibration] = useState<Calibration>({});
   const channels = useMemo(() => applyCalibration(CHANNELS, calibration), [calibration]);
   const offsetRef = useRef(0);
+  const [shifted, setShifted] = useState(false);
 
   const reportDuration = useCallback((key: string, seconds: number) => {
     setDurations((current) => {
@@ -70,6 +79,22 @@ export function TvScreen() {
 
   const getNow = useCallback(() => (broadcastSecondsOfDay() + offsetRef.current + 86400) % 86400, []);
 
+  const setClock = useCallback(
+    (secondsOfDay: number) => {
+      offsetRef.current = secondsOfDay - broadcastSecondsOfDay();
+      setShifted(true);
+      setNowSec(getNow());
+    },
+    [getNow],
+  );
+
+  const resetClock = useCallback(() => {
+    offsetRef.current = 0;
+    setShifted(false);
+    setPreviewTime(null);
+    setNowSec(getNow());
+  }, [getNow]);
+
   useEffect(() => {
     // ?time=HH:MM starts the clock at another time of day, for previewing.
     const requested = new URLSearchParams(window.location.search).get("time");
@@ -81,7 +106,10 @@ export function TvScreen() {
       setDurations(loadDurations());
       setCalibration(loadCalibration());
       tick();
-      if (requested) setPreviewTime(requested);
+      if (requested) {
+        setPreviewTime(requested);
+        setShifted(true);
+      }
     });
     const id = window.setInterval(tick, 500);
     return () => {
@@ -112,6 +140,7 @@ export function TvScreen() {
       if (e.key >= "1" && e.key <= String(CHANNELS.length)) pick(Number(e.key) - 1);
       else if (e.key === "Escape" || e.key === "0") setFocused(null);
       else if (e.key.toLowerCase() === "m") setSoundOn((s) => !s);
+      else if (e.key.toLowerCase() === "c") setCaptions((c) => !c);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -122,7 +151,10 @@ export function TvScreen() {
       dir="rtl"
       className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-[radial-gradient(ellipse_at_top,#2a2522,#0c0b0a_70%)] px-4 py-6 text-white"
     >
-      <div className="w-full" style={{ maxWidth: "min(100%, calc((100dvh - 230px) * 16 / 9))", minWidth: "min(100%, 320px)" }}>
+      <div className="w-full" style={{
+          maxWidth: `min(100%, calc((100dvh - ${SHOW_TIME_CONTROLS ? 380 : 230}px) * 16 / 9))`,
+          minWidth: "min(100%, 320px)",
+        }}>
         {/* TV set */}
         <div className="rounded-[22px] border border-neutral-700/60 bg-gradient-to-b from-neutral-800 to-neutral-950 p-2 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.08)] sm:rounded-[30px] sm:p-4">
           <div className="relative aspect-video overflow-hidden rounded-lg bg-black ring-1 ring-black sm:rounded-xl">
@@ -137,6 +169,7 @@ export function TvScreen() {
                   onDuration={reportDuration}
                   powered={powered}
                   muted={!soundOn || audio !== index}
+                  captions={captions}
                   focused={focused === index}
                   thumbnail={focused !== null && focused !== index}
                   style={tileStyle(index, focused)}
@@ -190,10 +223,15 @@ export function TvScreen() {
             {channel.number}
           </RemoteButton>
         ))}
+        <RemoteButton active={captions} onClick={() => setCaptions((c) => !c)} label={captions ? "הסתרת כתוביות" : "הצגת כתוביות"}>
+          כתוביות
+        </RemoteButton>
         <RemoteButton active={false} onClick={() => setSoundOn((s) => !s)} label={soundOn ? "השתקה" : "הפעלת שמע"}>
           {soundOn ? "🔊" : "🔇"}
         </RemoteButton>
       </nav>
+
+      {SHOW_TIME_CONTROLS && <TimeControls nowSec={nowSec} shifted={shifted} onSet={setClock} onReset={resetClock} />}
 
       <p className="text-center text-xs text-neutral-500">
         {focused === null

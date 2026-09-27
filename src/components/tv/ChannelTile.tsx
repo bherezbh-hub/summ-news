@@ -26,6 +26,7 @@ type TileProps = {
   onDuration: (key: string, seconds: number) => void;
   powered: boolean;
   muted: boolean;
+  captions: boolean;
   focused: boolean;
   thumbnail: boolean;
   style: CSSProperties;
@@ -43,6 +44,7 @@ export function ChannelTile({
   onDuration,
   powered,
   muted,
+  captions,
   focused,
   thumbnail,
   style,
@@ -67,6 +69,7 @@ export function ChannelTile({
             onDuration={onDuration}
             powered={powered}
             muted={muted}
+            captions={captions}
           />
         ) : (
           <SlideBody channel={channel} nowSec={nowSec} />
@@ -153,6 +156,7 @@ function VideoBody({
   onDuration,
   powered,
   muted,
+  captions,
 }: {
   channel: VideoChannel;
   nowSec: number | null;
@@ -161,6 +165,7 @@ function VideoBody({
   onDuration: (key: string, seconds: number) => void;
   powered: boolean;
   muted: boolean;
+  captions: boolean;
 }) {
   if (nowSec === null) return <Static label="" />;
   const schedule = resolveSchedule(channel, nowSec, durations);
@@ -184,6 +189,7 @@ function VideoBody({
       getNow={getNow}
       onDuration={onDuration}
       muted={muted}
+      captions={captions}
     />
   );
 }
@@ -196,6 +202,7 @@ function VideoFeed({
   getNow,
   onDuration,
   muted,
+  captions,
 }: {
   channel: VideoChannel;
   segmentIndex: number;
@@ -205,6 +212,7 @@ function VideoFeed({
   getNow: () => number;
   onDuration: (key: string, seconds: number) => void;
   muted: boolean;
+  captions: boolean;
 }) {
   const segment = channel.segments[segmentIndex];
   const mountRef = useRef<HTMLDivElement>(null);
@@ -273,6 +281,15 @@ function VideoFeed({
   useEffect(() => {
     if (ready) playerRef.current?.setMuted(muted || ended);
   }, [ready, muted, ended]);
+
+  // YouTube may bring the subtitles back once playback starts, so apply the
+  // choice again a little later.
+  useEffect(() => {
+    if (!ready) return;
+    playerRef.current?.setCaptions(captions);
+    const id = window.setTimeout(() => playerRef.current?.setCaptions(captions), 3000);
+    return () => window.clearTimeout(id);
+  }, [ready, captions]);
 
   if (!source) return <OffAir channel={channel} nowSec={nowSec} message="השידור אינו זמין כרגע" />;
 
