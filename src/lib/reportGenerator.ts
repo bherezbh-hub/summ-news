@@ -1,7 +1,7 @@
 import {
   Document, Packer, Paragraph, TextRun, AlignmentType,
   Table, TableRow, TableCell, WidthType, BorderStyle, ImageRun,
-  PageSize, convertMillimetersToTwip,
+  convertMillimetersToTwip,
 } from "docx";
 import ExcelJS from "exceljs";
 import type { NewsItem } from "@prisma/client";
@@ -133,7 +133,7 @@ export async function generateWordReport(items: NewsItem[]): Promise<Buffer> {
 
     children.push(new Table({
       width: { size: 10466, type: WidthType.DXA },
-      borders: { top: NO_BORDER, bottom: NO_BORDER, left: NO_BORDER, right: NO_BORDER, insideH: NO_BORDER, insideV: NO_BORDER },
+      borders: { top: NO_BORDER, bottom: NO_BORDER, left: NO_BORDER, right: NO_BORDER, insideHorizontal: NO_BORDER, insideVertical: NO_BORDER },
       rows: [
         makeTableRow(1, item.content),
         makeTableRow(2, `פעילויות ושירותים: ${activities}`),
