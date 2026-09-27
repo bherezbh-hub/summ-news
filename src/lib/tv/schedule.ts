@@ -69,6 +69,14 @@ export const CHANNELS: Channel[] = [
     kind: "video",
     segments: [
       {
+        // The night broadcast before the attack. The on-screen clock reads
+        // 00:00 at the start of the video; hands over to part 1 at 06:29.
+        start: "00:00",
+        end: "06:29",
+        offset: 0,
+        sources: [{ type: "youtube", id: "NHl3QpflwQY" }],
+      },
+      {
         // Part 1 runs 10:30:55 from 06:29, until 16:59:55.
         start: "06:29",
         duration: 10 * 3600 + 30 * 60 + 55,
@@ -108,6 +116,14 @@ export const CHANNELS: Channel[] = [
     accent: "#38bdf8",
     kind: "video",
     segments: [
+      {
+        // The night broadcast before the attack. The on-screen clock reads
+        // 00:00 at the start of the video; hands over to part 1 at 06:29.
+        start: "00:00",
+        end: "06:29",
+        offset: 0,
+        sources: [{ type: "youtube", id: "2OZP-wU-aW4" }],
+      },
       {
         // Part 1 runs 8:31:43 from 06:29, until 15:00:43.
         start: "06:29",
