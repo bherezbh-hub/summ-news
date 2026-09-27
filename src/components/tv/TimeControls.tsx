@@ -18,17 +18,25 @@ const STEPS = [
   { label: "+10 דק׳", delta: 600 },
 ];
 
+const NUDGES = [-5, -1, 1, 5];
+
 export function TimeControls({
   nowSec,
   shifted,
   onSet,
   onReset,
+  channels,
+  onNudge,
 }: {
   nowSec: number | null;
   /** Whether the clock differs from the real time. */
   shifted: boolean;
   onSet: (secondsOfDay: number) => void;
   onReset: () => void;
+  /** Video channels with their current fine-tuning, in seconds. */
+  channels: { number: string; name: string; shift: number }[];
+  /** Adds `delta` seconds to a channel's fine-tuning; null clears it. */
+  onNudge: (number: string, delta: number | null) => void;
 }) {
   const [typed, setTyped] = useState("");
   const value = nowSec === null ? 0 : Math.floor(nowSec);
@@ -113,6 +121,38 @@ export function TimeControls({
         >
           חזרה לשעה האמיתית
         </button>
+      </div>
+
+      <div className="flex flex-col gap-1.5 border-t border-amber-500/20 pt-2">
+        <span className="text-xs text-neutral-300">כיוון עדין לכל ערוץ: מינוס מחזיר את הערוץ אחורה, פלוס מקדם אותו.</span>
+        {channels.map((channel) => (
+          <div key={channel.number} className="flex flex-wrap items-center gap-1.5">
+            <span className="w-16 text-xs font-semibold text-white">{channel.name}</span>
+            <span dir="ltr" className="w-14 text-center font-mono text-xs tabular-nums text-amber-200">
+              {channel.shift > 0 ? "+" : ""}
+              {channel.shift} s
+            </span>
+            <div dir="ltr" className="flex gap-1">
+              {NUDGES.map((delta) => (
+                <button
+                  key={delta}
+                  type="button"
+                  onClick={() => onNudge(channel.number, delta)}
+                  className="rounded border border-neutral-600 bg-neutral-900 px-2 py-0.5 font-mono text-xs text-white hover:border-neutral-400"
+                >
+                  {delta > 0 ? `+${delta}` : delta}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => onNudge(channel.number, null)}
+              className="rounded px-1.5 py-0.5 text-xs text-neutral-400 hover:text-white"
+            >
+              איפוס
+            </button>
+          </div>
+        ))}
       </div>
     </section>
   );
