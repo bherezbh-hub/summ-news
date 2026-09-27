@@ -39,11 +39,13 @@ function tileStyle(index: number, focusedIndex: number | null): CSSProperties {
       zIndex: 1,
     };
   }
+  // One channel enlarged: the other three sit in a row above it, so they never
+  // cover it. Both keep the screen's 16:9 shape.
   if (index === focusedIndex) {
-    return { right: 0, top: 0, width: "100%", height: "100%", zIndex: 1 };
+    return { right: "12.5%", top: "24%", width: "75%", height: "75%", zIndex: 1 };
   }
   const slot = index < focusedIndex ? index : index - 1;
-  return { right: `${2 + slot * 20}%`, top: "76%", width: "18%", height: "18%", zIndex: 2 };
+  return { right: `${16.5 + slot * 23}%`, top: "1.5%", width: "21%", height: "21%", zIndex: 2 };
 }
 
 export function TvScreen() {
@@ -52,6 +54,8 @@ export function TvScreen() {
   // The one channel whose sound is on; the others keep playing muted.
   const [audio, setAudio] = useState<number | null>(null);
   const [soundOn, setSoundOn] = useState(true);
+  // Subtitles of the recordings; off by default so the split screen stays clean.
+  const [captions, setCaptions] = useState(false);
   const [nowSec, setNowSec] = useState<number | null>(null);
   const [previewTime, setPreviewTime] = useState<string | null>(null);
   // Video lengths reported by the players; they place the parts that follow.
@@ -136,6 +140,7 @@ export function TvScreen() {
       if (e.key >= "1" && e.key <= String(CHANNELS.length)) pick(Number(e.key) - 1);
       else if (e.key === "Escape" || e.key === "0") setFocused(null);
       else if (e.key.toLowerCase() === "m") setSoundOn((s) => !s);
+      else if (e.key.toLowerCase() === "c") setCaptions((c) => !c);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -164,6 +169,7 @@ export function TvScreen() {
                   onDuration={reportDuration}
                   powered={powered}
                   muted={!soundOn || audio !== index}
+                  captions={captions}
                   focused={focused === index}
                   thumbnail={focused !== null && focused !== index}
                   style={tileStyle(index, focused)}
@@ -217,6 +223,9 @@ export function TvScreen() {
             {channel.number}
           </RemoteButton>
         ))}
+        <RemoteButton active={captions} onClick={() => setCaptions((c) => !c)} label={captions ? "הסתרת כתוביות" : "הצגת כתוביות"}>
+          כתוביות
+        </RemoteButton>
         <RemoteButton active={false} onClick={() => setSoundOn((s) => !s)} label={soundOn ? "השתקה" : "הפעלת שמע"}>
           {soundOn ? "🔊" : "🔇"}
         </RemoteButton>

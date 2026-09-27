@@ -10,6 +10,8 @@ export interface SyncPlayer {
   seek(seconds: number): void;
   play(): void;
   setMuted(muted: boolean): void;
+  /** Shows or hides the video's own subtitles, where the player has them. */
+  setCaptions(on: boolean): void;
   destroy(): void;
 }
 
@@ -111,6 +113,13 @@ function createYouTubePlayer(id: string, mount: HTMLElement, startAt: number, ev
     isPlaying: () => ready && player.getPlayerState() === 1,
     seek: (s) => ready && player.seekTo(s, true),
     play: () => ready && player.playVideo(),
+    setCaptions: (on) => {
+      if (!ready) return;
+      try {
+        if (on) player.loadModule("captions");
+        else player.unloadModule("captions");
+      } catch {}
+    },
     setMuted: (muted) => {
       if (!ready) return;
       if (muted) player.mute();
@@ -179,6 +188,8 @@ function createFacebookPlayer(href: string, mount: HTMLElement, events: PlayerEv
     isPlaying: () => playing,
     seek: (s) => instance?.seek(s),
     play: () => instance?.play(),
+    // The Facebook player has no subtitle control.
+    setCaptions: () => {},
     setMuted: (muted) => {
       if (!instance) return;
       if (muted) instance.mute();
