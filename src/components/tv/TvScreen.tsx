@@ -27,6 +27,8 @@ function tileStyle(index: number, focusedIndex: number | null): CSSProperties {
 export function TvScreen() {
   const [powered, setPowered] = useState(false);
   const [focused, setFocused] = useState<number | null>(null);
+  // The one channel whose sound is on; the others keep playing muted.
+  const [audio, setAudio] = useState<number | null>(null);
   const [soundOn, setSoundOn] = useState(true);
   const [nowSec, setNowSec] = useState<number | null>(null);
   const [previewTime, setPreviewTime] = useState<string | null>(null);
@@ -52,23 +54,32 @@ export function TvScreen() {
     };
   }, [getNow]);
 
-  const select = useCallback(
+  const enlarge = useCallback((index: number) => {
+    setPowered(true);
+    setFocused(index);
+    setAudio(index);
+  }, []);
+
+  // In split view a click switches the sound to that channel (or mutes it
+  // again); on a thumbnail it switches the enlarged channel.
+  const pick = useCallback(
     (index: number) => {
       setPowered(true);
-      setFocused(index);
+      if (focused === null) setAudio((current) => (current === index ? null : index));
+      else enlarge(index);
     },
-    [],
+    [focused, enlarge],
   );
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key >= "1" && e.key <= String(CHANNELS.length)) select(Number(e.key) - 1);
+      if (e.key >= "1" && e.key <= String(CHANNELS.length)) pick(Number(e.key) - 1);
       else if (e.key === "Escape" || e.key === "0") setFocused(null);
       else if (e.key.toLowerCase() === "m") setSoundOn((s) => !s);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [select]);
+  }, [pick]);
 
   return (
     <main
@@ -87,11 +98,12 @@ export function TvScreen() {
                   nowSec={nowSec}
                   getNow={getNow}
                   powered={powered}
-                  muted={!soundOn || focused !== index}
+                  muted={!soundOn || audio !== index}
                   focused={focused === index}
                   thumbnail={focused !== null && focused !== index}
                   style={tileStyle(index, focused)}
-                  onSelect={() => select(index)}
+                  onSelect={() => pick(index)}
+                  onEnlarge={() => enlarge(index)}
                 />
               ))}
             </div>
@@ -136,7 +148,7 @@ export function TvScreen() {
           מסך מפוצל
         </RemoteButton>
         {CHANNELS.map((channel, index) => (
-          <RemoteButton key={channel.number} active={focused === index} onClick={() => select(index)} accent={channel.accent}>
+          <RemoteButton key={channel.number} active={focused === index} onClick={() => enlarge(index)} accent={channel.accent}>
             {channel.number}
           </RemoteButton>
         ))}
@@ -146,7 +158,9 @@ export function TvScreen() {
       </nav>
 
       <p className="text-center text-xs text-neutral-500">
-        {focused === null ? "לחצו על ערוץ כדי להגדיל ולשמוע אותו" : "מקשים 1–4 להחלפת ערוץ · Esc למסך מפוצל"}
+        {focused === null
+          ? "לחצו על ערוץ כדי לשמוע אותו · ⛶ להגדלה · מקשים 1–4"
+          : "מקשים 1–4 להחלפת ערוץ · Esc למסך מפוצל"}
         {previewTime && <span className="mr-2 text-amber-400">· תצוגה מקדימה משעה {previewTime}</span>}
       </p>
     </main>

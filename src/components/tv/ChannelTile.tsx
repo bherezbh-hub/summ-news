@@ -25,7 +25,10 @@ type TileProps = {
   focused: boolean;
   thumbnail: boolean;
   style: CSSProperties;
+  /** Click on the picture: turns this channel's sound on (split view) or switches to it (thumbnail). */
   onSelect: () => void;
+  /** Shown in split view only. */
+  onEnlarge?: () => void;
 };
 
 export function ChannelTile({
@@ -38,7 +41,10 @@ export function ChannelTile({
   thumbnail,
   style,
   onSelect,
+  onEnlarge,
 }: TileProps) {
+  const split = !focused && !thumbnail;
+  const audible = !muted && channel.kind === "video";
   return (
     <div className="tv-tile absolute p-[1px]" style={style}>
       <div
@@ -56,17 +62,31 @@ export function ChannelTile({
         <button
           type="button"
           onClick={onSelect}
-          aria-label={`${channel.name}${focused ? "" : " – הגדלה ושמע"}`}
+          aria-label={split ? `${channel.name} – ${audible ? "השתקה" : "שמיעה"}` : channel.name}
+          aria-pressed={split ? audible : undefined}
           className={`group absolute inset-0 z-10 ${focused ? "cursor-default" : "cursor-pointer"}`}
         >
-          {!focused && !thumbnail && (
+          {split && (
             <span className="pointer-events-none absolute inset-x-0 bottom-3 mx-auto w-fit rounded-full bg-black/70 px-3 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-              לחצו להגדלה ושמע
+              {channel.kind === "slide" ? "ערוץ ללא שמע" : audible ? "לחצו להשתקה" : "לחצו לשמיעה"}
             </span>
           )}
         </button>
 
-        <ChannelBug channel={channel} large={focused} audible={!muted && channel.kind === "video"} small={thumbnail} />
+        {split && audible && <div className="pointer-events-none absolute inset-0 z-10 ring-4 ring-inset" style={{ ["--tw-ring-color" as string]: channel.accent }} />}
+
+        {split && onEnlarge && (
+          <button
+            type="button"
+            onClick={onEnlarge}
+            aria-label={`הגדלת ${channel.name}`}
+            className="absolute bottom-2 left-2 z-20 rounded bg-black/70 px-2 py-1 text-xs text-white transition hover:bg-black/90 sm:bottom-3 sm:left-3 sm:text-sm"
+          >
+            ⛶ הגדלה
+          </button>
+        )}
+
+        <ChannelBug channel={channel} large={focused} audible={audible} small={thumbnail} />
       </div>
     </div>
   );
