@@ -1,9 +1,19 @@
 "use client";
 
 import { CSSProperties, useCallback, useEffect, useRef, useState } from "react";
-import { BROADCAST_DATE_LABEL, CHANNELS, parseClock } from "@/lib/tv/schedule";
+import { BROADCAST_DATE_LABEL, CHANNELS, Durations, parseClock } from "@/lib/tv/schedule";
 import { broadcastSecondsOfDay, formatClock } from "@/lib/tv/clock";
 import { ChannelTile } from "./ChannelTile";
+
+const DURATIONS_STORAGE_KEY = "tv-video-durations";
+
+function loadDurations(): Durations {
+  try {
+    return JSON.parse(window.localStorage.getItem(DURATIONS_STORAGE_KEY) ?? "{}");
+  } catch {
+    return {};
+  }
+}
 
 // Tiles are only ever repositioned, never re-mounted, so the embedded players
 // keep playing while switching between split view and a single channel.
@@ -32,7 +42,20 @@ export function TvScreen() {
   const [soundOn, setSoundOn] = useState(true);
   const [nowSec, setNowSec] = useState<number | null>(null);
   const [previewTime, setPreviewTime] = useState<string | null>(null);
+  // Video lengths reported by the players; they place the parts that follow.
+  const [durations, setDurations] = useState<Durations>({});
   const offsetRef = useRef(0);
+
+  const reportDuration = useCallback((key: string, seconds: number) => {
+    setDurations((current) => {
+      if (Math.abs((current[key] ?? 0) - seconds) < 1) return current;
+      const next = { ...current, [key]: seconds };
+      try {
+        window.localStorage.setItem(DURATIONS_STORAGE_KEY, JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  }, []);
 
   const getNow = useCallback(() => (broadcastSecondsOfDay() + offsetRef.current + 86400) % 86400, []);
 
@@ -44,6 +67,7 @@ export function TvScreen() {
     }
     const tick = () => setNowSec(getNow());
     const frame = requestAnimationFrame(() => {
+      setDurations(loadDurations());
       tick();
       if (requested) setPreviewTime(requested);
     });
@@ -97,6 +121,8 @@ export function TvScreen() {
                   channel={channel}
                   nowSec={nowSec}
                   getNow={getNow}
+                  durations={durations}
+                  onDuration={reportDuration}
                   powered={powered}
                   muted={!soundOn || audio !== index}
                   focused={focused === index}

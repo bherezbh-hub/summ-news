@@ -12,6 +12,10 @@
 // Each segment can list several sources: if the first cannot be embedded or
 // fails to load, the next one is used.
 //
+// A segment without `start` follows the previous one: it begins the moment the
+// previous video ends. Its length comes from `duration` when set, otherwise
+// from the player (reported once it loads, then cached in the browser).
+//
 // Reference pages that cannot be embedded (no player API / blocked in iframes):
 //   כאן 11  – https://www.kan.org.il/content/kan/kan-actual/october7/769174/
 //   ערוץ 12 – https://www.mako.co.il/mako-vod-keshet/october_7
@@ -25,10 +29,12 @@ export type Source =
   | { type: "facebook"; href: string };
 
 export type Segment = {
-  /** Clock time (Israel) when this segment begins, "HH:MM" or "HH:MM:SS". */
-  start: string;
-  /** Clock time (Israel) when this segment ends. */
-  end: string;
+  /** Clock time (Israel) when this segment begins, "HH:MM" or "HH:MM:SS". Omit to follow the previous segment. */
+  start?: string;
+  /** Clock time (Israel) when this segment ends. Omit to run until the video ends. */
+  end?: string;
+  /** Length of the video in seconds, when known. */
+  duration?: number;
   /** Seconds into the video that correspond to `start`. Defaults to 0. */
   offset?: number;
   sources: Source[];
@@ -83,12 +89,12 @@ export const CHANNELS: Channel[] = [
     kind: "video",
     segments: [
       {
-        // "יום 1 חלק א" – add the next parts as further segments.
+        // Part 1 starts exactly at 06:29.
         start: "06:29",
-        end: "23:59:59",
         offset: 0,
         sources: [{ type: "youtube", id: "WvvsUzeA_CE" }],
       },
+      { sources: [{ type: "youtube", id: "a_7bknTP8Rs" }] },
     ],
   },
   {
@@ -98,12 +104,11 @@ export const CHANNELS: Channel[] = [
     kind: "video",
     segments: [
       {
-        // "יום 1 חלק א" – add the next parts as further segments.
         start: "06:29",
-        end: "23:59:59",
         offset: 0,
         sources: [{ type: "youtube", id: "agry5NpSGAE" }],
       },
+      { sources: [{ type: "youtube", id: "DN915_qbKA4" }] },
     ],
   },
   {
@@ -122,25 +127,40 @@ export function parseClock(value: string): number {
   return h * 3600 + m * 60 + s;
 }
 
+/** Key under which a segment's video length is reported and cached. */
+export function segmentKey(segment: Segment): string {
+  const source = segment.sources[0];
+  return source.type === "youtube" ? `yt:${source.id}` : `fb:${source.href}`;
+}
+
+export type Durations = Record<string, number>;
+
 export type ScheduleState =
   | { status: "before"; startsAt: string }
   | { status: "after" }
-  | { status: "on"; segmentIndex: number; videoTime: number };
+  | { status: "on"; segmentIndex: number; startSec: number; videoTime: number };
 
 /** Where a video channel should be at `nowSec` (seconds since midnight). */
-export function resolveSchedule(channel: VideoChannel, nowSec: number): ScheduleState {
+export function resolveSchedule(channel: VideoChannel, nowSec: number, durations: Durations = {}): ScheduleState {
+  let cursor: number | null = null;
   for (let i = 0; i < channel.segments.length; i++) {
     const seg = channel.segments[i];
-    const start = parseClock(seg.start);
-    const end = parseClock(seg.end);
-    if (nowSec >= start && nowSec < end) {
-      return { status: "on", segmentIndex: i, videoTime: nowSec - start + (seg.offset ?? 0) };
+    const offset = seg.offset ?? 0;
+    const start: number | null = seg.start !== undefined ? parseClock(seg.start) : cursor;
+    // The previous segment's length is still unknown: its player will report it.
+    if (start === null) break;
+    if (nowSec < start) return { status: "before", startsAt: formatStart(start) };
+    const duration = seg.duration ?? durations[segmentKey(seg)];
+    const end: number | null = seg.end !== undefined ? parseClock(seg.end) : duration !== undefined ? start + duration - offset : null;
+    if (end === null || nowSec < end) {
+      return { status: "on", segmentIndex: i, startSec: start, videoTime: nowSec - start + offset };
     }
+    cursor = end;
   }
-  const first = channel.segments[0];
-  if (first && nowSec < parseClock(first.start)) {
-    return { status: "before", startsAt: first.start };
-  }
-  const upcoming = channel.segments.find((s) => nowSec < parseClock(s.start));
-  return upcoming ? { status: "before", startsAt: upcoming.start } : { status: "after" };
+  return { status: "after" };
+}
+
+function formatStart(sec: number): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(Math.floor(sec / 3600))}:${pad(Math.floor((sec % 3600) / 60))}`;
 }

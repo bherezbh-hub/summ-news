@@ -4,10 +4,12 @@ import { CSSProperties, useEffect, useRef, useState } from "react";
 import {
   BROADCAST_DATE_SHORT,
   Channel,
+  Durations,
   SlideChannel,
   VideoChannel,
   parseClock,
   resolveSchedule,
+  segmentKey,
 } from "@/lib/tv/schedule";
 import { formatClock } from "@/lib/tv/clock";
 import { SyncPlayer, createPlayer } from "@/lib/tv/players";
@@ -20,6 +22,8 @@ type TileProps = {
   channel: Channel;
   nowSec: number | null;
   getNow: () => number;
+  durations: Durations;
+  onDuration: (key: string, seconds: number) => void;
   powered: boolean;
   muted: boolean;
   focused: boolean;
@@ -35,6 +39,8 @@ export function ChannelTile({
   channel,
   nowSec,
   getNow,
+  durations,
+  onDuration,
   powered,
   muted,
   focused,
@@ -53,7 +59,15 @@ export function ChannelTile({
         }`}
       >
         {channel.kind === "video" ? (
-          <VideoBody channel={channel} nowSec={nowSec} getNow={getNow} powered={powered} muted={muted} />
+          <VideoBody
+            channel={channel}
+            nowSec={nowSec}
+            getNow={getNow}
+            durations={durations}
+            onDuration={onDuration}
+            powered={powered}
+            muted={muted}
+          />
         ) : (
           <SlideBody channel={channel} nowSec={nowSec} />
         )}
@@ -135,17 +149,21 @@ function VideoBody({
   channel,
   nowSec,
   getNow,
+  durations,
+  onDuration,
   powered,
   muted,
 }: {
   channel: VideoChannel;
   nowSec: number | null;
   getNow: () => number;
+  durations: Durations;
+  onDuration: (key: string, seconds: number) => void;
   powered: boolean;
   muted: boolean;
 }) {
   if (nowSec === null) return <Static label="" />;
-  const schedule = resolveSchedule(channel, nowSec);
+  const schedule = resolveSchedule(channel, nowSec, durations);
   if (schedule.status !== "on") {
     return (
       <OffAir
@@ -161,8 +179,10 @@ function VideoBody({
       key={schedule.segmentIndex}
       channel={channel}
       segmentIndex={schedule.segmentIndex}
+      startSec={schedule.startSec}
       nowSec={nowSec}
       getNow={getNow}
+      onDuration={onDuration}
       muted={muted}
     />
   );
@@ -171,14 +191,19 @@ function VideoBody({
 function VideoFeed({
   channel,
   segmentIndex,
+  startSec,
   nowSec,
   getNow,
+  onDuration,
   muted,
 }: {
   channel: VideoChannel;
   segmentIndex: number;
+  /** Clock time (seconds since midnight) at which this segment's `offset` plays. */
+  startSec: number;
   nowSec: number;
   getNow: () => number;
+  onDuration: (key: string, seconds: number) => void;
   muted: boolean;
 }) {
   const segment = channel.segments[segmentIndex];
@@ -190,11 +215,18 @@ function VideoFeed({
   const source = segment.sources[sourceIndex];
   const ready = readySource === sourceIndex;
 
-  const videoTimeNow = () => getNow() - parseClock(segment.start) + (segment.offset ?? 0);
+  const videoTimeNow = () => getNow() - startSec + (segment.offset ?? 0);
+
+  // Only the primary source's length decides when the next part starts.
+  const reportDuration = (seconds: number) => {
+    if (sourceIndex === 0 && segment.duration === undefined) onDuration(segmentKey(segment), seconds);
+  };
 
   const videoTimeRef = useRef(videoTimeNow);
+  const reportDurationRef = useRef(reportDuration);
   useEffect(() => {
     videoTimeRef.current = videoTimeNow;
+    reportDurationRef.current = reportDuration;
   });
 
   useEffect(() => {
@@ -222,6 +254,7 @@ function VideoFeed({
       if (!player) return;
       const target = videoTimeRef.current();
       const duration = player.duration();
+      if (duration !== null) reportDurationRef.current(duration);
       const pastEnd = duration !== null && target >= duration - 1;
       setEnded(pastEnd);
       if (pastEnd) return;
