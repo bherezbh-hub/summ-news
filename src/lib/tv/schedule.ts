@@ -89,12 +89,17 @@ export const CHANNELS: Channel[] = [
     kind: "video",
     segments: [
       {
-        // Part 1 starts exactly at 06:29.
+        // Part 1 starts exactly at 06:29 and runs 8:30:55, until 14:59:55.
         start: "06:29",
+        duration: 8 * 3600 + 30 * 60 + 55,
         offset: 0,
         sources: [{ type: "youtube", id: "WvvsUzeA_CE" }],
       },
-      { sources: [{ type: "youtube", id: "a_7bknTP8Rs" }] },
+      {
+        // Part 2 runs 9:01:25, until 00:01:20.
+        duration: 9 * 3600 + 1 * 60 + 25,
+        sources: [{ type: "youtube", id: "a_7bknTP8Rs" }],
+      },
     ],
   },
   {
@@ -140,8 +145,22 @@ export type ScheduleState =
   | { status: "after" }
   | { status: "on"; segmentIndex: number; startSec: number; videoTime: number };
 
-/** Where a video channel should be at `nowSec` (seconds since midnight). */
+const DAY = 24 * 3600;
+
+/**
+ * Where a video channel should be at `nowSec` (seconds since midnight). A
+ * broadcast that runs past midnight carries on into the small hours.
+ */
 export function resolveSchedule(channel: VideoChannel, nowSec: number, durations: Durations = {}): ScheduleState {
+  const state = resolveDay(channel, nowSec, durations);
+  if (state.status === "before") {
+    const overnight = resolveDay(channel, nowSec + DAY, durations);
+    if (overnight.status === "on") return overnight;
+  }
+  return state;
+}
+
+function resolveDay(channel: VideoChannel, nowSec: number, durations: Durations): ScheduleState {
   let cursor: number | null = null;
   for (let i = 0; i < channel.segments.length; i++) {
     const seg = channel.segments[i];
