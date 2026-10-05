@@ -71,3 +71,16 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .tv-tile, .tv-power-on, .tv-static { transition: none; animation: none; }
 }
+
+.tv-timeline-enter {
+  animation: tv-timeline-enter 0.5s ease-out;
+}
+
+@keyframes tv-timeline-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tv-timeline-enter { animation: none; }
+}
