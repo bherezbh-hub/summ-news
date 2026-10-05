@@ -4,8 +4,8 @@ import { useState } from "react";
 import { parseClock } from "@/lib/tv/schedule";
 import { formatClock } from "@/lib/tv/clock";
 
-// Temporary: a bar for moving the broadcast clock while checking the sync.
-// Turn it off in TvScreen (SHOW_TIME_CONTROLS) once the schedule is calibrated.
+// A bar for moving the broadcast clock and fine-tuning channels while checking the sync.
+// Shown only on /tv/timestamp (TvScreen's `timeControls`), never on the public /tv.
 
 const DAY = 24 * 3600;
 const MARKS = ["00:00", "06:29", "12:00", "18:00", "23:59"];
