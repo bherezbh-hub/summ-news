@@ -378,6 +378,18 @@ export function TvScreen() {
           </a>
         )}
       </p>
+
+      <footer className="text-center text-xs text-neutral-400">
+        הסרטונים הובאו מערוץ היוטיוב{" "}
+        <a
+          href="https://www.youtube.com/@OldNewsIsrael"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-neutral-200 underline underline-offset-2 hover:text-white"
+        >
+          ״החדשות הישנות״
+        </a>
+      </footer>
     </main>
   );
 }
