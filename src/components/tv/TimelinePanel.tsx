@@ -1,10 +1,11 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { Person, entryLabel } from "@/lib/tv/timeline";
 import { parseClock } from "@/lib/tv/schedule";
 
-// A side panel beside the TV: the entry for the current moment, with the
-// earlier ones of the day below it. Later entries stay hidden until their time.
+// A side panel beside the TV with the person's whole day. The entry for the
+// current moment is highlighted and kept in view; the others stay readable.
 export function TimelinePanel({
   person,
   nowSec,
@@ -14,22 +15,34 @@ export function TimelinePanel({
   nowSec: number | null;
   className?: string;
 }) {
-  const past = nowSec === null ? [] : person.entries.filter((e) => parseClock(e.from) <= nowSec);
-  const current = past.at(-1);
-  const earlier = past.slice(0, -1).reverse();
+  const currentIndex =
+    nowSec === null ? -1 : person.entries.findLastIndex((e) => parseClock(e.from) <= nowSec);
+  const current = currentIndex >= 0 ? person.entries[currentIndex] : undefined;
   // A range is "now" until it ends; a single time for the first 45 minutes.
-  const ended =
+  const live =
     current !== undefined &&
     nowSec !== null &&
     (current.to !== undefined
-      ? nowSec >= parseClock(current.to)
-      : !current.onward && nowSec - parseClock(current.from) > 45 * 60);
+      ? nowSec < parseClock(current.to)
+      : current.onward || nowSec - parseClock(current.from) <= 45 * 60);
+
+  // Scroll the list (not the page) so the current entry is visible.
+  const listRef = useRef<HTMLOListElement>(null);
+  useEffect(() => {
+    const list = listRef.current;
+    const item = list?.querySelector<HTMLElement>("[data-current]");
+    if (!list || !item) return;
+    // The list is the item's offset parent (it is position: relative).
+    const top = item.offsetTop;
+    if (top < list.scrollTop || top + item.offsetHeight > list.scrollTop + list.clientHeight) {
+      list.scrollTo({ top: Math.max(0, top - 12), behavior: "smooth" });
+    }
+  }, [currentIndex]);
 
   return (
     <aside
       aria-label={person.title}
-      aria-live="polite"
-      className={`flex w-full flex-col gap-3 overflow-hidden rounded-2xl border border-neutral-700/60 bg-neutral-900/80 p-4 pt-0 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] lg:max-h-[min(78dvh,680px)] lg:w-64 lg:shrink-0 xl:w-72 ${className}`}
+      className={`flex w-full flex-col gap-3 overflow-hidden rounded-2xl border border-neutral-700/60 bg-neutral-900/80 p-4 pt-0 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] max-h-[75dvh] lg:max-h-[min(78dvh,680px)] lg:w-64 lg:shrink-0 xl:w-72 ${className}`}
     >
       {/* Portrait with the panel title over its lower edge. */}
       <div className="relative -mx-4 h-36 shrink-0 sm:h-44 lg:h-40 xl:h-44">
@@ -39,35 +52,45 @@ export function TimelinePanel({
         <h2 className="absolute inset-x-4 bottom-2 text-base font-bold leading-snug text-balance drop-shadow">{person.title}</h2>
       </div>
 
-      {current ? (
-        <div key={current.from} className="tv-timeline-enter flex flex-col gap-1.5 rounded-xl bg-neutral-800/80 p-3">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-sm font-semibold tabular-nums text-amber-300">{entryLabel(current)}</span>
-            {!ended && (
-              <span className="flex items-center gap-1 rounded-full bg-red-600/90 px-2 py-0.5 text-[11px] font-bold">
-                <span className="h-1.5 w-1.5 rounded-full bg-white" aria-hidden />
-                עכשיו
-              </span>
-            )}
-          </div>
-          <p className="text-sm leading-relaxed text-neutral-100">{current.text}</p>
-        </div>
-      ) : (
-        <p className="rounded-xl bg-neutral-800/60 p-3 text-sm text-neutral-400">
-          {nowSec === null ? "…" : `עדיין אין עדכון. העדכון הראשון בשעה ${person.entries[0].from}.`}
-        </p>
-      )}
-
-      {earlier.length > 0 && (
-        <ol className="flex min-h-0 flex-col gap-2 overflow-y-auto border-t border-neutral-800 pt-3">
-          {earlier.map((entry) => (
-            <li key={entry.from} className="flex flex-col gap-0.5 text-xs leading-relaxed text-neutral-400">
-              <span className="font-mono tabular-nums text-neutral-500">{entryLabel(entry)}</span>
-              <span>{entry.text}</span>
+      <ol ref={listRef} className="relative flex min-h-0 flex-col gap-1 overflow-y-auto">
+        {person.entries.map((entry, index) => {
+          const isCurrent = index === currentIndex;
+          const isPast = index < currentIndex;
+          return (
+            <li
+              key={entry.from}
+              data-current={isCurrent || undefined}
+              aria-current={isCurrent ? "time" : undefined}
+              className={`flex flex-col gap-1 rounded-xl px-3 py-2 transition-colors duration-500 ${
+                isCurrent ? "bg-neutral-800 ring-1 ring-amber-400/50" : ""
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <span
+                  className={`font-mono text-xs font-semibold tabular-nums ${
+                    isCurrent ? "text-amber-300" : isPast ? "text-neutral-400" : "text-neutral-500"
+                  }`}
+                >
+                  {entryLabel(entry)}
+                </span>
+                {isCurrent && live && (
+                  <span className="flex items-center gap-1 rounded-full bg-red-600/90 px-2 py-0.5 text-[11px] font-bold">
+                    <span className="h-1.5 w-1.5 rounded-full bg-white" aria-hidden />
+                    עכשיו
+                  </span>
+                )}
+              </div>
+              <p
+                className={`leading-relaxed ${
+                  isCurrent ? "text-sm text-white" : isPast ? "text-xs text-neutral-300" : "text-xs text-neutral-500"
+                }`}
+              >
+                {entry.text}
+              </p>
             </li>
-          ))}
-        </ol>
-      )}
+          );
+        })}
+      </ol>
     </aside>
   );
 }

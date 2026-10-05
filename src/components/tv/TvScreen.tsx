@@ -235,15 +235,27 @@ export function TvScreen() {
       dir="rtl"
       className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-[radial-gradient(ellipse_at_top,#2a2522,#0c0b0a_70%)] px-4 py-6 text-white"
     >
-      {/* Page clock: the same broadcast clock the channels and panels follow. */}
-      <header className="flex flex-col items-center gap-0.5 text-center">
-        <time
-          aria-label="השעה בשידור"
-          className="font-mono text-4xl font-bold tabular-nums tracking-wider text-white drop-shadow sm:text-5xl"
-        >
-          {nowSec === null ? "--:--:--" : formatClock(nowSec)}
-        </time>
-        <span className="text-sm text-neutral-400">{BROADCAST_DATE_LABEL}</span>
+      {/* Header: party logo, the broadcast clock (the one the channels and panels follow), ballot slip. */}
+      <header className="grid w-full max-w-[1600px] grid-cols-[1fr_auto_1fr] items-center gap-3">
+        <div className="justify-self-start rounded-xl bg-white px-2 py-1.5 shadow-lg shadow-black/40 sm:px-3 sm:py-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/tv/democrats-logo.png" alt="הדמוקרטים בראשות יאיר גולן" className="h-10 w-auto sm:h-14 lg:h-16" />
+        </div>
+        <div className="flex flex-col items-center gap-0.5 text-center">
+          <time
+            aria-label="השעה בשידור"
+            className="font-mono text-4xl font-bold tabular-nums tracking-wider text-white drop-shadow sm:text-5xl"
+          >
+            {nowSec === null ? "--:--:--" : formatClock(nowSec)}
+          </time>
+          <span className="text-sm text-neutral-400">{BROADCAST_DATE_LABEL}</span>
+        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/tv/ballot.png"
+          alt="פתק אמת – הדמוקרטים בראשות יאיר גולן"
+          className="hidden h-24 w-auto -rotate-6 justify-self-end drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] sm:block lg:h-28"
+        />
       </header>
 
       {/* Golan beside the TV on the right, Netanyahu on the left; below it on narrow screens. */}
@@ -252,7 +264,7 @@ export function TvScreen() {
       <div
         className="order-1 w-full lg:order-none lg:min-w-0 lg:flex-1"
         style={{
-          maxWidth: `min(100%, calc((100dvh - ${SHOW_TIME_CONTROLS ? 460 : 310}px) * 16 / 9))`,
+          maxWidth: `min(100%, calc((100dvh - ${SHOW_TIME_CONTROLS ? 490 : 340}px) * 16 / 9))`,
           minWidth: "min(100%, 320px)",
         }}
       >
