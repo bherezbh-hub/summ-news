@@ -16,9 +16,6 @@ import { TimeControls } from "./TimeControls";
 import { TimelinePanel } from "./TimelinePanel";
 import { PEOPLE } from "@/lib/tv/timeline";
 
-// Temporary: shows a bar under the TV for moving the clock while checking the sync.
-const SHOW_TIME_CONTROLS = true;
-
 const DURATIONS_STORAGE_KEY = "tv-video-durations";
 // Per-channel fine-tuning set from the time bar, in seconds, kept in this browser.
 const SHIFTS_STORAGE_KEY = "tv-channel-shifts";
@@ -61,7 +58,12 @@ function tileStyle(index: number, focusedIndex: number | null): CSSProperties {
   return { right: `${16.5 + slot * 23}%`, top: "1.5%", width: "21%", height: "21%", zIndex: 2 };
 }
 
-export function TvScreen() {
+/**
+ * `timeControls` adds the bar for moving the clock and fine-tuning channels,
+ * and lets ?time=HH:MM set the starting time. Only /tv/timestamp turns it on;
+ * the public /tv always plays at the real time.
+ */
+export function TvScreen({ timeControls = false }: { timeControls?: boolean }) {
   const [powered, setPowered] = useState(false);
   const [focused, setFocused] = useState<number | null>(null);
   // The one channel whose sound is on; the others keep playing muted.
@@ -142,7 +144,7 @@ export function TvScreen() {
 
   useEffect(() => {
     // ?time=HH:MM starts the clock at another time of day, for previewing.
-    const requested = new URLSearchParams(window.location.search).get("time");
+    const requested = timeControls ? new URLSearchParams(window.location.search).get("time") : null;
     if (requested && /^\d{1,2}:\d{2}(:\d{2})?$/.test(requested)) {
       offsetRef.current = parseClock(requested) - broadcastSecondsOfDay();
     }
@@ -162,7 +164,7 @@ export function TvScreen() {
       cancelAnimationFrame(frame);
       window.clearInterval(id);
     };
-  }, [getNow]);
+  }, [getNow, timeControls]);
 
   const enlarge = useCallback((index: number) => {
     setPowered(true);
@@ -265,7 +267,7 @@ export function TvScreen() {
       <div
         className="order-1 col-span-2 w-full justify-self-center lg:order-none lg:min-w-0 lg:flex-1"
         style={{
-          maxWidth: `min(100%, calc((100dvh - ${SHOW_TIME_CONTROLS ? 490 : 340}px) * 16 / 9))`,
+          maxWidth: `min(100%, calc((100dvh - ${timeControls ? 490 : 340}px) * 16 / 9))`,
           minWidth: "min(100%, 320px)",
         }}
       >
@@ -377,7 +379,7 @@ export function TvScreen() {
             </RemoteButton>
           </nav>
 
-          {SHOW_TIME_CONTROLS && (
+          {timeControls && (
             <TimeControls
               nowSec={nowSec}
               shifted={shifted}
@@ -419,12 +421,12 @@ export function TvScreen() {
       </footer>
 
       {/* Phones: the party logo across the bottom of the page, the ballot slip just above its left end. */}
-      <div className="relative w-full pt-28 lg:hidden">
+      <div className="relative w-full pt-20 lg:hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/tv/ballot.png"
           alt="פתק אמת – הדמוקרטים בראשות יאיר גולן"
-          className="absolute left-3 top-0 z-10 h-32 w-auto -rotate-6 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]"
+          className="absolute left-4 top-0 z-10 h-24 w-auto -rotate-6 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]"
         />
         <div className="rounded-xl bg-white px-4 py-4 shadow-lg shadow-black/40">
           {/* eslint-disable-next-line @next/next/no-img-element */}
