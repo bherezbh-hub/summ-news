@@ -235,13 +235,24 @@ export function TvScreen() {
       dir="rtl"
       className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-[radial-gradient(ellipse_at_top,#2a2522,#0c0b0a_70%)] px-4 py-6 text-white"
     >
+      {/* Page clock: the same broadcast clock the channels and panels follow. */}
+      <header className="flex flex-col items-center gap-0.5 text-center">
+        <time
+          aria-label="השעה בשידור"
+          className="font-mono text-4xl font-bold tabular-nums tracking-wider text-white drop-shadow sm:text-5xl"
+        >
+          {nowSec === null ? "--:--:--" : formatClock(nowSec)}
+        </time>
+        <span className="text-sm text-neutral-400">{BROADCAST_DATE_LABEL}</span>
+      </header>
+
       {/* Golan beside the TV on the right, Netanyahu on the left; below it on narrow screens. */}
       <div className="flex w-full max-w-[1600px] flex-col items-center gap-4 lg:flex-row lg:justify-center lg:gap-5">
       <TimelinePanel person={PEOPLE[0]} nowSec={nowSec} className="order-2 lg:order-none" />
       <div
         className="order-1 w-full lg:order-none lg:min-w-0 lg:flex-1"
         style={{
-          maxWidth: `min(100%, calc((100dvh - ${SHOW_TIME_CONTROLS ? 380 : 230}px) * 16 / 9))`,
+          maxWidth: `min(100%, calc((100dvh - ${SHOW_TIME_CONTROLS ? 460 : 310}px) * 16 / 9))`,
           minWidth: "min(100%, 320px)",
         }}
       >
