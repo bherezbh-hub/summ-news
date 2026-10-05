@@ -84,3 +84,28 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .tv-timeline-enter { animation: none; }
 }
+
+/* Full screen: the screen fills the display, the picture stays 16:9 in the middle. */
+.tv-screen:fullscreen,
+.tv-screen.tv-screen-pseudo {
+  aspect-ratio: auto;
+  width: 100vw;
+  height: 100dvh;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tv-screen.tv-screen-pseudo {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+
+.tv-screen:fullscreen .tv-screen-inner,
+.tv-screen.tv-screen-pseudo .tv-screen-inner {
+  width: min(100vw, calc(100dvh * 16 / 9));
+  height: auto;
+  aspect-ratio: 16 / 9;
+}

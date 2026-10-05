@@ -13,14 +13,19 @@ export type TimelineEntry = {
 
 export type Person = {
   id: string;
+  name: string;
   title: string;
+  /** Portrait above the panel; the file lives in /public. */
+  photo: string;
   entries: TimelineEntry[];
 };
 
 export const PEOPLE: Person[] = [
   {
     id: "golan",
+    name: "יאיר גולן",
     title: "מה יאיר גולן עושה עכשיו",
+    photo: "/tv/golan.jpg",
     entries: [
       { from: "06:25", text: "מתעורר ולאחר האזעקות מתחיל להבין את ממדי המתקפה בעוטף." },
       { from: "08:30", text: "עולה על מדים ונכנס לטויוטה יאריס בדרכו למפקדת פיקוד העורף ברמלה." },
@@ -52,7 +57,9 @@ export const PEOPLE: Person[] = [
   },
   {
     id: "netanyahu",
+    name: "בנימין נתניהו",
     title: "מה בנימין נתניהו עושה עכשיו",
+    photo: "/tv/netanyahu.jpg",
     entries: [
       { from: "06:29", text: "המזכיר הצבאי מעדכן אותו שתוקפים את ישראל. ביבי עונה \"למה הם יורים?\"" },
       { from: "08:22", text: "מגיע לקריה (ע\"פ רישומי השב\"כ)." },

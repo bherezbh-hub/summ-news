@@ -29,9 +29,15 @@ export function TimelinePanel({
     <aside
       aria-label={person.title}
       aria-live="polite"
-      className={`flex w-full flex-col gap-3 rounded-2xl border border-neutral-700/60 bg-neutral-900/80 p-4 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] lg:max-h-[min(70dvh,560px)] lg:w-64 lg:shrink-0 xl:w-72 ${className}`}
+      className={`flex w-full flex-col gap-3 overflow-hidden rounded-2xl border border-neutral-700/60 bg-neutral-900/80 p-4 pt-0 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] lg:max-h-[min(78dvh,680px)] lg:w-64 lg:shrink-0 xl:w-72 ${className}`}
     >
-      <h2 className="text-base font-bold leading-snug text-balance">{person.title}</h2>
+      {/* Portrait with the panel title over its lower edge. */}
+      <div className="relative -mx-4 h-36 shrink-0 sm:h-44 lg:h-40 xl:h-44">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={person.photo} alt={person.name} className="h-full w-full object-cover object-[50%_20%]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/40 to-transparent" />
+        <h2 className="absolute inset-x-4 bottom-2 text-base font-bold leading-snug text-balance drop-shadow">{person.title}</h2>
+      </div>
 
       {current ? (
         <div key={current.from} className="tv-timeline-enter flex flex-col gap-1.5 rounded-xl bg-neutral-800/80 p-3">

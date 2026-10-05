@@ -69,6 +69,12 @@ export function TvScreen() {
   const [soundOn, setSoundOn] = useState(true);
   // Subtitles of the recordings; off by default so the split screen stays clean.
   const [captions, setCaptions] = useState(false);
+  // Full screen: the browser's own when it allows it for the screen element,
+  // otherwise the screen is stretched over the window (e.g. iPhone).
+  const screenRef = useRef<HTMLDivElement>(null);
+  const [nativeFullscreen, setNativeFullscreen] = useState(false);
+  const [pseudoFullscreen, setPseudoFullscreen] = useState(false);
+  const isFullscreen = nativeFullscreen || pseudoFullscreen;
   const [nowSec, setNowSec] = useState<number | null>(null);
   const [previewTime, setPreviewTime] = useState<string | null>(null);
   // Video lengths reported by the players; they place the parts that follow.
@@ -175,16 +181,54 @@ export function TvScreen() {
     [focused, enlarge],
   );
 
+  const toggleFullscreen = useCallback(() => {
+    const el = screenRef.current as (HTMLDivElement & { webkitRequestFullscreen?: () => void }) | null;
+    if (!el) return;
+    setPowered(true);
+    const doc = document as Document & { webkitFullscreenElement?: Element; webkitExitFullscreen?: () => void };
+    if (document.fullscreenElement || doc.webkitFullscreenElement) {
+      if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+      else doc.webkitExitFullscreen?.();
+      return;
+    }
+    if (pseudoFullscreen) {
+      setPseudoFullscreen(false);
+      return;
+    }
+    if (el.requestFullscreen && document.fullscreenEnabled) {
+      el.requestFullscreen().catch(() => setPseudoFullscreen(true));
+    } else if (el.webkitRequestFullscreen) {
+      el.webkitRequestFullscreen();
+    } else {
+      setPseudoFullscreen(true);
+    }
+  }, [pseudoFullscreen]);
+
+  useEffect(() => {
+    const onChange = () => {
+      const doc = document as Document & { webkitFullscreenElement?: Element };
+      setNativeFullscreen(Boolean(document.fullscreenElement || doc.webkitFullscreenElement));
+    };
+    document.addEventListener("fullscreenchange", onChange);
+    document.addEventListener("webkitfullscreenchange", onChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", onChange);
+      document.removeEventListener("webkitfullscreenchange", onChange);
+    };
+  }, []);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key >= "1" && e.key <= String(CHANNELS.length)) pick(Number(e.key) - 1);
+      else if (e.key === "Escape" && pseudoFullscreen) setPseudoFullscreen(false);
       else if (e.key === "Escape" || e.key === "0") setFocused(null);
       else if (e.key.toLowerCase() === "m") setSoundOn((s) => !s);
       else if (e.key.toLowerCase() === "c") setCaptions((c) => !c);
+      else if (e.key.toLowerCase() === "f") toggleFullscreen();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [pick]);
+  }, [pick, toggleFullscreen, pseudoFullscreen]);
 
   return (
     <main
@@ -203,7 +247,13 @@ export function TvScreen() {
       >
         {/* TV set */}
         <div className="rounded-[22px] border border-neutral-700/60 bg-gradient-to-b from-neutral-800 to-neutral-950 p-2 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.08)] sm:rounded-[30px] sm:p-4">
-          <div className="relative aspect-video overflow-hidden rounded-lg bg-black ring-1 ring-black sm:rounded-xl">
+          <div
+            ref={screenRef}
+            className={`tv-screen relative aspect-video overflow-hidden rounded-lg bg-black ring-1 ring-black sm:rounded-xl ${
+              pseudoFullscreen ? "tv-screen-pseudo" : ""
+            }`}
+          >
+            <div className="tv-screen-inner relative h-full w-full">
             <div className={`absolute inset-0 ${powered ? "tv-power-on" : ""}`}>
               {channels.map((channel, index) => (
                 <ChannelTile
@@ -243,6 +293,28 @@ export function TvScreen() {
                 </button>
               </div>
             )}
+            </div>
+
+            {isFullscreen && (
+              <div className="absolute left-3 top-3 z-50 flex gap-2 opacity-60 transition-opacity hover:opacity-100 focus-within:opacity-100">
+                {focused !== null && (
+                  <button
+                    type="button"
+                    onClick={() => setFocused(null)}
+                    className="rounded-full bg-black/70 px-3 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30 hover:bg-black/90"
+                  >
+                    מסך מפוצל
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={toggleFullscreen}
+                  className="rounded-full bg-black/70 px-3 py-1.5 text-xs font-semibold text-white ring-1 ring-white/30 hover:bg-black/90"
+                >
+                  ✕ יציאה ממסך מלא
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Bottom bezel */}
@@ -271,6 +343,9 @@ export function TvScreen() {
             {channel.number}
           </RemoteButton>
         ))}
+        <RemoteButton active={isFullscreen} onClick={toggleFullscreen} label="מסך מלא">
+          ⛶ מסך מלא
+        </RemoteButton>
         <RemoteButton active={captions} onClick={() => setCaptions((c) => !c)} label={captions ? "הסתרת כתוביות" : "הצגת כתוביות"}>
           כתוביות
         </RemoteButton>
