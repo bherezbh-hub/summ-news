@@ -236,10 +236,10 @@ export function TvScreen() {
       className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-[radial-gradient(ellipse_at_top,#2a2522,#0c0b0a_70%)] px-4 py-6 text-white"
     >
       {/* Header: party logo, the broadcast clock (the one the channels and panels follow), ballot slip. */}
-      <header className="grid w-full max-w-[1600px] grid-cols-[1fr_auto_1fr] items-center gap-3">
-        <div className="justify-self-start rounded-xl bg-white px-2 py-1.5 shadow-lg shadow-black/40 sm:px-3 sm:py-2">
+      <header className="flex w-full max-w-[1600px] items-center justify-center gap-3 lg:grid lg:grid-cols-[1fr_auto_1fr]">
+        <div className="hidden justify-self-start rounded-xl bg-white px-3 py-2 shadow-lg shadow-black/40 lg:block">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/tv/democrats-logo.png" alt="הדמוקרטים בראשות יאיר גולן" className="h-10 w-auto sm:h-14 lg:h-16" />
+          <img src="/tv/democrats-logo.png" alt="הדמוקרטים בראשות יאיר גולן" className="h-16 w-auto" />
         </div>
         <div className="flex flex-col items-center gap-0.5 text-center">
           <time
@@ -254,14 +254,29 @@ export function TvScreen() {
         <img
           src="/tv/ballot.png"
           alt="פתק אמת – הדמוקרטים בראשות יאיר גולן"
-          className="hidden h-24 w-auto -rotate-6 justify-self-end drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] sm:block lg:h-28"
+          className="hidden h-28 w-auto -rotate-6 justify-self-end drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] lg:block"
         />
       </header>
 
       {/* Golan beside the TV on the right, Netanyahu on the left; on narrow screens both sit
           side by side under it. */}
       <div className="grid w-full max-w-[1600px] grid-cols-2 items-start gap-3 sm:gap-4 lg:flex lg:flex-row lg:items-start lg:justify-center lg:gap-5">
-      <TimelinePanel person={PEOPLE[0]} nowSec={nowSec} className="order-2 lg:order-none" />
+      <div className="order-2 flex min-w-0 flex-col items-center gap-4 lg:contents">
+        <TimelinePanel person={PEOPLE[0]} nowSec={nowSec} />
+        {/* On narrow screens the logo and ballot sit under Golan's panel instead of the header. */}
+        <div className="flex flex-col items-center gap-3 lg:hidden">
+          <div className="rounded-xl bg-white px-2 py-1.5 shadow-lg shadow-black/40">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/tv/democrats-logo.png" alt="הדמוקרטים בראשות יאיר גולן" className="h-12 w-auto sm:h-14" />
+          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/tv/ballot.png"
+            alt="פתק אמת – הדמוקרטים בראשות יאיר גולן"
+            className="h-32 w-auto -rotate-6 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] sm:h-40"
+          />
+        </div>
+      </div>
       <div
         className="order-1 col-span-2 w-full justify-self-center lg:order-none lg:min-w-0 lg:flex-1"
         style={{

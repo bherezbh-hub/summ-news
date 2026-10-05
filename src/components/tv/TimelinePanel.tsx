@@ -49,6 +49,11 @@ export function TimelinePanel({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={person.photo} alt={person.name} className="h-full w-full object-cover object-[50%_20%]" />
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/40 to-transparent" />
+        {person.photoCredit && (
+          <span className="absolute left-1 top-1.5 rotate-180 text-[9px] leading-none text-white/80 drop-shadow [writing-mode:vertical-rl] sm:text-[10px]">
+            {person.photoCredit}
+          </span>
+        )}
         <h2 className="absolute inset-x-2 bottom-1.5 text-sm font-bold leading-snug text-balance drop-shadow sm:inset-x-4 sm:bottom-2 sm:text-base">
           {person.title}
         </h2>
