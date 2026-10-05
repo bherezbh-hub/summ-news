@@ -17,6 +17,8 @@ export type Person = {
   title: string;
   /** Portrait above the panel; the file lives in /public. */
   photo: string;
+  /** Shown along the edge of the portrait, when the photo needs a credit. */
+  photoCredit?: string;
   entries: TimelineEntry[];
 };
 
@@ -60,6 +62,7 @@ export const PEOPLE: Person[] = [
     name: "בנימין נתניהו",
     title: "מה בנימין נתניהו עושה עכשיו",
     photo: "/tv/netanyahu.jpg",
+    photoCredit: "קרדיט: פלאש 90",
     entries: [
       { from: "06:29", text: "המזכיר הצבאי מעדכן אותו שתוקפים את ישראל. ביבי עונה \"למה הם יורים?\"" },
       { from: "08:22", text: "מגיע לקריה (ע\"פ רישומי השב\"כ)." },
