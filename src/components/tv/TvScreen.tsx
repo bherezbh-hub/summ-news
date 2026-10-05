@@ -261,22 +261,7 @@ export function TvScreen() {
       {/* Golan beside the TV on the right, Netanyahu on the left; on narrow screens both sit
           side by side under it. */}
       <div className="grid w-full max-w-[1600px] grid-cols-2 items-start gap-3 sm:gap-4 lg:flex lg:flex-row lg:items-start lg:justify-center lg:gap-5">
-      <div className="order-2 flex min-w-0 flex-col items-center gap-4 lg:contents">
-        <TimelinePanel person={PEOPLE[0]} nowSec={nowSec} />
-        {/* On narrow screens the logo and ballot sit under Golan's panel instead of the header. */}
-        <div className="flex flex-col items-center gap-3 lg:hidden">
-          <div className="rounded-xl bg-white px-2 py-1.5 shadow-lg shadow-black/40">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/tv/democrats-logo.png" alt="הדמוקרטים בראשות יאיר גולן" className="h-12 w-auto sm:h-14" />
-          </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/tv/ballot.png"
-            alt="פתק אמת – הדמוקרטים בראשות יאיר גולן"
-            className="h-32 w-auto -rotate-6 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)] sm:h-40"
-          />
-        </div>
-      </div>
+      <TimelinePanel person={PEOPLE[0]} nowSec={nowSec} className="order-2 lg:order-none" />
       <div
         className="order-1 col-span-2 w-full justify-self-center lg:order-none lg:min-w-0 lg:flex-1"
         style={{
@@ -432,6 +417,20 @@ export function TvScreen() {
           ״החדשות הישנות״
         </a>
       </footer>
+
+      {/* Phones: the party logo across the bottom of the page, the ballot slip just above its left end. */}
+      <div className="relative w-full pt-28 lg:hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/tv/ballot.png"
+          alt="פתק אמת – הדמוקרטים בראשות יאיר גולן"
+          className="absolute left-3 top-0 z-10 h-32 w-auto -rotate-6 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]"
+        />
+        <div className="rounded-xl bg-white px-4 py-4 shadow-lg shadow-black/40">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/tv/democrats-logo.png" alt="הדמוקרטים בראשות יאיר גולן" className="h-auto w-full" />
+        </div>
+      </div>
     </main>
   );
 }
