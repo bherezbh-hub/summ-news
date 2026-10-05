@@ -258,11 +258,12 @@ export function TvScreen() {
         />
       </header>
 
-      {/* Golan beside the TV on the right, Netanyahu on the left; below it on narrow screens. */}
-      <div className="flex w-full max-w-[1600px] flex-col items-center gap-4 lg:flex-row lg:justify-center lg:gap-5">
+      {/* Golan beside the TV on the right, Netanyahu on the left; on narrow screens both sit
+          side by side under it. */}
+      <div className="grid w-full max-w-[1600px] grid-cols-2 items-start gap-3 sm:gap-4 lg:flex lg:flex-row lg:items-start lg:justify-center lg:gap-5">
       <TimelinePanel person={PEOPLE[0]} nowSec={nowSec} className="order-2 lg:order-none" />
       <div
-        className="order-1 w-full lg:order-none lg:min-w-0 lg:flex-1"
+        className="order-1 col-span-2 w-full justify-self-center lg:order-none lg:min-w-0 lg:flex-1"
         style={{
           maxWidth: `min(100%, calc((100dvh - ${SHOW_TIME_CONTROLS ? 490 : 340}px) * 16 / 9))`,
           minWidth: "min(100%, 320px)",
@@ -352,43 +353,46 @@ export function TvScreen() {
         {/* Stand */}
         <div className="mx-auto h-3 w-1/4 rounded-b-lg bg-gradient-to-b from-neutral-800 to-neutral-900 sm:h-5" />
         <div className="mx-auto h-1.5 w-2/5 rounded-full bg-neutral-800 sm:h-2" />
+
+        {/* Remote and time bar right under the TV, before the side panels on phones. */}
+        <div className="mt-4 flex flex-col items-center gap-4">
+          {/* Remote */}
+          <nav className="flex flex-wrap items-center justify-center gap-2" aria-label="בחירת ערוץ">
+            <RemoteButton active={focused === null} onClick={() => setFocused(null)}>
+              מסך מפוצל
+            </RemoteButton>
+            {CHANNELS.map((channel, index) => (
+              <RemoteButton key={channel.number} active={focused === index} onClick={() => enlarge(index)} accent={channel.accent}>
+                {channel.number}
+              </RemoteButton>
+            ))}
+            <RemoteButton active={isFullscreen} onClick={toggleFullscreen} label="מסך מלא">
+              ⛶ מסך מלא
+            </RemoteButton>
+            <RemoteButton active={captions} onClick={() => setCaptions((c) => !c)} label={captions ? "הסתרת כתוביות" : "הצגת כתוביות"}>
+              כתוביות
+            </RemoteButton>
+            <RemoteButton active={false} onClick={() => setSoundOn((s) => !s)} label={soundOn ? "השתקה" : "הפעלת שמע"}>
+              {soundOn ? "🔊" : "🔇"}
+            </RemoteButton>
+          </nav>
+
+          {SHOW_TIME_CONTROLS && (
+            <TimeControls
+              nowSec={nowSec}
+              shifted={shifted}
+              onSet={setClock}
+              onReset={resetClock}
+              channels={channels
+                .filter((c) => c.kind === "video")
+                .map((c) => ({ number: c.number, name: c.name, shift: shiftOf(channels.indexOf(c)) }))}
+              onNudge={nudgeChannel}
+            />
+          )}
+        </div>
       </div>
       <TimelinePanel person={PEOPLE[1]} nowSec={nowSec} className="order-3 lg:order-none" />
       </div>
-
-      {/* Remote */}
-      <nav className="flex flex-wrap items-center justify-center gap-2" aria-label="בחירת ערוץ">
-        <RemoteButton active={focused === null} onClick={() => setFocused(null)}>
-          מסך מפוצל
-        </RemoteButton>
-        {CHANNELS.map((channel, index) => (
-          <RemoteButton key={channel.number} active={focused === index} onClick={() => enlarge(index)} accent={channel.accent}>
-            {channel.number}
-          </RemoteButton>
-        ))}
-        <RemoteButton active={isFullscreen} onClick={toggleFullscreen} label="מסך מלא">
-          ⛶ מסך מלא
-        </RemoteButton>
-        <RemoteButton active={captions} onClick={() => setCaptions((c) => !c)} label={captions ? "הסתרת כתוביות" : "הצגת כתוביות"}>
-          כתוביות
-        </RemoteButton>
-        <RemoteButton active={false} onClick={() => setSoundOn((s) => !s)} label={soundOn ? "השתקה" : "הפעלת שמע"}>
-          {soundOn ? "🔊" : "🔇"}
-        </RemoteButton>
-      </nav>
-
-      {SHOW_TIME_CONTROLS && (
-        <TimeControls
-          nowSec={nowSec}
-          shifted={shifted}
-          onSet={setClock}
-          onReset={resetClock}
-          channels={channels
-            .filter((c) => c.kind === "video")
-            .map((c) => ({ number: c.number, name: c.name, shift: shiftOf(channels.indexOf(c)) }))}
-          onNudge={nudgeChannel}
-        />
-      )}
 
       <p className="text-center text-xs text-neutral-500">
         {focused === null

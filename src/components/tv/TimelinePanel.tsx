@@ -42,14 +42,16 @@ export function TimelinePanel({
   return (
     <aside
       aria-label={person.title}
-      className={`flex w-full flex-col gap-3 overflow-hidden rounded-2xl border border-neutral-700/60 bg-neutral-900/80 p-4 pt-0 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] max-h-[75dvh] lg:max-h-[min(78dvh,680px)] lg:w-64 lg:shrink-0 xl:w-72 ${className}`}
+      className={`flex w-full min-w-0 flex-col gap-2 overflow-hidden rounded-2xl border border-neutral-700/60 bg-neutral-900/80 p-2 pt-0 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.9)] max-h-[70dvh] sm:gap-3 sm:p-4 sm:pt-0 lg:max-h-[min(78dvh,680px)] lg:w-64 lg:shrink-0 xl:w-72 ${className}`}
     >
       {/* Portrait with the panel title over its lower edge. */}
-      <div className="relative -mx-4 h-36 shrink-0 sm:h-44 lg:h-40 xl:h-44">
+      <div className="relative -mx-2 h-28 shrink-0 sm:-mx-4 sm:h-44 lg:h-40 xl:h-44">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={person.photo} alt={person.name} className="h-full w-full object-cover object-[50%_20%]" />
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/40 to-transparent" />
-        <h2 className="absolute inset-x-4 bottom-2 text-base font-bold leading-snug text-balance drop-shadow">{person.title}</h2>
+        <h2 className="absolute inset-x-2 bottom-1.5 text-sm font-bold leading-snug text-balance drop-shadow sm:inset-x-4 sm:bottom-2 sm:text-base">
+          {person.title}
+        </h2>
       </div>
 
       <ol ref={listRef} className="relative flex min-h-0 flex-col gap-1 overflow-y-auto">
@@ -61,7 +63,7 @@ export function TimelinePanel({
               key={entry.from}
               data-current={isCurrent || undefined}
               aria-current={isCurrent ? "time" : undefined}
-              className={`flex flex-col gap-1 rounded-xl px-3 py-2 transition-colors duration-500 ${
+              className={`flex flex-col gap-1 rounded-xl px-2 py-1.5 transition-colors duration-500 sm:px-3 sm:py-2 ${
                 isCurrent ? "bg-neutral-800 ring-1 ring-amber-400/50" : ""
               }`}
             >
@@ -82,7 +84,7 @@ export function TimelinePanel({
               </div>
               <p
                 className={`leading-relaxed ${
-                  isCurrent ? "text-sm text-white" : isPast ? "text-xs text-neutral-300" : "text-xs text-neutral-500"
+                  isCurrent ? "text-[13px] text-white sm:text-sm" : isPast ? "text-xs text-neutral-300" : "text-xs text-neutral-500"
                 }`}
               >
                 {entry.text}
