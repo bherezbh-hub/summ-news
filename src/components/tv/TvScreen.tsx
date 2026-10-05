@@ -420,15 +420,15 @@ export function TvScreen({ timeControls = false }: { timeControls?: boolean }) {
         </a>
       </footer>
 
-      {/* Phones: the party logo across the bottom of the page, the ballot slip just above its left end. */}
-      <div className="relative w-full pt-20 lg:hidden">
+      {/* Phones: the party logo across the bottom of the page, the ballot slip tucked behind its left end. */}
+      <div className="relative w-full pt-[86px] lg:hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/tv/ballot.png"
           alt="פתק אמת – הדמוקרטים בראשות יאיר גולן"
-          className="absolute left-4 top-0 z-10 h-24 w-auto -rotate-6 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]"
+          className="absolute left-4 top-0 z-0 h-24 w-auto -rotate-6 drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]"
         />
-        <div className="rounded-xl bg-white px-4 py-4 shadow-lg shadow-black/40">
+        <div className="relative z-10 rounded-xl bg-white px-4 py-4 shadow-lg shadow-black/40">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/tv/democrats-logo.png" alt="הדמוקרטים בראשות יאיר גולן" className="h-auto w-full" />
         </div>
