@@ -13,6 +13,8 @@ import { loadCalibration } from "@/lib/tv/calibration";
 import { broadcastSecondsOfDay, formatClock } from "@/lib/tv/clock";
 import { ChannelTile } from "./ChannelTile";
 import { TimeControls } from "./TimeControls";
+import { TimelinePanel } from "./TimelinePanel";
+import { PEOPLE } from "@/lib/tv/timeline";
 
 // Temporary: shows a bar under the TV for moving the clock while checking the sync.
 const SHOW_TIME_CONTROLS = true;
@@ -189,10 +191,16 @@ export function TvScreen() {
       dir="rtl"
       className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-[radial-gradient(ellipse_at_top,#2a2522,#0c0b0a_70%)] px-4 py-6 text-white"
     >
-      <div className="w-full" style={{
+      {/* Golan beside the TV on the right, Netanyahu on the left; below it on narrow screens. */}
+      <div className="flex w-full max-w-[1600px] flex-col items-center gap-4 lg:flex-row lg:justify-center lg:gap-5">
+      <TimelinePanel person={PEOPLE[0]} nowSec={nowSec} className="order-2 lg:order-none" />
+      <div
+        className="order-1 w-full lg:order-none lg:min-w-0 lg:flex-1"
+        style={{
           maxWidth: `min(100%, calc((100dvh - ${SHOW_TIME_CONTROLS ? 380 : 230}px) * 16 / 9))`,
           minWidth: "min(100%, 320px)",
-        }}>
+        }}
+      >
         {/* TV set */}
         <div className="rounded-[22px] border border-neutral-700/60 bg-gradient-to-b from-neutral-800 to-neutral-950 p-2 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.08)] sm:rounded-[30px] sm:p-4">
           <div className="relative aspect-video overflow-hidden rounded-lg bg-black ring-1 ring-black sm:rounded-xl">
@@ -249,6 +257,8 @@ export function TvScreen() {
         {/* Stand */}
         <div className="mx-auto h-3 w-1/4 rounded-b-lg bg-gradient-to-b from-neutral-800 to-neutral-900 sm:h-5" />
         <div className="mx-auto h-1.5 w-2/5 rounded-full bg-neutral-800 sm:h-2" />
+      </div>
+      <TimelinePanel person={PEOPLE[1]} nowSec={nowSec} className="order-3 lg:order-none" />
       </div>
 
       {/* Remote */}
