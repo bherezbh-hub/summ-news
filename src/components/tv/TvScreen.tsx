@@ -14,6 +14,7 @@ import { broadcastSecondsOfDay, formatClock } from "@/lib/tv/clock";
 import { ChannelTile } from "./ChannelTile";
 import { TimeControls } from "./TimeControls";
 import { TimelinePanel } from "./TimelinePanel";
+import { BrandBanner } from "./BrandBanner";
 import { PEOPLE } from "@/lib/tv/timeline";
 
 const DURATIONS_STORAGE_KEY = "tv-video-durations";
@@ -237,14 +238,9 @@ export function TvScreen({ timeControls = false }: { timeControls?: boolean }) {
       dir="rtl"
       className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-[radial-gradient(ellipse_at_top,#2a2522,#0c0b0a_70%)] px-4 py-6 text-white"
     >
-      {/* Header: party logo, the broadcast clock (the one the channels and panels follow), ballot slip. */}
-      <header className="flex w-full max-w-[1600px] items-center justify-center gap-3 lg:grid lg:grid-cols-[1fr_auto_1fr]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/tv/golan-logo.png"
-          alt="יאיר גולן"
-          className="hidden h-14 w-auto justify-self-start drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)] lg:block xl:h-16"
-        />
+      {/* Header: the party banner (wide screens) above the broadcast clock, the one the channels and panels follow. */}
+      <header className="flex w-full max-w-[1600px] flex-col items-center gap-8">
+        <BrandBanner className="mt-6 hidden max-w-5xl lg:block" />
         <div className="flex flex-col items-center gap-0.5 text-center">
           <time
             aria-label="השעה בשידור"
@@ -253,10 +249,6 @@ export function TvScreen({ timeControls = false }: { timeControls?: boolean }) {
             {nowSec === null ? "--:--:--" : formatClock(nowSec)}
           </time>
           <span className="text-sm text-neutral-400">{BROADCAST_DATE_LABEL}</span>
-        </div>
-        <div className="hidden -rotate-6 justify-self-end rounded-sm bg-white p-2.5 shadow-[0_10px_20px_rgba(0,0,0,0.6)] lg:block">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/tv/emet.png" alt="פתק אמת – הדמוקרטים בראשות יאיר גולן" className="h-20 w-auto" />
         </div>
       </header>
 
@@ -267,7 +259,7 @@ export function TvScreen({ timeControls = false }: { timeControls?: boolean }) {
       <div
         className="order-1 col-span-2 w-full justify-self-center lg:order-none lg:min-w-0 lg:flex-1"
         style={{
-          maxWidth: `min(100%, calc((100dvh - ${timeControls ? 490 : 340}px) * 16 / 9))`,
+          maxWidth: `min(100%, calc((100dvh - ${timeControls ? 640 : 490}px) * 16 / 9))`,
           minWidth: "min(100%, 320px)",
         }}
       >
@@ -420,19 +412,8 @@ export function TvScreen({ timeControls = false }: { timeControls?: boolean }) {
         </a>
       </footer>
 
-      {/* Phones: the party logo across the bottom of the page, the ballot slip tucked behind its left end. */}
-      <div className="relative w-full pt-[86px] lg:hidden">
-        <div className="absolute left-4 top-0 z-0 -rotate-6 rounded-sm bg-white p-2 shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/tv/emet.png" alt="פתק אמת – הדמוקרטים בראשות יאיר גולן" className="h-20 w-auto" />
-        </div>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/tv/golan-logo.png"
-          alt="יאיר גולן"
-          className="relative z-10 h-auto w-full drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)]"
-        />
-      </div>
+      {/* Phones: the party banner at the bottom of the page. */}
+      <BrandBanner className="mb-6 mt-8 lg:hidden" />
     </main>
   );
 }
