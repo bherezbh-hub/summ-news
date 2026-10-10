@@ -5,14 +5,16 @@
 // Keshet 12 has no usable source: mako's own HLS URLs return 403 without the
 // player's access token, and the only open copy is an unofficial http-only
 // restream (blocked as mixed content on an https page, and not authorised).
-// Its tile links to the official mako player instead.
+// Its tile shows the official mako page itself (mako sends no X-Frame-Options or
+// frame-ancestors), so mako's own player runs there with its own cookies and
+// sound control; a link opens the same page on mako.
 
 export type LiveChannel = {
   number: string;
   name: string;
   /** Accent color of the on-screen channel bug. */
   accent: string;
-} & ({ kind: "hls"; src: string } | { kind: "external"; url: string; site: string });
+} & ({ kind: "hls"; src: string } | { kind: "embed"; url: string; site: string });
 
 export const LIVE_CHANNELS: LiveChannel[] = [
   {
@@ -26,7 +28,7 @@ export const LIVE_CHANNELS: LiveChannel[] = [
     number: "12",
     name: "חדשות 12",
     accent: "#f59e0b",
-    kind: "external",
+    kind: "embed",
     url: "https://www.mako.co.il/culture-tv/articles/Article-c75a4149b6ef091027.htm",
     site: "mako",
   },
