@@ -137,6 +137,7 @@ export function LiveScreen() {
                   style={tileStyle(index, focused)}
                   onSelect={() => pick(index)}
                   onEnlarge={() => enlarge(index)}
+                  onFullscreen={toggleFullscreen}
                 />
               ))}
               <div className="tv-glass pointer-events-none absolute inset-0 z-30" />
