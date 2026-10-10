@@ -8,6 +8,10 @@ type Status = "loading" | "playing" | "error";
 
 // How long to wait before trying a stream again after it fails.
 const RETRY_MS = 10_000;
+// A playing stream whose picture hasn't moved for this long is nudged back to
+// the live edge; if it is still frozen after STALL_RELOAD_MS it is reloaded.
+const STALL_NUDGE_MS = 6_000;
+const STALL_RELOAD_MS = 20_000;
 
 export function LiveTile({
   channel,
@@ -17,6 +21,7 @@ export function LiveTile({
   style,
   onSelect,
   onEnlarge,
+  onFullscreen,
 }: {
   channel: LiveChannel;
   muted: boolean;
@@ -26,6 +31,8 @@ export function LiveTile({
   /** Split view: turns this channel's sound on (or off). Thumbnail: switches to it. */
   onSelect: () => void;
   onEnlarge: () => void;
+  /** Toggles full screen for the whole TV (not for the channel's own player). */
+  onFullscreen: () => void;
 }) {
   const split = !focused && !thumbnail;
   const playable = channel.kind === "hls";
@@ -81,6 +88,16 @@ export function LiveTile({
           </button>
         )}
 
+        {focused && !playable && (
+          <button
+            type="button"
+            onClick={onFullscreen}
+            className="absolute bottom-2 left-2 z-20 rounded bg-black/75 px-2.5 py-1 text-xs font-semibold text-white ring-1 ring-white/30 transition hover:bg-black sm:bottom-3 sm:left-3 sm:text-sm"
+          >
+            ⛶ מסך מלא
+          </button>
+        )}
+
         <div
           className={`pointer-events-none absolute z-20 flex items-center gap-1.5 ${
             thumbnail ? "right-1 top-1" : "right-2 top-2 sm:right-3 sm:top-3"
@@ -132,6 +149,42 @@ function HlsVideo({ src, muted }: { src: string; muted: boolean }) {
     };
     const play = () => video.play().catch(() => {});
 
+    // Watchdog: live streams sometimes freeze without any error (a missed
+    // segment, a buffer gap). Watch the playhead and kick it when it stops.
+    let lastTime = -1;
+    let stuckSince = 0;
+    let nudged = false;
+    const watchdog = window.setInterval(() => {
+      if (cancelled || video.paused || video.ended) {
+        stuckSince = 0;
+        return;
+      }
+      const now = Date.now();
+      if (video.currentTime !== lastTime) {
+        lastTime = video.currentTime;
+        stuckSince = 0;
+        nudged = false;
+        return;
+      }
+      if (!stuckSince) stuckSince = now;
+      const stuck = now - stuckSince;
+      if (stuck >= STALL_RELOAD_MS) {
+        stuckSince = 0;
+        setStatus("loading");
+        setAttempt((a) => a + 1);
+      } else if (stuck >= STALL_NUDGE_MS && !nudged) {
+        nudged = true;
+        if (hls) {
+          hls.startLoad();
+          const edge = hls.liveSyncPosition;
+          if (edge !== null && edge > video.currentTime) video.currentTime = edge;
+        } else if (video.seekable.length) {
+          video.currentTime = video.seekable.end(video.seekable.length - 1) - 3;
+        }
+        play();
+      }
+    }, 1_000);
+
     if (video.canPlayType("application/vnd.apple.mpegurl")) {
       // Safari and iOS play HLS natively.
       video.src = src;
@@ -141,7 +194,19 @@ function HlsVideo({ src, muted }: { src: string; muted: boolean }) {
       import("hls.js").then(({ default: HlsLib }) => {
         if (cancelled) return;
         if (!HlsLib.isSupported()) return fail();
-        hls = new HlsLib({ liveSyncDurationCount: 3, capLevelToPlayerSize: true, maxBufferLength: 20 });
+        hls = new HlsLib({
+          capLevelToPlayerSize: true,
+          // Sit a little further back from the live edge so a late segment
+          // doesn't drain the buffer, and jump forward if we fall far behind.
+          liveSyncDurationCount: 4,
+          liveMaxLatencyDurationCount: 12,
+          maxBufferLength: 30,
+          maxMaxBufferLength: 60,
+          lowLatencyMode: false,
+          manifestLoadingMaxRetry: 6,
+          levelLoadingMaxRetry: 6,
+          fragLoadingMaxRetry: 6,
+        });
         hls.on(HlsLib.Events.ERROR, (_e, data) => {
           if (!data.fatal || !hls) return;
           if (data.type === HlsLib.ErrorTypes.MEDIA_ERROR) hls.recoverMediaError();
@@ -160,6 +225,7 @@ function HlsVideo({ src, muted }: { src: string; muted: boolean }) {
     return () => {
       cancelled = true;
       window.clearTimeout(retry);
+      window.clearInterval(watchdog);
       video.removeEventListener("error", fail);
       hls?.destroy();
       video.removeAttribute("src");
@@ -199,6 +265,8 @@ function HlsVideo({ src, muted }: { src: string; muted: boolean }) {
 // The broadcaster's own page, shown as is: its player, cookies and sound stay
 // under the page's control. It is drawn at desktop size and scaled down so more
 // of it fits the tile; viewers can scroll and click inside it (e.g. to play).
+// The page isn't allowed to go full screen itself – that would take over the
+// whole display – so enlarging goes through the TV's own controls instead.
 function EmbeddedPage({
   channel,
   focused,
@@ -214,8 +282,7 @@ function EmbeddedPage({
       <iframe
         src={channel.url}
         title={`${channel.name} – השידור הרשמי ב־${channel.site}`}
-        allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-        allowFullScreen
+        allow="autoplay; encrypted-media"
         className="absolute right-0 top-0 origin-top-right border-0 bg-white"
         style={{ width: `${100 / scale}%`, height: `${100 / scale}%`, transform: `scale(${scale})` }}
       />
