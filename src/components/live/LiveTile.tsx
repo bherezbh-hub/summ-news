@@ -1,8 +1,17 @@
 "use client";
 
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import { CSSProperties, useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type Hls from "hls.js";
 import type { LiveChannel } from "@/lib/live/channels";
+import {
+  EmbedView,
+  PAGE_H,
+  PAGE_W,
+  getEmbedView,
+  resetEmbedView,
+  setEmbedView,
+  subscribeEmbedView,
+} from "@/lib/live/embedView";
 
 type Status = "loading" | "playing" | "error";
 
@@ -263,10 +272,11 @@ function HlsVideo({ src, muted }: { src: string; muted: boolean }) {
 }
 
 // The broadcaster's own page, shown as is: its player, cookies and sound stay
-// under the page's control. It is drawn at desktop size and scaled down so more
-// of it fits the tile; viewers can scroll and click inside it (e.g. to play).
-// The page isn't allowed to go full screen itself – that would take over the
-// whole display – so enlarging goes through the TV's own controls instead.
+// under the page's control. The live video can't be taken out of the page, so
+// the page is laid out at a fixed logical width and a window onto it — the
+// player, calibrated once and remembered — is scaled to fill the tile, hiding
+// the rest of the site. The page isn't allowed to go full screen itself (that
+// would take over the whole display); enlarging goes through the TV's controls.
 function EmbeddedPage({
   channel,
   focused,
@@ -276,26 +286,91 @@ function EmbeddedPage({
   focused: boolean;
   thumbnail: boolean;
 }) {
-  const scale = focused ? 0.85 : 0.6;
+  const id = channel.number;
+  const view = useSyncExternalStore(
+    useCallback((cb) => subscribeEmbedView(id, cb), [id]),
+    useCallback(() => getEmbedView(id), [id]),
+    useCallback(() => getEmbedView(id), [id]),
+  );
+
+  // Measure the tile so the player window scales to fill it exactly, whatever
+  // the tile's size (split quadrant, enlarged, full screen).
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [box, setBox] = useState({ w: 0, h: 0 });
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([e]) => setBox({ w: e.contentRect.width, h: e.contentRect.height }));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  // Show the whole page temporarily (to press play or dismiss a banner).
+  const [showFull, setShowFull] = useState(false);
+  const active: EmbedView = showFull ? { x: 0, y: 0, w: PAGE_W } : view;
+  const scale = box.w > 0 ? box.w / active.w : box.w / PAGE_W || 0.3;
+
+  const showControls = focused && !thumbnail;
+  const panStep = () => Math.max(20, active.w * 0.06);
+  const zoom = (factor: number) =>
+    setEmbedView(id, { ...view, w: Math.min(PAGE_W * 1.5, Math.max(240, view.w * factor)) });
+  const pan = (dx: number, dy: number) => setEmbedView(id, { x: view.x + dx, y: view.y + dy, w: view.w });
+
   return (
-    <>
+    <div ref={boxRef} className="absolute inset-0 overflow-hidden bg-black">
       <iframe
         src={channel.url}
         title={`${channel.name} – השידור הרשמי ב־${channel.site}`}
         allow="autoplay; encrypted-media"
-        className="absolute right-0 top-0 origin-top-right border-0 bg-white"
-        style={{ width: `${100 / scale}%`, height: `${100 / scale}%`, transform: `scale(${scale})` }}
+        className="absolute left-0 top-0 origin-top-left border-0 bg-white"
+        style={{
+          width: `${PAGE_W}px`,
+          height: `${PAGE_H}px`,
+          transform: `scale(${scale}) translate(${-active.x}px, ${-active.y}px)`,
+        }}
       />
-      {!thumbnail && (
-        <a
-          href={channel.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute left-2 top-2 z-20 rounded-full bg-black/75 px-3 py-1 text-xs font-semibold text-white ring-1 ring-white/30 hover:bg-black sm:left-3 sm:top-3"
-        >
-          פתיחה ב־{channel.site} ↗
-        </a>
+
+      {showControls && (
+        <div className="absolute inset-x-2 bottom-2 z-30 flex flex-wrap items-center justify-center gap-1 rounded-lg bg-black/80 p-1.5 text-white ring-1 ring-white/20">
+          <span className="px-1 text-[11px] text-neutral-300">מיקוד הנגן:</span>
+          <CalBtn onClick={() => zoom(1 / 1.15)} label="הקטנה">−</CalBtn>
+          <CalBtn onClick={() => zoom(1.15)} label="הגדלה">+</CalBtn>
+          <CalBtn onClick={() => pan(0, -panStep())} label="למעלה">↑</CalBtn>
+          <CalBtn onClick={() => pan(0, panStep())} label="למטה">↓</CalBtn>
+          <CalBtn onClick={() => pan(-panStep(), 0)} label="שמאלה">←</CalBtn>
+          <CalBtn onClick={() => pan(panStep(), 0)} label="ימינה">→</CalBtn>
+          <CalBtn onClick={() => resetEmbedView(id)} label="איפוס">איפוס</CalBtn>
+          <CalBtn onClick={() => setShowFull((v) => !v)} label="דף מלא" pressed={showFull}>
+            {showFull ? "מיקוד" : "דף מלא"}
+          </CalBtn>
+        </div>
       )}
-    </>
+    </div>
+  );
+}
+
+function CalBtn({
+  onClick,
+  label,
+  pressed,
+  children,
+}: {
+  onClick: () => void;
+  label: string;
+  pressed?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      aria-pressed={pressed}
+      className={`min-w-7 rounded px-2 py-1 text-xs font-bold leading-none transition ${
+        pressed ? "bg-white text-black" : "bg-white/15 hover:bg-white/30"
+      }`}
+    >
+      {children}
+    </button>
   );
 }
