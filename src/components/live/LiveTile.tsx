@@ -41,7 +41,7 @@ export function LiveTile({
         {channel.kind === "hls" ? (
           <HlsVideo src={channel.src} muted={muted} />
         ) : (
-          <ExternalCard channel={channel} compact={thumbnail} />
+          <EmbeddedPage channel={channel} focused={focused} thumbnail={thumbnail} />
         )}
 
         {playable && (
@@ -70,7 +70,7 @@ export function LiveTile({
           />
         )}
 
-        {split && playable && (
+        {split && (
           <button
             type="button"
             onClick={onEnlarge}
@@ -196,27 +196,39 @@ function HlsVideo({ src, muted }: { src: string; muted: boolean }) {
   );
 }
 
-function ExternalCard({ channel, compact }: { channel: Extract<LiveChannel, { kind: "external" }>; compact: boolean }) {
+// The broadcaster's own page, shown as is: its player, cookies and sound stay
+// under the page's control. It is drawn at desktop size and scaled down so more
+// of it fits the tile; viewers can scroll and click inside it (e.g. to play).
+function EmbeddedPage({
+  channel,
+  focused,
+  thumbnail,
+}: {
+  channel: Extract<LiveChannel, { kind: "embed" }>;
+  focused: boolean;
+  thumbnail: boolean;
+}) {
+  const scale = focused ? 0.85 : 0.6;
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-[3cqw] bg-gradient-to-b from-neutral-800 to-neutral-950 p-3 text-center">
-      <span className="text-[16cqw] font-black leading-none" style={{ color: channel.accent }}>
-        {channel.number}
-      </span>
-      {!compact && (
-        <>
-          <p className="max-w-[80%] text-[clamp(10px,3.6cqw,18px)] leading-snug text-white/80">
-            השידור החי של {channel.name} זמין רק בנגן של {channel.site}
-          </p>
-          <a
-            href={channel.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="relative z-20 rounded-full bg-white px-[1.2em] py-[0.5em] text-[clamp(10px,3.6cqw,18px)] font-bold text-black transition hover:bg-neutral-200"
-          >
-            לצפייה ב־{channel.site} ↗
-          </a>
-        </>
+    <>
+      <iframe
+        src={channel.url}
+        title={`${channel.name} – השידור הרשמי ב־${channel.site}`}
+        allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+        allowFullScreen
+        className="absolute right-0 top-0 origin-top-right border-0 bg-white"
+        style={{ width: `${100 / scale}%`, height: `${100 / scale}%`, transform: `scale(${scale})` }}
+      />
+      {!thumbnail && (
+        <a
+          href={channel.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute left-2 top-2 z-20 rounded-full bg-black/75 px-3 py-1 text-xs font-semibold text-white ring-1 ring-white/30 hover:bg-black sm:left-3 sm:top-3"
+        >
+          פתיחה ב־{channel.site} ↗
+        </a>
       )}
-    </div>
+    </>
   );
 }
