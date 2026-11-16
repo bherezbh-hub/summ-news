@@ -1,0 +1,85 @@
+<title>ביקורת גבולות ויפי</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one centered card, phone-first, RTL */
+:root{--bg:#fff7e6;--card:#ffffff;--ink:#2b2118;--muted:#7a6a5a;--accent:#e8492a;--accent2:#ffc83d;--ok:#1b8a4a;--line:#f0e2cc}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1712;--card:#2a221b;--ink:#f6ece2;--muted:#bba896;--accent:#ff7a5c;--accent2:#ffcf5a;--ok:#3ccf7f;--line:#3a2f25;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1d1712;--card:#2a221b;--ink:#f6ece2;--muted:#bba896;--accent:#ff7a5c;--accent2:#ffcf5a;--ok:#3ccf7f;--line:#3a2f25;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{direction:rtl}
+body{background:var(--bg);color:var(--ink);font-family:"Rubik",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;font-size:16px;line-height:1.55;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.card{max-width:520px;margin:0 auto;background:var(--card);border-radius:18px;padding:24px 18px;box-shadow:0 6px 24px rgba(0,0,0,.08);display:flex;flex-direction:column;gap:16px}
+.emoji{font-size:64px;text-align:center;animation:wob 2.4s ease-in-out infinite;line-height:1}
+@keyframes wob{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@media (prefers-reduced-motion:reduce){.emoji{animation:none}.no{transition:none}}
+h1{font-size:26px;margin:0;text-align:center;text-wrap:balance}
+.sub{color:var(--muted);text-align:center;margin:0}
+.stamp{align-self:center;border:3px solid var(--ok);color:var(--ok);font-weight:800;border-radius:10px;padding:4px 14px;transform:rotate(-4deg);letter-spacing:.02em}
+.terms{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.terms label{display:flex;gap:10px;align-items:flex-start}
+.terms input{width:22px;height:22px;flex:0 0 auto;margin-top:2px;accent-color:var(--accent)}
+.btns{position:relative;min-height:130px}
+.btn{display:block;font:inherit;font-weight:700;border:0;border-radius:999px;padding:14px 22px;cursor:pointer;width:100%;text-align:center;text-decoration:none}
+.go{background:var(--accent);color:#fff}
+.no{background:var(--accent2);color:#2b2118;width:auto;position:absolute;top:70px;left:50%;transform:translateX(-50%);transition:left .18s,top .18s}
+.btn:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.msg{min-height:1.5em;text-align:center;color:var(--accent);font-weight:600;margin:0}
+.fact{background:var(--bg);border-radius:12px;padding:12px 14px;margin:0;font-size:15px}
+.fact b{color:var(--accent)}
+.small{font-size:13px;color:var(--muted);text-align:center;margin:0;border-top:1px solid var(--line);padding-top:14px}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800&display=swap">
+
+<main class="card">
+  <div class="emoji" aria-hidden="true">🦙</div>
+  <h1>עברת את ביקורת הגבולות!</h1>
+  <div class="stamp">מאושר ✓</div>
+  <p class="sub">רק שתדע/י: בלחיצה על "התחבר" הסכמת לתנאים הבאים. לא קראת אותם, אבל זה בסדר, אף אחד לא קורא.</p>
+
+  <ul class="terms">
+    <li><label><input type="checkbox" id="t1" checked disabled> אני מתחייב/ת לא לשאול "מה הסיסמה לוויפי" שוב, כי כבר התחברתי.</label></li>
+    <li><label><input type="checkbox" id="t2" checked disabled> אני מבין/ה שכל צפייה בטיקטוק כאן מאטה את הנטפליקס של בעל הבית, ואני מתנצל/ת מראש.</label></li>
+    <li><label><input type="checkbox" id="t3" checked disabled> אני מסכים/ה שהלאמה 🦙 היא החיה הרשמית של הרשת הזו.</label></li>
+    <li><label><input type="checkbox" id="t4" checked disabled> אם האינטרנט נופל, זה בגללי. ולא בגלל הראוטר. אף פעם לא בגלל הראוטר.</label></li>
+  </ul>
+
+  <div class="btns" id="btns">
+    <a class="btn go" href="https://www.google.com/">קחו אותי לאינטרנט 🎉</a>
+    <button type="button" class="btn no" id="no">אני רוצה לבטל את ההסכמה</button>
+  </div>
+  <p class="msg" id="msg" aria-live="polite"></p>
+
+  <p class="fact"><b>עובדה על לאמות:</b> <span id="fact"></span></p>
+
+  <p class="small">הפורטל הזה הוא בדיחה. האינטרנט אמיתי. 😇</p>
+</main>
+
+<script>
+(function () {
+  var no = document.getElementById('no');
+  var box = document.getElementById('btns');
+  var msg = document.getElementById('msg');
+  var lines = ['נו באמת 🙄', 'ההסכמה סופית ובלתי הפיכה', 'ניסיון יפה', 'הלאמה לא מתרשמת 🦙', 'אין דבר כזה "לבטל" כאן', 'עדיף כבר ללכת לגלוש 😅'];
+  var n = 0;
+  function run(e) {
+    if (e) e.preventDefault();
+    var r = box.getBoundingClientRect();
+    var w = no.offsetWidth, h = no.offsetHeight;
+    no.style.transform = 'none';
+    no.style.left = Math.max(0, Math.random() * (r.width - w)) + 'px';
+    no.style.top = Math.max(60, Math.random() * (r.height - h)) + 'px';
+    msg.textContent = lines[n++ % lines.length];
+  }
+  no.addEventListener('mouseenter', run);
+  no.addEventListener('touchstart', run, { passive: false });
+  no.addEventListener('click', run);
+
+  var facts = [
+    'לאמות יורקות בעיקר על לאמות אחרות. אורחים שמתנהגים יפה בדרך כלל בטוחים.',
+    'לאמה יכולה לסחוב בערך רבע ממשקל הגוף שלה. הנתב שלנו סוחב את כל הטיקטוק שלך.',
+    'לאמות הולכות לשירותים במקום קבוע ומשותף. בבקשה אל תחקו את זה ליד הראוטר.',
+    'לאמות מזמזמות כשהן מרוצות. אם שמעת זמזום, הוויפי עובד טוב.'
+  ];
+  document.getElementById('fact').textContent = facts[Math.floor(Math.random() * facts.length)];
+})();
+</script>
