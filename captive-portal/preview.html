@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הוויפי של הבית</title>
+<style>
+:root{--bg:#fff7e6;--card:#ffffff;--ink:#2b2118;--muted:#7a6a5a;--accent:#ff5a36;--accent2:#ffc83d;--ok:#1f9d55}
+@media (prefers-color-scheme:dark){:root{--bg:#1d1712;--card:#2a221b;--ink:#f6ece2;--muted:#bba896;--accent:#ff7a5c;--accent2:#ffcf5a;--ok:#3ccf7f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.5}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 40px}
+.card{background:var(--card);border-radius:18px;padding:22px 18px;box-shadow:0 6px 24px rgba(0,0,0,.08)}
+.emoji{font-size:64px;text-align:center;animation:wob 2.4s ease-in-out infinite}
+@keyframes wob{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+h1{font-size:26px;margin:6px 0 4px;text-align:center}
+.sub{color:var(--muted);text-align:center;margin:0 0 18px}
+.terms{list-style:none;padding:0;margin:0 0 18px}
+.terms li{margin:0 0 10px}
+.terms label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.terms input{width:22px;height:22px;flex:0 0 auto;margin-top:2px;accent-color:var(--accent)}
+.btns{position:relative;min-height:120px}
+button,.btn{font:inherit;font-weight:700;border:0;border-radius:999px;padding:14px 22px;cursor:pointer;width:100%}
+.yes{background:var(--accent);color:#fff}
+.yes:disabled{opacity:.45;cursor:not-allowed}
+.no{background:var(--accent2);color:#2b2118;width:auto;position:absolute;top:66px;left:50%;transform:translateX(-50%);transition:left .18s,top .18s}
+.msg{min-height:1.5em;text-align:center;color:var(--accent);font-weight:600;margin-top:8px}
+.small{font-size:13px;color:var(--muted);text-align:center;margin-top:18px}
+.okbig{color:var(--ok);font-size:22px;font-weight:800;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="card">
+<div class="emoji">🦙</div>
+<h1>עצור! ביקורת גבולות ויפי</h1>
+<p class="sub">ברוך הבא ל-<b>הוויפי של הבית</b>. לפני שנמסור לך את מפתחות האינטרנט, יש כמה תנאים קטנים.</p>
+
+<form id="f" action="javascript:alert('במצב אמיתי כאן תקבל/י אינטרנט 🎉')" method="get">
+<input type="hidden" name="fas" value="preview">
+<input type="hidden" name="continue" value="clicked">
+<input type="hidden" name="landing" value="yes">
+
+<ul class="terms">
+<li><label><input type="checkbox" class="t"> אני מתחייב/ת לא לשאול "מה הסיסמה לוויפי" שוב, כי כבר התחברתי.</label></li>
+<li><label><input type="checkbox" class="t"> אני מבין/ה שכל צפייה בטיקטוק כאן מאטה את הנטפליקס של בעל הבית, ואני מתנצל/ת מראש.</label></li>
+<li><label><input type="checkbox" class="t"> אני מסכים/ה שהלאמה 🦙 היא החיה הרשמית של הרשת הזו.</label></li>
+<li><label><input type="checkbox" class="t"> אם האינטרנט נופל, זה בגללי. ולא בגלל הראוטר. אף פעם לא בגלל הראוטר.</label></li>
+</ul>
+
+<div class="btns">
+<button type="submit" class="yes" id="yes" disabled>אני מסכים/ה לכל השטויות האלה 🎉</button>
+<button type="button" class="no" id="no">לא מסכים/ה</button>
+</div>
+<div class="msg" id="msg"></div>
+</form>
+
+<script>
+(function(){
+var boxes=document.querySelectorAll('.t'),yes=document.getElementById('yes'),no=document.getElementById('no'),msg=document.getElementById('msg');
+var lines=['נו באמת 🙄','הכפתור הזה מיועד לנוי בלבד','ניסיון יפה','הלאמה לא מתרשמת 🦙','אין דבר כזה "לא מסכים" כאן','תסמן את הריבועים ותתקדם 😅'];
+var n=0;
+function upd(){var all=true;for(var i=0;i<boxes.length;i++){if(!boxes[i].checked)all=false;}yes.disabled=!all;}
+for(var i=0;i<boxes.length;i++)boxes[i].addEventListener('change',upd);
+function run(e){if(e)e.preventDefault();
+ var box=no.parentNode.getBoundingClientRect(),w=no.offsetWidth,h=no.offsetHeight;
+ no.style.transform='none';
+ no.style.left=Math.max(0,Math.random()*(box.width-w))+'px';
+ no.style.top=Math.max(56,Math.random()*(box.height-h))+'px';
+ msg.textContent=lines[n++%lines.length];}
+no.addEventListener('mouseenter',run);
+no.addEventListener('touchstart',run);
+no.addEventListener('click',run);
+})();
+</script>
+<p class="small">הפורטל הזה הוא בדיחה. בדיחה שעומדת בין הטלפון שלך לבין האינטרנט. 😇</p>
+</div></div>
+</body>
+</html>
