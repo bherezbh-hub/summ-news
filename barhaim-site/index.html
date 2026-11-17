@@ -339,6 +339,84 @@ footer .foot bdi{direction:ltr}
   .states{margin-top:32px}
   .grid4,.tracks{margin-top:36px}
 }
+/* quick check (quiz) */
+.check{background:var(--paper2)}
+.check-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:64px;align-items:start}
+.check-facts{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:10px;font-size:15px;color:#3f3c37}
+.check-facts li{display:flex;gap:10px;align-items:baseline}
+.check-facts li:before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--accent-ink);transform:translateY(-2px)}
+.quiz{background:#fff;border:1px solid var(--paper-line);border-radius:10px;padding:32px;min-width:0;box-shadow:0 18px 40px -28px rgba(21,22,26,.35)}
+.q-noscript{margin:0;color:var(--ink)}
+.q-noscript a{color:var(--accent-ink);text-decoration:underline}
+.q-progress{height:4px;background:var(--paper2);border-radius:2px;overflow:hidden}
+.q-progress span{display:block;height:100%;width:16.7%;background:var(--accent-ink);transition:width .3s ease}
+.q-count{font-size:13px;color:#5e5b55;margin:12px 0 0;letter-spacing:.02em}
+.q{border:0;margin:0;padding:0;min-width:0}
+.js .q{display:none}
+.js .q.on{display:block}
+.q legend{font-size:clamp(21px,2vw,26px);font-weight:600;line-height:1.3;color:var(--ink);padding:0;margin:14px 0 6px;outline:none}
+.q+.q{margin-top:28px}
+.js .q+.q{margin-top:0}
+.q-hint{font-size:14px;color:#5e5b55;margin:0 0 4px}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+.opt{position:relative;display:flex;align-items:center;min-height:54px;padding:12px 16px 12px 14px;border:1px solid var(--paper-line);border-radius:8px;background:#fbfaf7;color:var(--ink);font-size:16px;line-height:1.35;cursor:pointer;transition:border-color .15s,background .15s}
+.opt input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.opt span{display:flex;align-items:center;gap:12px}
+.opt span:before{content:"";flex:none;width:18px;height:18px;border:1.5px solid #8a857c;border-radius:50%;background:#fff;transition:all .15s}
+.opt input[type=checkbox]+span:before{border-radius:4px}
+.opt:hover{border-color:#a99a80}
+.opt:has(input:checked){border-color:var(--accent-ink);background:#f6efe3}
+.opt input:checked+span:before{border-color:var(--accent-ink);background:var(--accent-ink);box-shadow:inset 0 0 0 3px #fff}
+.opt input[type=checkbox]:checked+span:before{box-shadow:none;background:var(--accent-ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-7' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E") center/14px no-repeat}
+.opt:has(input:focus-visible){outline:2px solid var(--accent-ink);outline-offset:2px}
+.opt:has(input:disabled){opacity:.55;cursor:not-allowed}
+.q-free{display:block;margin-top:24px;font-size:15px;font-weight:500;color:var(--ink)}
+.q-free span{font-weight:400;color:#5e5b55}
+#qfree{display:block;width:100%;margin-top:8px;padding:12px 14px;border:1px solid var(--paper-line);border-radius:8px;font:inherit;font-size:16px;color:var(--ink);background:#fbfaf7;resize:vertical}
+#qfree:focus{outline:2px solid var(--accent-ink);outline-offset:1px}
+#qfree-note{margin-top:6px;font-size:13px}
+.q-nav{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:28px}
+.q-back{background:none;border:0;padding:10px 0;font:inherit;font-size:15px;color:var(--accent-ink);cursor:pointer}
+.q-back:hover{text-decoration:underline}
+.q-back[hidden]{display:block;visibility:hidden}
+.q-nav .btn-primary{border:0;cursor:pointer;font-family:inherit;margin-inline-start:auto}
+.q-nav .btn-primary:disabled{background:#ddd5c6;color:#5e5b55;cursor:not-allowed}
+.btn-primary:focus-visible,.q-back:focus-visible,.q-again:focus-visible{outline:2px solid var(--accent-ink);outline-offset:3px}
+.q-need{min-height:1.4em;margin:10px 0 0;font-size:14px;color:#8a3b2a}
+/* result */
+.q-result h3{font-size:clamp(22px,2.2vw,28px);margin:0 0 10px;color:var(--ink);outline:none}
+.q-result .r-tag{display:inline-block;font-size:12px;letter-spacing:.04em;color:var(--accent-ink);border:1px solid #d9c9ab;border-radius:999px;padding:3px 10px;margin-bottom:14px}
+.q-result .r-snap{font-size:17px;line-height:1.6;color:#33312d;margin:0 0 24px}
+.q-result h4{font-size:14px;font-weight:600;letter-spacing:.04em;color:#5e5b55;margin:26px 0 12px}
+.r-dirs{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.r-dir{border:1px solid var(--paper-line);border-radius:8px;padding:18px 18px 16px;background:#fbfaf7}
+.r-dir b{display:block;font-size:18px;color:var(--ink);margin-bottom:6px}
+.r-dir p{margin:0 0 12px;font-size:15px;line-height:1.55;color:#3f3c37}
+.r-roles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0}
+.r-roles div{font-size:14px;line-height:1.45;color:#33312d;padding:9px 11px;border-radius:6px;background:#fff;border:1px solid #e6e1d7}
+.r-roles dt{font-size:12px;font-weight:600;color:var(--accent-ink);margin-bottom:2px}
+.r-roles dd{margin:0}
+.r-first{margin-top:12px;padding:18px 20px;border-radius:8px;background:var(--ink);color:#f1efeb}
+.r-first p{margin:0;font-size:16px;line-height:1.6}
+.r-first small{display:block;font-size:12px;letter-spacing:.04em;color:#d9bf92;margin-bottom:6px}
+.r-track{font-size:15px;line-height:1.6;color:#33312d;margin:0}
+.r-track a{color:var(--accent-ink);text-decoration:underline}
+.r-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;margin-top:28px}
+.q-again{background:none;border:0;padding:8px 0;font:inherit;font-size:15px;color:var(--accent-ink);cursor:pointer;text-decoration:underline}
+.r-note{font-size:13px;line-height:1.55;color:#5e5b55;margin:18px 0 0}
+.check-link{margin-top:36px;font-size:17px}
+.check-link a{color:var(--accent-ink);border-bottom:1px solid rgba(118,89,47,.45);padding-bottom:3px;font-weight:500}
+.contact .check-link a{color:var(--accent);border-bottom-color:rgba(200,164,110,.5)}
+.contact .check-link{margin-top:22px;font-size:16px}
+@media(max-width:960px){
+  .check-grid{grid-template-columns:1fr;gap:32px}
+  .quiz{padding:22px 16px}
+  .opts{grid-template-columns:1fr;gap:8px}
+  .opt{min-height:50px}
+  .r-roles{grid-template-columns:1fr}
+}
+.quiz form{display:none}
+.js .quiz form:not([hidden]){display:block}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .js .reveal{opacity:1;transform:none;transition:none}
@@ -355,6 +433,7 @@ footer .foot bdi{direction:ltr}
       <ul id="menu">
         <li><a href="#approach">הגישה</a></li>
         <li><a href="#expertise">מומחיות</a></li>
+        <li><a href="#check">בדיקה מהירה</a></li>
         <li><a href="#experience">ניסיון</a></li>
         <li><a href="#about">אודות</a></li>
         <li><a href="#contact">יצירת קשר</a></li>
@@ -405,6 +484,7 @@ footer .foot bdi{direction:ltr}
           <p>יש רעיונות לשימוש ב־AI ובאוטומציה, אבל צריך להבין מה מתאים לארגון ומה כדאי לקדם קודם.</p>
         </div>
       </div>
+      <p class="check-link reveal"><a href="#check">לא בטוחים מה מתאים לכם? בדיקה מהירה, 2 דקות <span aria-hidden="true">←</span></a></p>
     </div>
   </section>
 
@@ -533,6 +613,106 @@ footer .foot bdi{direction:ltr}
     </div>
   </section>
 
+  <section id="check" class="light check" aria-labelledby="h-qz">
+    <div class="wrap check-grid">
+      <div class="check-intro reveal">
+        <div class="eyebrow">בדיקה מהירה</div>
+        <h2 id="h-qz">מאיפה כדאי להתחיל אצלכם?</h2>
+        <p class="lead">שש שאלות קצרות על הארגון ועל העבודה, ובסופן אפיון ראשוני: אילו כיוונים מתאימים לכם, מה מערכת יכולה לקחת על עצמה, ומה הצעד הראשון.</p>
+        <ul class="check-facts">
+          <li>כ־2 דקות, בלחיצות בלבד</li>
+          <li>בלי פרטים אישיים</li>
+          <li>התשובות נשארות בדפדפן שלכם ולא נשמרות</li>
+        </ul>
+      </div>
+
+      <div class="quiz" id="quiz">
+        <noscript><p class="q-noscript">הבדיקה דורשת JavaScript. אפשר גם <a href="#contact">לספר לנו ישירות</a> מה מעסיק אתכם.</p></noscript>
+        <form id="qform" novalidate>
+          <div class="q-progress" aria-hidden="true"><span id="qbar"></span></div>
+          <p class="q-count" id="qcount" aria-live="polite">שאלה 1 מתוך 6</p>
+
+          <fieldset class="q" data-q="org" data-type="one">
+            <legend tabindex="-1">מה מתאר אתכם הכי טוב?</legend>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="org" value="solo"><span>עצמאי / עסק קטן</span></label>
+              <label class="opt"><input type="radio" name="org" value="biz"><span>עסק עם צוות</span></label>
+              <label class="opt"><input type="radio" name="org" value="npo"><span>עמותה או ארגון חברתי</span></label>
+              <label class="opt"><input type="radio" name="org" value="gov"><span>רשות או גוף ציבורי</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="q" data-q="size" data-type="one">
+            <legend tabindex="-1">כמה אנשים עובדים אצלכם עם המידע?</legend>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="size" value="1"><span><bdi>1–3</bdi></span></label>
+              <label class="opt"><input type="radio" name="size" value="2"><span><bdi>4–15</bdi></span></label>
+              <label class="opt"><input type="radio" name="size" value="3"><span><bdi>16–50</bdi></span></label>
+              <label class="opt"><input type="radio" name="size" value="4"><span>יותר מ־50</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="q" data-q="src" data-type="many">
+            <legend tabindex="-1">איפה המידע נמצא היום?</legend>
+            <p class="q-hint">אפשר לבחור כמה תשובות</p>
+            <div class="opts">
+              <label class="opt"><input type="checkbox" name="src" value="wa"><span>WhatsApp</span></label>
+              <label class="opt"><input type="checkbox" name="src" value="mail"><span>מייל</span></label>
+              <label class="opt"><input type="checkbox" name="src" value="sheets"><span>אקסל / Google Sheets</span></label>
+              <label class="opt"><input type="checkbox" name="src" value="sys"><span>מערכת CRM או מערכת ייעודית</span></label>
+              <label class="opt"><input type="checkbox" name="src" value="paper"><span>מחברות, פתקים או בזיכרון של אנשים</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="q" data-q="time" data-type="many" data-max="2">
+            <legend tabindex="-1">מה גוזל הכי הרבה זמן?</legend>
+            <p class="q-hint" id="time-hint">עד שתי תשובות</p>
+            <div class="opts">
+              <label class="opt"><input type="checkbox" name="time" value="reply"><span>מענה לפניות</span></label>
+              <label class="opt"><input type="checkbox" name="time" value="docs"><span>הכנת הצעות מחיר ומסמכים</span></label>
+              <label class="opt"><input type="checkbox" name="time" value="dup"><span>עדכון אותו מידע בכמה מקומות</span></label>
+              <label class="opt"><input type="checkbox" name="time" value="track"><span>מעקב אחרי משימות ופניות</span></label>
+              <label class="opt"><input type="checkbox" name="time" value="reports"><span>הכנת דוחות וסיכומים</span></label>
+              <label class="opt"><input type="checkbox" name="time" value="rel" data-rel><span>שמירה על קשר עם לקוחות</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="q" data-q="pain" data-type="one">
+            <legend tabindex="-1">מה הכי מתסכל?</legend>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="pain" value="drop"><span>דברים נופלים בין הכיסאות</span></label>
+              <label class="opt"><input type="radio" name="pain" value="nopic"><span>אין תמונת מצב ברורה</span></label>
+              <label class="opt"><input type="radio" name="pain" value="one"><span>הכול תלוי באדם אחד</span></label>
+              <label class="opt"><input type="radio" name="pain" value="twice"><span>עושים את אותה עבודה פעמיים</span></label>
+              <label class="opt"><input type="radio" name="pain" value="ai"><span>רוצים להשתמש ב־AI ולא ברור איך</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="q" data-q="tech" data-type="one">
+            <legend tabindex="-1">איפה אתם עומדים טכנולוגית?</legend>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="tech" value="none"><span>כמעט בלי מערכות</span></label>
+              <label class="opt"><input type="radio" name="tech" value="apart"><span>יש מערכות, אבל הן לא מחוברות</span></label>
+              <label class="opt"><input type="radio" name="tech" value="under"><span>יש מערכת שלא מנוצלת עד הסוף</span></label>
+              <label class="opt"><input type="radio" name="tech" value="tried"><span>כבר ניסינו אוטומציה או AI</span></label>
+            </div>
+            <label class="q-free" for="qfree">במשפט אחד: מה הייתם רוצים שיעבוד טוב יותר? <span>(רשות)</span></label>
+            <textarea id="qfree" name="free" rows="2" maxlength="280" aria-describedby="qfree-note"></textarea>
+            <p class="q-hint" id="qfree-note">לא נשמר ולא נשלח. יתווסף להודעה רק אם תבחרו לשלוח אותה בעצמכם.</p>
+          </fieldset>
+
+          <div class="q-nav">
+            <button type="button" class="q-back" id="qback">→ הקודמת</button>
+            <button type="submit" class="btn-primary" id="qnext" disabled>הבאה ←</button>
+          </div>
+          <p class="q-need" id="qneed" aria-live="polite"></p>
+        </form>
+
+        <div class="q-result" id="qres" hidden></div>
+      </div>
+    </div>
+  </section>
+
   <section id="experience" class="experience" aria-labelledby="h-xp">
     <div class="wrap">
       <div class="body reveal">
@@ -607,6 +787,7 @@ footer .foot bdi{direction:ltr}
         <div class="eyebrow">יצירת קשר</div>
         <h2 id="h-ct">מה הייתם רוצים שיעבוד טוב יותר בארגון?</h2>
         <p class="lead">תהליך שגוזל זמן, מידע שקשה לרכז או רעיון לכלי חדש — אפשר להתחיל גם מצורך שעדיין לא הוגדר עד הסוף. ספרו לנו מה מעסיק אתכם.</p>
+        <p class="check-link"><a href="#check">עוד לא בטוחים איך לנסח? התחילו בבדיקה המהירה <span aria-hidden="true">←</span></a></p>
       </div>
       <ul class="channels reveal">
         <li><a href="https://wa.me/972507543510" target="_blank" rel="noopener noreferrer">שלחו הודעה ב־WhatsApp<span>↗</span></a></li>
@@ -641,6 +822,118 @@ els.forEach(function(e){io.observe(e)})})();
   var ok=document.getElementById('ok'),ed=document.getElementById('edit'),msg=document.getElementById('simmsg'),f4=document.getElementById('f4');
   ok.addEventListener('click',function(){f4.classList.add('hit');msg.textContent='הדמיה בלבד: ההצעה סומנה כנשלחה. בפועל לא נשלח דבר.';ok.disabled=true;ed.disabled=true});
   ed.addEventListener('click',function(){msg.textContent='הדמיה בלבד: הטיוטה נפתחת לעריכה לפני השליחה.'});
+})();
+
+/* quick check: rule-based, runs only in the browser — nothing is stored or sent */
+(function(){
+  var form=document.getElementById('qform');if(!form)return;
+  var qs=[].slice.call(form.querySelectorAll('.q')),i=0,N=qs.length;
+  var next=document.getElementById('qnext'),back=document.getElementById('qback'),
+      bar=document.getElementById('qbar'),count=document.getElementById('qcount'),
+      need=document.getElementById('qneed'),res=document.getElementById('qres');
+  var NOUN={solo:['לקוחות','לקוח'],biz:['לקוחות','לקוח'],npo:['תורמים ושותפים','תורם ושותף'],gov:['תושבים','תושב']};
+  var LBL={
+    org:{solo:'עצמאי / עסק קטן',biz:'עסק עם צוות',npo:'עמותה או ארגון חברתי',gov:'רשות או גוף ציבורי'},
+    size:{1:'1–3 אנשים',2:'4–15 אנשים',3:'16–50 אנשים',4:'יותר מ־50 אנשים'},
+    src:{wa:'WhatsApp',mail:'מייל',sheets:'אקסל',sys:'מערכת ייעודית',paper:'רשימות ידניות'},
+    time:{reply:'מענה לפניות',docs:'הכנת הצעות מחיר ומסמכים',dup:'עדכון אותו מידע בכמה מקומות',track:'מעקב אחרי משימות ופניות',reports:'הכנת דוחות וסיכומים',rel:'שמירה על קשר עם {p}'},
+    pain:{drop:'דברים נופלים בין הכיסאות',nopic:'אין תמונת מצב ברורה',one:'הכול תלוי באדם אחד',twice:'עושים את אותה עבודה פעמיים',ai:'רוצים להשתמש ב־AI ולא ברור איך'},
+    tech:{none:'כמעט בלי מערכות',apart:'יש מערכות שלא מחוברות',under:'יש מערכת שלא מנוצלת עד הסוף',tried:'כבר ניסו אוטומציה או AI'}
+  };
+  var DIRS={
+    inbox:{t:'כל הפניות במקום אחד',d:'פניות מ־WhatsApp, מהמייל ומהטלפון נכנסות לרשימה אחת, עם סימון מה טופל ומה עדיין פתוח.',sys:'מרכזת את הפניות, מזהה את הנושא ומסמנת מה עדיין פתוח',hum:'מחליטים מה לענות ומטפלים',f:'למפות מאיפה מגיעות הפניות היום, ואיך מסמנים מה כבר טופל.'},
+    crm:{t:'כרטיס אחד לכל {s}',d:'כל ההיסטוריה של הקשר — פניות, שיחות ומסמכים — במקום אחד, במקום בין אקסל, הודעות וזיכרון.',sys:'שומרת את ההיסטוריה ומזכירה מתי לחזור',hum:'מנהלים את הקשר ומחליטים על הצעד הבא',f:'להגדיר אילו פרטים באמת צריך לדעת על כל {s}, ומאיפה הם מגיעים היום.'},
+    docs:{t:'טיוטות מוכנות לבדיקה',d:'הצעות מחיר ומסמכים שחוזרים על עצמם נבנים מתוך מידע שכבר קיים, ומגיעים אליכם כטיוטה.',sys:'מכינה טיוטה מתוך פרטים ומסמכים קודמים',hum:'בודקים, מתקנים ומאשרים לפני שליחה',f:'לאסוף 3–5 הצעות או מסמכים אחרונים ולזהות מה חוזר בהם.'},
+    sync:{t:'מזינים פעם אחת',d:'פרט שמוזן במקום אחד מתעדכן בכל מקום שבו הוא נדרש, בלי להקליד אותו שוב.',sys:'מעבירה ומעדכנת את המידע בין המערכות',hum:'מזינים פעם אחת ובודקים חריגים',f:'לרשום אילו פרטים מוקלדים היום יותר מפעם אחת, ובאילו מקומות.'},
+    dash:{t:'תמונת מצב שמתעדכנת לבד',d:'המספרים החשובים מרוכזים במסך אחד ומתעדכנים בלי להכין דוח ידני.',sys:'מרכזת את הנתונים ומעדכנת אותם',hum:'קוראים את התמונה ומקבלים החלטות',f:'לבחור 3–5 שאלות שהייתם רוצים לקבל עליהן תשובה כל שבוע.'},
+    know:{t:'הידע לא תלוי באדם אחד',d:'נהלים, תשובות ומידע חשוב נגישים לכל הצוות, גם כשמי שיודע לא זמין.',sys:'מאתרת תשובות ונהלים מתוך המידע הקיים',hum:'מאשרים את התשובות ומעדכנים את הידע',f:'לרשום את 10 השאלות שהכי הרבה פעמים מופנות לאותו אדם.'},
+    map:{t:'מיפוי ותעדוף',d:'לפני שבוחרים כלי, מבינים מה קורה היום ומחליטים מה כדאי לקדם קודם — כולל איפה AI באמת יכול לעזור.',sys:'בשלב הזה עוד לא — קודם מחליטים מה היא צריכה לעשות',hum:'ממפים יחד תהליכים, מידע ומערכות, ומתעדפים',f:'פגישת מיפוי קצרה: אילו תהליכים, מי מעורב ואיפה נמצא המידע.'}
+  };
+  var ORDER=['inbox','crm','sync','docs','dash','know','map'];
+  var W={
+    org:{npo:{crm:1},gov:{dash:1,inbox:1}},
+    size:{3:{dash:1},4:{dash:2,map:1}},
+    src:{wa:{inbox:2},mail:{inbox:1},sheets:{crm:1,sync:1,dash:1},sys:{sync:1},paper:{crm:2,know:1}},
+    time:{reply:{inbox:3},docs:{docs:3},dup:{sync:3},track:{inbox:2,dash:1},reports:{dash:3},rel:{crm:3}},
+    pain:{drop:{inbox:2,crm:1},nopic:{dash:3},one:{know:3},twice:{sync:3},ai:{map:3}},
+    tech:{none:{crm:2},apart:{sync:2},under:{map:2},tried:{map:1,docs:1,know:1}}
+  };
+  function vals(name){return [].slice.call(form.querySelectorAll('input[name="'+name+'"]:checked')).map(function(x){return x.value})}
+  function noun(k){var o=(vals('org')[0])||'biz';return NOUN[o][k]}
+  function fill(s){return s.replace(/\{p\}/g,noun(0)).replace(/\{s\}/g,noun(1))}
+  function pre(p,w){return /^[A-Za-z]/.test(w)?p+'־'+w:p+w}
+  function list(a,p){if(a.length<2)return pre(p,a[0]);return pre(p,a.slice(0,-1).join(', '))+' '+pre('ו',a[a.length-1])}
+  function esc(s){return s.replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+  function answered(){var f=qs[i];return f.querySelector('input:checked')!==null}
+  function sync(){
+    next.disabled=!answered();
+    need.textContent='';
+    var f=qs[i],max=+f.dataset.max||0;
+    if(max){var boxes=f.querySelectorAll('input'),n=f.querySelectorAll('input:checked').length;
+      boxes.forEach(function(b){b.disabled=!b.checked&&n>=max})}
+  }
+  function show(k,focus){
+    i=k;qs.forEach(function(f,j){f.classList.toggle('on',j===i)});
+    bar.style.width=((i+1)/N*100)+'%';
+    count.textContent='שאלה '+(i+1)+' מתוך '+N;
+    back.hidden=i===0;
+    next.textContent=i===N-1?'להצגת האפיון ←':'הבאה ←';
+    var rel=form.querySelector('input[data-rel]+span');rel.textContent='שמירה על קשר עם '+noun(0);
+    sync();
+    if(focus)qs[i].querySelector('legend').focus();
+  }
+  form.addEventListener('change',sync);
+  back.addEventListener('click',function(){if(i>0)show(i-1,true)});
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(!answered()){need.textContent='בחרו לפחות תשובה אחת כדי להמשיך.';return}
+    if(i<N-1){show(i+1,true);return}
+    result();
+  });
+
+  function result(){
+    var sc={};ORDER.forEach(function(k){sc[k]=0});
+    Object.keys(W).forEach(function(q){vals(q).forEach(function(v){var w=W[q][v];if(w)Object.keys(w).forEach(function(k){sc[k]+=w[k]})})});
+    if(vals('src').length>=3)sc.sync+=1;
+    var top=ORDER.slice().sort(function(a,b){return sc[b]-sc[a]||ORDER.indexOf(a)-ORDER.indexOf(b)});
+    var pick=top.filter(function(k,j){return j<2||(j<3&&sc[k]>=4)});
+    var size=+vals('size')[0];
+    var ongoing=size>=3||pick.length===3||pick.indexOf('map')>-1&&pick.length>1;
+
+    var src=vals('src').map(function(v){return LBL.src[v]}),time=vals('time').map(function(v){return fill(LBL.time[v])}),pain=LBL.pain[vals('pain')[0]];
+    var snap='המידע שלכם נמצא היום '+list(src,'ב')+', ורוב הזמן הולך על '+list(time,'')+'. ומה שהכי מתסכל: '+pain+'.';
+    var h='<span class="r-tag">אפיון ראשוני</span><h3 tabindex="-1" id="qres-h">מה יכול לעבוד אצלכם טוב יותר</h3>'+
+      '<p class="r-snap">'+esc(snap)+'</p><h4>כיוונים שמתאימים לכם</h4><ol class="r-dirs">';
+    pick.forEach(function(k){var d=DIRS[k];
+      h+='<li class="r-dir"><b>'+esc(fill(d.t))+'</b><p>'+esc(fill(d.d))+'</p><dl class="r-roles"><div><dt>המערכת</dt><dd>'+esc(d.sys)+'</dd></div><div><dt>אתם</dt><dd>'+esc(d.hum)+'</dd></div></dl></li>'});
+    h+='</ol><h4>הצעד הראשון שהייתי בודק</h4><div class="r-first"><small>'+esc(fill(DIRS[pick[0]].t))+'</small><p>'+esc(fill(DIRS[pick[0]].f))+'</p></div>'+
+      '<h4>איך זה יכול להיראות</h4><p class="r-track">'+(ongoing?
+        '<strong>ליווי טכנולוגי מתמשך</strong> — יש כאן כמה כיוונים, וכדאי לקדם אותם לפי סדר עדיפויות.':
+        '<strong>פרויקט ממוקד</strong> — יש כיוון בולט אחד שאפשר להתחיל ממנו.')+
+      ' <a href="#work">על שתי הדרכים לעבוד יחד</a></p>';
+
+    var free=document.getElementById('qfree').value.trim();
+    var msg='שלום ארז, עשיתי את הבדיקה המהירה באתר.\n'+
+      'ארגון: '+LBL.org[vals('org')[0]]+', '+LBL.size[size]+'\n'+
+      'המידע נמצא ב: '+src.join(', ')+'\n'+
+      'הכי הרבה זמן: '+time.join(', ')+'\n'+
+      'הכי מתסכל: '+pain+'\n'+
+      'מצב טכנולוגי: '+LBL.tech[vals('tech')[0]]+'\n'+
+      'כיוונים שעלו: '+pick.map(function(k){return fill(DIRS[k].t)}).join(' · ')+
+      (free?'\nבמילים שלי: '+free:'')+'\n\nאשמח לדבר.';
+    h+='<div class="r-actions"><a class="btn-primary" target="_blank" rel="noopener noreferrer" href="https://wa.me/972507543510?text='+encodeURIComponent(msg)+'">שלחו לי את האפיון ב־WhatsApp ↗</a>'+
+      '<button type="button" class="q-again" id="qagain">להתחיל מחדש</button></div>'+
+      '<p class="r-note">אפיון ראשוני שנוצר אוטומטית מהתשובות בלבד, ואינו מחליף שיחה. שום מידע לא נשמר ולא נשלח — אלא אם תבחרו לשלוח את ההודעה בעצמכם.</p>';
+    res.innerHTML=h;form.hidden=true;res.hidden=false;
+    document.getElementById('qres-h').focus();
+    document.getElementById('quiz').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+    document.getElementById('qagain').addEventListener('click',function(){
+      form.reset();form.querySelectorAll('input').forEach(function(b){b.disabled=false});
+      res.hidden=true;res.innerHTML='';form.hidden=false;show(0,true);
+    });
+  }
+  show(0,false);
 })();
 </script>
 </body>
