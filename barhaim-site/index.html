@@ -332,6 +332,7 @@ footer .foot bdi{direction:ltr}
   section{padding:64px 0}
   .hero{min-height:auto;padding:120px 0 72px;background:linear-gradient(0deg,rgba(13,14,16,.96),rgba(13,14,16,.88)),url('https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=800&q=60') center/cover,var(--bg)}
   .steps3{grid-template-columns:minmax(0,1fr)}
+  .work-list{min-width:0}.work-list thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.work-list tr,.work-list td{display:block}.work-list td{display:grid;grid-template-columns:90px 1fr;gap:8px;padding:8px 0}.work-list td::before{content:attr(data-l);color:#a8a399;font-size:12.5px}
   .case{padding:22px 16px;margin-top:40px}
   .f{grid-template-columns:1fr;gap:8px;padding:14px}
   .actor{justify-self:start}
@@ -476,7 +477,7 @@ footer .foot bdi{direction:ltr}
               <table class="work-list">
                 <caption class="sr">רשימת עבודה לדוגמה</caption>
                 <thead><tr><th scope="col">פונה</th><th scope="col">נושא</th><th scope="col">מצב</th><th scope="col">הצעד הבא</th></tr></thead>
-                <tbody><tr><td>נועה לוי</td><td>פרטים על סדנה</td><td>לא תועד המשך טיפול</td><td>לבדוק ולחזור לפונה</td></tr></tbody>
+                <tbody><tr><td data-l="פונה">נועה לוי</td><td data-l="נושא">פרטים על סדנה</td><td data-l="מצב">לא תועד המשך טיפול</td><td data-l="הצעד הבא">לבדוק ולחזור לפונה</td></tr></tbody>
               </table>
             </div>
             <p class="st-note"><b>הצוות</b> מחליט ופועל: בודק מה כבר נעשה, וחוזר לפונה.</p>
