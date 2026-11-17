@@ -265,6 +265,79 @@ footer .foot bdi{direction:ltr}
   .tracks{grid-template-columns:1fr}
   .track{padding:30px 22px}
 }
+/* refine v5 */
+.hero{background:linear-gradient(270deg,rgba(13,14,16,.97) 0%,rgba(13,14,16,.9) 50%,rgba(13,14,16,.6) 100%),url('https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1600&q=60') center/cover,var(--bg)}
+.hero .lead{color:#e4dfd6;font-weight:400}
+.hero-actions{display:flex;flex-wrap:wrap;gap:22px 28px;align-items:center;margin-top:40px}
+.hero-actions .more{margin-top:0}
+.btn-primary{display:inline-block;background:var(--accent);color:#1b1408;font-weight:600;font-size:16px;padding:14px 26px;border-radius:6px;transition:background .2s}
+.btn-primary:hover{background:#d8b580}
+.lead{color:#b4afa6}
+.light .lead{color:#4f4c47}
+.state p,.exp p{color:#4f4c47}
+.who{margin-top:40px;font-size:16px;color:var(--ink);border-inline-start:2px solid var(--accent-ink);padding-inline-start:14px;max-width:62ch}
+/* cases */
+.case{margin-top:64px;border:1px solid var(--line);border-radius:10px;padding:36px;background:var(--card)}
+.case-head h3{font-size:clamp(22px,2.2vw,30px);margin:14px 0 10px}
+.case-head p{color:#cbc6bd;font-size:17px;max-width:70ch}
+.steps3{list-style:none;margin:28px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.st{min-width:0;border:1px solid var(--line);border-radius:8px;padding:20px;background:#1b1c21;display:flex;flex-direction:column;gap:10px}
+.st-h{display:flex;gap:10px;align-items:baseline}
+.sn{font-size:12.5px;font-weight:600;color:var(--accent)}
+.st-h b{font-size:17px}
+.src{border:1px solid #33343a;border-radius:6px;padding:10px 12px;background:#202127}
+.src p{margin:4px 0 0;font-size:15px;color:#e6e1d8}
+.ch{font-size:12px;font-weight:600;color:#d8d3ca;background:#2b2c33;border-radius:4px;padding:2px 7px;direction:ltr;unicode-bidi:isolate}
+.merged{border:1px solid rgba(200,164,110,.55);border-radius:6px;padding:14px;background:#1f1d19}
+.m-name{font-weight:600;font-size:16px;margin-bottom:8px}
+.m-tags{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.m-tags li{font-size:14.5px;color:#e6e1d8}
+.m-tags small{display:block;font-size:12.5px;color:#a8a399}
+.m-tags .warn{color:#f0c98e;font-weight:500}
+.st-note{margin:auto 0 0;font-size:14px;color:#bdb8af}
+.st-note b{color:var(--text);font-weight:600}
+.tbl-wrap{overflow-x:auto}
+.work-list{width:100%;border-collapse:collapse;font-size:14px;min-width:280px}
+.work-list th{text-align:start;font-weight:600;color:#a8a399;font-size:12.5px;padding:6px 8px;border-bottom:1px solid var(--line)}
+.work-list td{padding:10px 8px;color:#e6e1d8;vertical-align:top;border-bottom:1px solid #2a2b30}
+.work-list td:nth-child(3){color:#f0c98e}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.case-end{margin-top:22px;font-size:17px;color:var(--text);border-inline-start:2px solid var(--accent);padding-inline-start:14px}
+.flow4{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:12px}
+.f{display:grid;grid-template-columns:76px 1fr;gap:16px;align-items:start;border:1px solid var(--line);border-radius:8px;padding:18px;background:#1b1c21}
+.f b{font-size:16.5px}
+.f p{margin:6px 0 0;font-size:15px;color:#cbc6bd}
+.actor{display:inline-block;text-align:center;font-size:12.5px;font-weight:600;border-radius:99px;padding:4px 10px;white-space:nowrap}
+.a-client{background:#2b2c33;color:#e6e1d8}
+.a-system{background:rgba(200,164,110,.16);color:#f0c98e;border:1px solid rgba(200,164,110,.4)}
+.a-human{background:#e8e3d8;color:#15161a}
+.bubble{margin-top:10px;background:#202127;border:1px solid #33343a;border-radius:10px;padding:10px 14px;font-size:15px;color:#e6e1d8;max-width:48ch}
+.bubble small{display:block;margin-top:4px;font-size:12px;color:#a8a399}
+.draft{margin-top:10px;border:1px dashed rgba(200,164,110,.6);border-radius:6px;padding:12px 14px;max-width:56ch;background:#1f1d19}
+.d-title{font-weight:600;font-size:14.5px;margin-bottom:6px}
+.d-title span{font-weight:500;font-size:12px;color:#f0c98e;margin-inline-start:6px}
+.d-row{display:grid;grid-template-columns:90px 1fr;gap:8px;font-size:14px;color:#cbc6bd;padding:3px 0}
+.d-row span:first-child{color:#a8a399}
+.sim{margin-top:8px!important;font-size:13.5px!important;color:#f0c98e!important;min-height:1.2em}
+.done-msg{color:#e6e1d8!important}
+.f.hit{border-color:rgba(200,164,110,.7);background:#201e19}
+.f.hit .done-msg{color:#f0c98e!important;font-weight:600}
+.branch{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:15px;color:#e6e1d8;border:1px dashed var(--line);border-radius:8px;padding:14px 18px}
+.demo-cta{margin-top:40px;font-size:18px}
+.demo-cta a{color:var(--accent);border-bottom:1px solid rgba(200,164,110,.5);padding-bottom:3px}
+.aside{margin-top:10px!important;font-size:13.5px!important;color:#a8a399!important}
+.channels a{font-weight:500}
+.channels a span{color:#a8a399}
+@media(max-width:960px){
+  section{padding:64px 0}
+  .hero{min-height:auto;padding:120px 0 72px;background:linear-gradient(0deg,rgba(13,14,16,.96),rgba(13,14,16,.88)),url('https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=800&q=60') center/cover,var(--bg)}
+  .steps3{grid-template-columns:minmax(0,1fr)}
+  .case{padding:22px 16px;margin-top:40px}
+  .f{grid-template-columns:1fr;gap:8px;padding:14px}
+  .actor{justify-self:start}
+  .states{margin-top:32px}
+  .grid4,.tracks{margin-top:36px}
+}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .js .reveal{opacity:1;transform:none;transition:none}
@@ -295,8 +368,11 @@ footer .foot bdi{direction:ltr}
     <div class="wrap">
       <div class="eyebrow">אסטרטגיה · מערכות מידע · AI</div>
       <h1 id="h1"><span>להבין את המורכבות.</span><span>ליצור בהירות.</span></h1>
-      <p class="lead">אנחנו מחברים הבנה עמוקה של אנשים וארגונים עם חשיבה אסטרטגית, מערכות מידע ו־AI — כדי להפוך אתגרים מורכבים לפתרונות מדויקים שעובדים במציאות.</p>
-      <a class="more" href="#approach">להכיר את הגישה שלנו <span aria-hidden="true">↓</span></a>
+      <p class="lead">אנחנו עוזרים לארגונים לחבר מידע, לשפר תהליכים ולהפחית עבודה ידנית באמצעות מערכות מידע, אוטומציה ו־AI. מתחילים בהבנת הצורך, ומלווים את הפתרון מהאפיון ועד הפיתוח וההטמעה.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#contact">נדבר על האתגר שלכם</a>
+        <a class="more" href="#demos">כך זה עובד בפועל <span aria-hidden="true">↓</span></a>
+      </div>
     </div>
   </section>
 
@@ -305,29 +381,27 @@ footer .foot bdi{direction:ltr}
       <div class="challenge-intro">
         <div class="reveal">
           <div class="eyebrow">האתגר</div>
-          <h2 id="h-ch">האתגר לא תמיד מתחיל בטכנולוגיה.</h2>
-          <p class="sub">לא כל אתגר ארגוני נראה כמו בעיה טכנולוגית. לפעמים הוא פשוט מורגש בעבודה היומיומית.</p>
+          <h2 id="h-ch">המידע קיים. העבודה עדיין מסתבכת.</h2>
         </div>
         <div class="reveal">
-          <p class="lead">לפעמים הוא מתחיל במידע שמפוזר בין מערכות. בתהליכים שמסתמכים על זיכרון של אנשים. בפניות שלא מקבלות מענה בזמן.</p>
-          <p class="lead">ולפעמים דווקא ברצון להתקדם, לאמץ AI ולגלות אפשרויות חדשות — בלי לדעת מאיפה להתחיל.</p>
+          <p class="lead">כשהמידע מפוזר והמערכות לא מחוברות, אנשים נדרשים להשלים את החסר: להעביר נתונים, לזכור משימות ולבדוק שוב מה כבר טופל.</p>
         </div>
       </div>
       <div class="states">
         <div class="state reveal">
           <svg class="mark" viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="#76592f" stroke-width="1.4"><rect x="4" y="6" width="24" height="7" rx="1"/><rect x="10" y="18" width="24" height="7" rx="1"/><rect x="16" y="30" width="24" height="7" rx="1"/></g></svg>
-          <h3>כשהתפעול הופך לעומס</h3>
-          <p>משימות שחוזרות על עצמן, אחריות שמתפזרת בין אנשים ותחושה שמשהו חשוב עלול להתפספס.</p>
+          <h3>יותר מדי עבודה ידנית</h3>
+          <p>העתקת נתונים, עדכונים בכמה מערכות ומעקב שמתנהל בהודעות ובגיליונות.</p>
         </div>
         <div class="state reveal">
           <svg class="mark" viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="#76592f" stroke-width="1.4"><circle cx="9" cy="10" r="4"/><circle cx="35" cy="9" r="4"/><circle cx="8" cy="34" r="4"/><circle cx="34" cy="35" r="4"/><circle cx="22" cy="22" r="5" stroke-dasharray="2 2"/></g></svg>
-          <h3>כשהמידע קיים, אבל התמונה חסרה</h3>
-          <p>נתונים נמצאים בכל מקום, אבל קשה לדעת מה באמת קורה, מה דורש טיפול ואיפה מסתתרות ההזדמנויות.</p>
+          <h3>קשה לדעת מה דורש טיפול</h3>
+          <p>המידע נמצא במקומות שונים, וקשה לראות אילו פניות נשארו פתוחות, מה התעכב ואיפה נדרשת החלטה.</p>
         </div>
         <div class="state reveal">
           <svg class="mark" viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="#76592f" stroke-width="1.4"><path d="M4 36 L18 24 L26 30 L40 10"/><path d="M32 10 H40 V18"/></g></svg>
-          <h3>כשהאפשרויות מתקדמות מהר מהארגון</h3>
-          <p>כולם מדברים על AI, אבל השאלה החשובה היא איפה הוא באמת יכול ליצור ערך — ואיך משלבים אותו נכון.</p>
+          <h3>רוצים להתקדם, ולא ברור מאיפה להתחיל</h3>
+          <p>יש רעיונות לשימוש ב־AI ובאוטומציה, אבל צריך להבין מה מתאים לארגון ומה כדאי לקדם קודם.</p>
         </div>
       </div>
     </div>
@@ -340,10 +414,8 @@ footer .foot bdi{direction:ltr}
         <h2 id="h-ap">קודם מבינים.<br>אחר כך בונים.</h2>
       </div>
       <div class="body reveal">
-        <p class="lead-strong">מערכת חדשה לא בהכרח פותרת תהליך לא נכון. אוטומציה לא מתקנת מידע לא מסודר. וגם AI מתקדם לא ייצור ערך אם הוא לא מחובר לצורך אמיתי.</p>
-        <p>אנחנו מתחילים בהבנת הארגון: האנשים, התהליכים, המידע, האתגרים וההחלטות שמתקבלות בכל יום.</p>
-        <p>אבל לא פחות חשוב, אנחנו בוחנים גם את מה שעדיין לא נמצא על השולחן — יכולות חדשות, אפשרויות שלא נבחנו ופתרונות שהארגון לא בהכרח ידע שאפשר לבנות.</p>
-        <p>רק לאחר מכן אנחנו בוחרים מה נכון לשנות, מה כדאי לחבר ואיך להפוך את האפשרויות האלה לתוצאות מעשיות.</p>
+        <p class="lead-strong">לפני שבוחרים מערכת או מפתחים פתרון, לומדים איך הארגון עובד: מי עושה מה, איפה נמצא המידע ואילו משימות דורשות זמן ומאמץ.</p>
+        <p>מתוך ההיכרות הזאת מגדירים מה כדאי לשנות, מה אפשר לחבר ואילו יכולות חדשות יכולות לעזור. משם עוברים לאפיון, לפיתוח ולהטמעה — עם האנשים שיצטרכו להשתמש בפתרון ביום־יום.</p>
       </div>
     </div>
   </section>
@@ -353,14 +425,14 @@ footer .foot bdi{direction:ltr}
       <div class="reveal">
         <div class="eyebrow">מומחיות</div>
         <h2 id="h-ex">מהחשיבה ועד היישום.</h2>
-        <p class="lead">אנחנו מחברים בין תחומים שבארגונים רבים מנוהלים בנפרד — כדי ליצור פתרונות שלמים ולא אוסף כלים.</p>
       </div>
       <div class="grid4">
-        <article class="exp reveal"><span class="n">01</span><h3>אסטרטגיה ותהליכים</h3><p>להבין כיצד הארגון עובד, לזהות נקודות חיכוך ולתכנן תהליכים שמחברים בין אנשים, אחריות ומטרות.</p></article>
-        <article class="exp reveal"><span class="n">02</span><h3>מערכות מידע ודאטה</h3><p>להפוך מידע מפוזר לתשתית ארגונית מסודרת, נגישה ושימושית — כזו שמאפשרת לראות את התמונה ולקבל החלטות.</p></article>
-        <article class="exp reveal"><span class="n">03</span><h3>AI ופתרונות חכמים</h3><p>לשלב סוכנים חכמים, ניהול ידע ויכולות ניתוח והחלטה בתהליכים קיימים וחדשים, באופן שמייצר ערך אמיתי.</p></article>
-        <article class="exp reveal"><span class="n">04</span><h3>אינטגרציות ואוטומציה</h3><p>לחבר מערכות ותהליכים, לצמצם פעולות ידניות וליצור רציפות בין מה שקורה בחלקים השונים של הארגון.</p></article>
+        <article class="exp reveal"><span class="n">01</span><h3>אסטרטגיה ותהליכים</h3><p>מיפוי תהליכי העבודה, זיהוי צווארי בקבוק והגדרת אחריות, מטרות וסדרי עדיפויות.</p></article>
+        <article class="exp reveal"><span class="n">02</span><h3>מערכות מידע ודאטה</h3><p>אפיון והקמה של מערכות לניהול הפעילות, ארגון הנתונים ובניית דוחות שמסייעים למעקב ולקבלת החלטות.</p></article>
+        <article class="exp reveal"><span class="n">03</span><h3>AI ופתרונות חכמים</h3><p>פיתוח כלים לאיתור ידע, ניתוח מידע והכנת טיוטות והמלצות — עם כללי פעולה ובקרה אנושית בהתאם לצורך.</p></article>
+        <article class="exp reveal"><span class="n">04</span><h3>אינטגרציות ואוטומציה</h3><p>חיבור בין מערכות ואוטומציה של העברת נתונים, עדכונים ומשימות חוזרות.</p></article>
       </div>
+      <p class="who reveal">את העבודה מוביל ארז בר חיים באופן אישי, בשילוב אנשי מקצוע נוספים בהתאם לצורכי הפרויקט.</p>
     </div>
   </section>
 
@@ -368,72 +440,95 @@ footer .foot bdi{direction:ltr}
     <div class="wrap">
       <div class="reveal">
         <div class="eyebrow">המחשות</div>
-        <h2 id="h-dm">איך זה נראה בפועל.</h2>
-        <p class="lead">שתי המחשות לאופן שבו אסטרטגיה, מערכות ו־AI עובדים יחד. הדוגמאות להמחשה בלבד.</p>
+        <h2 id="h-dm">כך זה עובד בפועל.</h2>
+        <p class="lead">שני מקרים, צעד אחר צעד: מה המערכת עושה, ומה נשאר בידי האדם.</p>
       </div>
 
-      <div class="demo">
-        <div class="txt reveal">
-          <span class="tag">המחשה 1</span>
-          <h3>ממידע מפוזר לתמונה אחת</h3>
-          <p>כשהמידע מפוזר בין מערכות, קבצים ואנשים, קשה לראות את התמונה המלאה. חיבור נכון של הנתונים מאפשר לזהות מה דורש תשומת לב — ולעיתים גם את מה שלא ידענו לחפש.</p>
+      <article class="case reveal" aria-labelledby="c1">
+        <div class="case-head">
+          <span class="tag">דוגמה להמחשה — הנתונים בדויים</span>
+          <h3 id="c1">למי עדיין לא חזרנו?</h3>
+          <p>פניות מגיעות במייל וב־WhatsApp. פרטי הלקוחות נמצאים ב־CRM. כדי לדעת למי צריך לחזור, הצוות נדרש לבדוק בכמה מקומות.</p>
         </div>
-        <div class="stage reveal s3" id="d1">
-          <div class="stage-top">
-            <div class="stepper" role="group" aria-label="שלבי ההמחשה">
-              <button type="button" data-s="1">מקורות נפרדים</button>
-              <button type="button" data-s="2">תמונה ארגונית אחת</button>
-              <button type="button" data-s="3" aria-pressed="true">תובנות</button>
-            </div>
-            <span class="tag">המחשה</span>
-          </div>
-          <div class="merge">
-            <ul class="sources" aria-label="מקורות מידע">
-              <li>CRM<small>לקוחות ואנשי קשר</small></li>
-              <li>דיוור<small>פתיחות ותגובות</small></li>
-              <li>פניות<small>טלפון, מייל, WhatsApp</small></li>
-              <li>נתוני פעילות<small>אירועים ומשימות</small></li>
-              <li>קבצים<small>טבלאות וגיליונות</small></li>
-            </ul>
-            <svg class="links" viewBox="0 0 60 260" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M60 26 C30 26 30 130 0 130"/><path d="M60 78 C30 78 30 130 0 130"/><path d="M60 130 L0 130"/><path d="M60 182 C30 182 30 130 0 130"/><path d="M60 234 C30 234 30 130 0 130"/>
-            </svg>
-            <div class="unified">
-              <h4>תמונה ארגונית אחת</h4>
-              <div class="sub" style="color:var(--muted);font-size:12.5px;margin:0 0 14px">ניתוח AI על כלל המקורות</div>
-              <ul class="ins">
-                <li><b>כפילות</b><span>מידע כפול שדורש טיפול<small>אותם אנשים מופיעים בכמה מערכות, עם פרטים סותרים</small></span></li>
-                <li><b>חריגה</b><span>שינוי שמצריך תשומת לב<small>ירידה בפעילות של קבוצה שהייתה פעילה בעבר</small></span></li>
-                <li><b>הזדמנות</b><span>מקום שבו כדאי לפעול<small>פונים שהתעניינו ולא קיבלו המשך — לבדיקתכם</small></span></li>
+        <ol class="steps3">
+          <li class="st">
+            <div class="st-h"><span class="sn">שלב 1</span><b>המידע מפוזר</b></div>
+            <div class="src"><span class="ch">WhatsApp</span><p>נועה לוי: ״אשמח לפרטים על הסדנה״</p></div>
+            <div class="src"><span class="ch">CRM</span><p>נועה לוי — לקוחה קיימת</p></div>
+            <div class="src"><span class="ch">מייל</span><p>פנייה נוספת מלקוח אחר</p></div>
+            <p class="st-note">שלוש מערכות, ואף אחת מהן לא מראה את התמונה המלאה.</p>
+          </li>
+          <li class="st">
+            <div class="st-h"><span class="sn">שלב 2</span><b>מחברים את המידע</b></div>
+            <div class="merged">
+              <div class="m-name">נועה לוי</div>
+              <ul class="m-tags">
+                <li>לקוחה קיימת <small>מתוך ה־CRM</small></li>
+                <li>נושא הפנייה: סדנה <small>זוהה על ידי AI מתוך ההודעה</small></li>
+                <li class="warn">לא תועד המשך טיפול</li>
               </ul>
             </div>
-          </div>
-          <p class="state-cap" id="d1cap" aria-live="polite"></p>
-        </div>
-        <p class="demo-close reveal">הערך אינו רק בחיבור המידע. הוא ביכולת להבין מה קורה — ולפעול בהתאם.</p>
-      </div>
+            <p class="st-note"><b>חיבור המערכות</b> מרכז את הפנייה ואת פרטי הלקוחה בכרטיס אחד. <b>AI</b> מסייע לזהות את נושא הפנייה מתוך ההודעה.</p>
+          </li>
+          <li class="st">
+            <div class="st-h"><span class="sn">שלב 3</span><b>ברור במה צריך לטפל</b></div>
+            <div class="tbl-wrap">
+              <table class="work-list">
+                <caption class="sr">רשימת עבודה לדוגמה</caption>
+                <thead><tr><th scope="col">פונה</th><th scope="col">נושא</th><th scope="col">מצב</th><th scope="col">הצעד הבא</th></tr></thead>
+                <tbody><tr><td>נועה לוי</td><td>פרטים על סדנה</td><td>לא תועד המשך טיפול</td><td>לבדוק ולחזור לפונה</td></tr></tbody>
+              </table>
+            </div>
+            <p class="st-note"><b>הצוות</b> מחליט ופועל: בודק מה כבר נעשה, וחוזר לפונה.</p>
+          </li>
+        </ol>
+        <p class="case-end">הצוות מקבל רשימה מרוכזת של פניות להמשך טיפול, עם ההקשר הדרוש כדי לפעול.</p>
+      </article>
 
-      <div class="demo">
-        <div class="txt reveal">
-          <span class="tag">המחשה 2</span>
-          <h3>מתהליך ידני לפעולה חכמה</h3>
-          <p>לא כל פעולה צריכה לעבור דרך אדם. אבל ההחלטות החשובות עדיין צריכות להישאר בידיים הנכונות.</p>
+      <article class="case reveal" aria-labelledby="c2" id="d2">
+        <div class="case-head">
+          <span class="tag">דוגמה להמחשה — הנתונים בדויים</span>
+          <h3 id="c2">מהבקשה להצעת מחיר מוכנה לבדיקה</h3>
+          <p>לקוח חוזר מבקש הצעת מחיר. המערכת נעזרת בפרטי הלקוח ובאירוע קודם כדי להכין טיוטה, והעובד בודק אותה לפני השליחה.</p>
         </div>
-        <div class="stage reveal" id="d2">
-          <div class="stage-top">
-            <div class="scen" role="group" aria-label="בחירת דוגמה" id="scen"></div>
-            <button class="replay" type="button" data-replay="d2">מההתחלה</button>
-          </div>
-          <ol class="flow" id="flow" aria-live="polite">
-            <li><span class="k">01</span><div><h4>פנייה נכנסת</h4><p>מידע חדש מתקבל מאחד מערוצי הארגון.</p><span class="ex" data-f="0"></span></div></li>
-            <li><span class="k">02</span><div><h4>AI מבין ומציע</h4><p>המערכת מזהה את ההקשר, בודקת מידע רלוונטי ומציעה את הפעולה המתאימה.</p><span class="ex" data-f="1"></span></div></li>
-            <li><span class="k">03</span><div><h4>פעולה מתבצעת</h4><p>לאחר אישור, או בהתאם להרשאות ולכללים שהוגדרו מראש, המערכות מבצעות את הפעולה.</p><span class="ex" data-f="2"></span><div class="approve"><button type="button" id="ok">אישור</button><button type="button" class="sec" id="no">לא עכשיו</button></div></div></li>
-            <li><span class="k">04</span><div><h4>בקרה אנושית</h4><p>מקרים חריגים, החלטות רגישות ומצבים לא ברורים מועברים לאדם.</p><span class="ex" data-f="3"></span></div></li>
-          </ol>
-          <p class="note">המחשה</p>
+        <ol class="flow4">
+          <li class="f">
+            <span class="actor a-client">לקוח</span>
+            <div><b>1. הלקוח פונה</b>
+              <div class="bubble">״שלום, נשמח להצעה לאירוע נוסף, במתכונת דומה לפעם הקודמת.״<small>WhatsApp</small></div></div>
+          </li>
+          <li class="f">
+            <span class="actor a-system">מערכת</span>
+            <div><b>2. המערכת מכינה טיוטה</b>
+              <p>מאתרת את פרטי האירוע הקודם ומכינה הצעת מחיר לבדיקה.</p>
+              <div class="draft">
+                <div class="d-title">טיוטת הצעת מחיר <span>לבדיקה</span></div>
+                <div class="d-row"><span>אירוע</span><span>במתכונת האירוע הקודם</span></div>
+                <div class="d-row"><span>מבוסס על</span><span>כרטיס הלקוח · האירוע הקודם · מחירון נוכחי</span></div>
+              </div></div>
+          </li>
+          <li class="f">
+            <span class="actor a-human">עובד</span>
+            <div><b>3. העובד בודק ומאשר</b>
+              <p>שום דבר לא נשלח בלי אישור.</p>
+              <div class="approve" role="group" aria-label="פעולות על הטיוטה (הדמיה)">
+                <button type="button" id="ok">אישור ושליחה</button>
+                <button type="button" class="sec" id="edit">עריכת הטיוטה</button>
+              </div>
+              <p class="sim" id="simmsg" aria-live="polite"></p></div>
+          </li>
+          <li class="f" id="f4">
+            <span class="actor a-system">מערכת</span>
+            <div><b>4. ההצעה נשלחת ומתועדת</b>
+              <p class="done-msg">✓ ההצעה נשלחה ותועדה בכרטיס הלקוח</p></div>
+          </li>
+        </ol>
+        <div class="branch">
+          <span class="actor a-system">מערכת</span><span>בקשה להנחה חריגה</span><span aria-hidden="true">←</span><span>מועברת לאישור מנהל</span><span class="actor a-human">מנהל</span>
         </div>
-        <p class="demo-close reveal">טכנולוגיה טובה לא מחליפה שיקול דעת. היא מאפשרת להשתמש בו במקום שבו הוא באמת נדרש.</p>
-      </div>
+      </article>
+
+      <p class="demo-cta reveal"><a href="#contact">יש אצלכם תהליך דומה? נדבר. <span aria-hidden="true">←</span></a></p>
     </div>
   </section>
 
@@ -441,15 +536,14 @@ footer .foot bdi{direction:ltr}
     <div class="wrap">
       <div class="body reveal">
         <div class="eyebrow">ניסיון</div>
-        <h2 id="h-xp">ניסיון שמאפשר לראות את התמונה הרחבה.</h2>
-        <p>הניסיון של בר חיים נשען על היכרות עם עולמות שונים של פעילות: ארגונים ציבוריים, פעילות חברתית, קמפיינים, מחקר וייעוץ אסטרטגי, לצד מערכות מידע ותהליכים טכנולוגיים.</p>
-        <p>העבודה במגוון הסביבות האלה מאפשרת להבין לא רק איך מערכת צריכה לפעול, אלא גם איך מתקבלות החלטות, כיצד אנשים עובדים ומה נדרש כדי שפתרון חדש יצליח להשתלב במציאות הארגונית.</p>
+        <h2 id="h-xp">ניסיון מתוך העבודה בארגונים.</h2>
+        <p>הניסיון של בר חיים נשען על עבודה בארגונים ציבוריים, בפעילות חברתית, בקמפיינים, במחקר ובייעוץ אסטרטגי — לצד מערכות מידע ותהליכים טכנולוגיים.</p>
+        <p>זה מה שמאפשר להבין לא רק איך מערכת צריכה לפעול, אלא גם איך מתקבלות החלטות, איך אנשים עובדים בפועל ומה נדרש כדי שכלי חדש ייכנס לשימוש.</p>
       </div>
       <div class="nums reveal">
-        <div class="num"><b>15+</b><span>שנות ניסיון מקצועי</span></div>
+        <div class="num"><b>15+</b><span>שנות ניסיון מקצועי בעשייה ציבורית, קמפיינים, מחקר, ייעוץ אסטרטגי ומערכות מידע</span></div>
         <div class="num"><b>3M+</b><span>רשומות מידע במערכות</span></div>
       </div>
-      <p class="dims reveal">מערכות מידע מורכבות · תהליכים חוצי־ארגון · פעילות בהיקפים משתנים</p>
     </div>
   </section>
 
@@ -465,12 +559,9 @@ footer .foot bdi{direction:ltr}
         <div class="eyebrow">האדם שמאחורי בר חיים</div>
         <h2 id="h-ab">ארז בר חיים.</h2>
         <p class="role">מייסד בר חיים | ייעוץ אסטרטגי וטכנולוגי</p>
-        <p class="about-lead">הדרך שלי לעולם הטכנולוגיה התחילה דווקא באנשים ובארגונים.</p>
-        <p>לאורך השנים פעלתי בעולמות העשייה הציבורית, הניהול, הקמפיינים, המחקר והייעוץ האסטרטגי. עבדתי בתוך ארגונים ולצדם, ולמדתי מקרוב את האתגרים שמעסיקים מנהלים וצוותים.</p>
-        <p>במהלך הדרך זיהיתי פער שחזר שוב ושוב: ארגונים עם ידע, ניסיון ושאיפות גדולות, שלא תמיד מצליחים לרתום את הטכנולוגיה לטובתם — ולעיתים אפילו לא יודעים אילו אפשרויות עומדות בפניהם.</p>
-        <p>מתוך ההיכרות הזאת, בשילוב עניין עמוק בטכנולוגיה ובהתפתחות הבינה המלאכותית, צמחה בר חיים.</p>
-        <p>היום אני מחבר בין הבנה ארגונית ואסטרטגית לבין היכולת לתכנן, לפתח ולהוביל פתרונות טכנולוגיים מתקדמים.</p>
-        <p class="about-close">המטרה שלי היא לא רק לתת לארגונים את מה שהם מבקשים, אלא לעזור להם לגלות גם את מה שהם עדיין לא יודעים שאפשר לעשות.</p>
+        <p class="about-lead">הדרך שלי לטכנולוגיה התחילה בעבודה עם אנשים וארגונים — בעשייה הציבורית, בניהול, בקמפיינים, במחקר ובייעוץ אסטרטגי.</p>
+        <p>לאורך הדרך פגשתי ארגונים עם ידע ושאיפות, שהעבודה שלהם הוגבלה על ידי מידע מפוזר, תהליכים ידניים ומערכות שלא התאימו לצרכים שלהם.</p>
+        <p>היום אני מחבר את הניסיון הארגוני הזה עם אפיון ופיתוח של מערכות מידע, אוטומציה ופתרונות AI. אני מוביל את העבודה באופן אישי, ומשלב אנשי מקצוע נוספים בהתאם לצורכי הפרויקט.</p>
         <div class="sig">
           <b>ארז בר חיים</b>
           <span>מייסד בר חיים</span>
@@ -484,30 +575,26 @@ footer .foot bdi{direction:ltr}
     <div class="wrap">
       <div class="reveal">
         <div class="eyebrow">איך עובדים יחד</div>
-        <h2 id="h-wk">דרכים שונות לעבוד יחד.</h2>
-        <p class="lead">לא כל ארגון צריך את אותו סוג של ליווי. לפעמים הצורך ברור וממוקד. לפעמים דווקא השותפות המתמשכת היא זו שמאפשרת לגלות מה באמת אפשר לעשות.</p>
+        <h2 id="h-wk">שתי דרכים לעבוד יחד.</h2>
       </div>
       <div class="tracks">
         <article class="track reveal">
-          <span class="tn">פתרון ממוקד</span>
-          <h3>כשהצורך כבר ברור.</h3>
-          <p>יש מקרים שבהם הארגון יודע בדיוק מה הוא צריך: מערכת CRM, חיבור בין מערכות, תהליך אוטומטי או פתרון AI.</p>
-          <p>במקרים כאלה אנחנו מאפיינים את הצורך, בוחרים את הדרך המתאימה ומובילים את ההקמה וההטמעה — עד לפתרון שעובד בפועל.</p>
-          <p class="tags">אפיון · הקמה · הטמעה · הדרכה</p>
-          <p class="terms"><b>אופי ההתקשרות</b>פרויקט מוגדר עם מטרות ותוצרים ברורים.</p>
+          <span class="tn">פרויקט ממוקד</span>
+          <h3>יש צורך מוגדר. בונים לו פתרון.</h3>
+          <p>הקמת מערכת CRM, חיבור בין מערכות, אוטומציה של תהליך או פיתוח כלי AI. מגדירים את הצורך ואת התוצרים, ומלווים את העבודה מהאפיון ועד ההטמעה וההדרכה.</p>
+          <p class="terms">פרויקט עם מטרות, תוצרים והיקף עבודה מוסכמים.</p>
         </article>
         <article class="track main reveal">
-          <span class="tn">שותפות טכנולוגית מתמשכת</span>
-          <h3>כשרוצים לחשוב רחוק יותר.</h3>
-          <p>כאן העבודה מתחילה הרבה לפני בחירת המערכת. אנחנו לומדים את הארגון לעומק: מה מעסיק את האנשים, אילו תהליכים גוזלים זמן, היכן המידע מתפזר, מה קשה למדוד ומה הארגון היה רוצה לעשות אילו היו עומדות לרשותו יכולות נוספות.</p>
-          <p>מתוך ההיכרות הזאת אנחנו מזהים הזדמנויות, מגבשים סדרי עדיפויות ומובילים את התכנון והיישום של פתרונות מותאמים — כליווי קבוע או סביב רצף של פרויקטים מתפתחים, בהתאם לצורך ולשלב שבו נמצא הארגון.</p>
+          <span class="tn">ליווי טכנולוגי מתמשך</span>
+          <h3>כתובת קבועה לקידום הטכנולוגיה בארגון.</h3>
+          <p>לומדים את הפעילות והמערכות, מזהים צרכים והזדמנויות, בונים סדרי עדיפויות ומובילים את היישום לאורך זמן.</p>
           <ol class="phases">
-            <li><span>01</span><div><b>מכירים לעומק</b>לומדים את הפעילות, האנשים, המערכות והאתגרים. מזהים לא רק את הבעיות המוכרות, אלא גם הזדמנויות שעדיין לא נבחנו.</div></li>
-            <li><span>02</span><div><b>בונים כיוון</b>מגדירים מטרות וסדרי עדיפויות, בוחרים את הפתרונות המתאימים ויוצרים מפת דרכים מעשית.</div></li>
-            <li><span>03</span><div><b>גורמים לזה לעבוד</b>מאפיינים, מפתחים, מטמיעים ומלווים את הפתרונות — בעבודה אישית או בשילוב אנשי מקצוע נוספים, בהתאם לאופי הפרויקט.</div></li>
+            <li><span>1</span><div><b>ממפים</b>אנשים, תהליכים, מידע ומערכות.</div></li>
+            <li><span>2</span><div><b>מתעדפים</b>מחליטים מה לקדם ובאיזה סדר.</div></li>
+            <li><span>3</span><div><b>מיישמים</b>מאפיינים, מפתחים, מטמיעים ובודקים את השימוש בפועל.</div></li>
           </ol>
-          <p class="tags">היכרות מעמיקה · מפת דרכים · הובלה טכנולוגית · יישום מתמשך</p>
-          <p class="terms"><b>אופי ההתקשרות</b>שותפות מקצועית ארוכת טווח, עם אחריות על קידום היכולות והתהליכים הטכנולוגיים של הארגון בהתאם להיקף ההתקשרות. ליווי טכנולוגי במודל CTO as a Service, המותאם לצורכי הארגון.</p>
+          <p class="terms">ליווי קבוע בהיקף ובתחומי אחריות המוגדרים יחד.</p>
+          <p class="aside">מודל שמוכר גם בשם CTO as a Service.</p>
         </article>
       </div>
     </div>
@@ -517,13 +604,13 @@ footer .foot bdi{direction:ltr}
     <div class="wrap two">
       <div class="reveal">
         <div class="eyebrow">יצירת קשר</div>
-        <h2 id="h-ct">יש דברים שכדאי לחשוב עליהם יחד.</h2>
-        <p class="lead">יש לכם אתגר ארגוני, רעיון שעדיין לא קיבל צורה, או תחושה שאפשר לעבוד אחרת? נשמח להכיר ולחשוב יחד.</p>
+        <h2 id="h-ct">מה הייתם רוצים שיעבוד טוב יותר בארגון?</h2>
+        <p class="lead">תהליך שגוזל זמן, מידע שקשה לרכז או רעיון לכלי חדש — אפשר להתחיל גם מצורך שעדיין לא הוגדר עד הסוף. ספרו לנו מה מעסיק אתכם.</p>
       </div>
       <ul class="channels reveal">
-        <li><a href="mailto:Erez@barhaim.co.il"><bdi>Erez@barhaim.co.il</bdi><span>אימייל</span></a></li>
-        <li><a href="tel:+972507543510"><bdi>050-7543510</bdi><span>טלפון</span></a></li>
-        <li><a href="https://wa.me/972507543510" target="_blank" rel="noopener noreferrer">WhatsApp<span>הודעה ↗</span></a></li>
+        <li><a href="https://wa.me/972507543510" target="_blank" rel="noopener noreferrer">שלחו הודעה ב־WhatsApp<span>↗</span></a></li>
+        <li><a href="mailto:Erez@barhaim.co.il">כתבו לי במייל<span><bdi>Erez@barhaim.co.il</bdi></span></a></li>
+        <li><a href="tel:+972507543510">חייגו<span><bdi>050-7543510</bdi></span></a></li>
       </ul>
     </div>
   </section>
@@ -548,40 +635,11 @@ if(!('IntersectionObserver' in window)||reduce){els.forEach(function(e){e.classL
 var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -5% 0px'});
 els.forEach(function(e){io.observe(e)})})();
 
-/* demo 1: three states, user-controlled; plays once when visible */
+/* demo 2: approve / edit are simulated only — nothing is sent */
 (function(){
-  var st=document.getElementById('d1'),btns=st.querySelectorAll('.stepper button'),cap=document.getElementById('d1cap'),t=[];
-  var caps={1:'מצב א׳ · המידע קיים, אבל מפוזר בין מקורות נפרדים.',2:'מצב ב׳ · המקורות מתחברים לתמונה ארגונית אחת.',3:'מצב ג׳ · ניתוח AI מצביע על מה שדורש טיפול, תשומת לב או פעולה.'};
-  function set(n){st.querySelector('.ins').setAttribute('aria-hidden',n<3?'true':'false');st.classList.remove('s1','s2','s3');st.classList.add('s'+n);btns.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.s==n)});cap.textContent=caps[n]}
-  btns.forEach(function(b){b.addEventListener('click',function(){t.forEach(clearTimeout);t=[];set(+b.dataset.s)})});
-  set(3);
-  if(reduce||!('IntersectionObserver' in window))return;
-  var o=new IntersectionObserver(function(es){if(es[0].isIntersecting){o.disconnect();set(1);t.push(setTimeout(function(){set(2)},1600));t.push(setTimeout(function(){set(3)},3400))}},{threshold:.5});o.observe(st);
-})();
-
-/* demo 2: runs to the action step, then waits for approval */
-(function(){
-  var sc=[
-    {n:'עסק',f:['לקוח ותיק מבקש ב־WhatsApp הצעת מחיר לאירוע.','זוהה לקוח חוזר עם אירוע דומה בעבר — מוצעת הצעת מחיר על בסיסו.','לשלוח את ההצעה בשמכם?','בקשה להנחה חריגה מועברת אליכם להחלטה.'],d:'ההצעה נשלחה ונשמרה בכרטיס הלקוח.'},
-    {n:'עמותה',f:['תרומה חדשה התקבלה באתר.','זוהה תורם חוזר — מוצעים מכתב תודה אישי והזמנה לאירוע התורמים.','לשלוח את המכתב וההזמנה?','תרומה בסכום חריג מסומנת לבדיקה אישית.'],d:'הקבלה והמכתב נשלחו, ונתוני התורם עודכנו.'},
-    {n:'רשות מקומית',f:['פניות רבות של תושבים על מועדי ההרשמה לחוגים.','זוהתה מגמה של שאלות זהות — מוצע עדכון המענה הקבוע והודעה לתושבים.','לפרסם את ההודעה ולעדכן את המענה?','פנייה רגישה או תלונה מועברת ישירות לגורם המטפל.'],d:'ההודעה פורסמה והמענה עודכן.'}
-  ];
-  var box=document.getElementById('scen'),items=[].slice.call(document.querySelectorAll('#flow li')),ok=document.getElementById('ok'),no=document.getElementById('no'),ex2=document.querySelector('#flow [data-f="2"]'),cur=0,t=[];
-  sc.forEach(function(s,i){var b=document.createElement('button');b.type='button';b.textContent=s.n;b.addEventListener('click',function(){show(i)});box.appendChild(b)});
-  function mark(active,done){items.forEach(function(li,j){li.classList.toggle('on',j<=active);li.classList.toggle('done',j<done);li.classList.toggle('dim',j>active)})}
-  function show(i){
-    cur=i;t.forEach(clearTimeout);t=[];
-    [].forEach.call(box.children,function(b,j){b.setAttribute('aria-pressed',j===i)});
-    document.querySelectorAll('#flow [data-f]').forEach(function(p){p.textContent=sc[i].f[+p.dataset.f]});
-    ok.disabled=false;no.disabled=false;
-    if(reduce){mark(2,2);return}
-    mark(0,0);t.push(setTimeout(function(){mark(1,1)},900));t.push(setTimeout(function(){mark(2,2)},1800));
-  }
-  ok.addEventListener('click',function(){ex2.textContent=sc[cur].d;mark(3,3);ok.disabled=true;no.disabled=true});
-  no.addEventListener('click',function(){ex2.textContent='לא בוצעה פעולה. ההצעה נשמרה לבדיקה מאוחרת יותר.';mark(3,2);ok.disabled=true;no.disabled=true});
-  document.querySelector('[data-replay="d2"]').addEventListener('click',function(){show(cur)});
-  show(0);if(!reduce)mark(-1,0);
-  var o=new IntersectionObserver(function(es){if(es[0].isIntersecting){show(cur);o.disconnect()}},{threshold:.4});o.observe(document.getElementById('d2'));
+  var ok=document.getElementById('ok'),ed=document.getElementById('edit'),msg=document.getElementById('simmsg'),f4=document.getElementById('f4');
+  ok.addEventListener('click',function(){f4.classList.add('hit');msg.textContent='הדמיה בלבד: ההצעה סומנה כנשלחה. בפועל לא נשלח דבר.';ok.disabled=true;ed.disabled=true});
+  ed.addEventListener('click',function(){msg.textContent='הדמיה בלבד: הטיוטה נפתחת לעריכה לפני השליחה.'});
 })();
 </script>
 </body>
