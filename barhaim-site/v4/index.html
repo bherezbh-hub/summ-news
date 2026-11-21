@@ -219,7 +219,13 @@ nav a:hover{color:#fff}
 .prob:first-child{margin-top:0;padding-top:0;border-top:0}
 .pn{font-size:13px;font-weight:500;letter-spacing:.08em;color:var(--accent)}
 .light .pn{color:var(--accent-ink)}
+.prob-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:56px;align-items:center}
 .prob-head h2{margin:10px 0 12px}
+.before{margin:0;max-width:420px;justify-self:end;width:100%}
+.vlab{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.06em;color:#a8a399;margin-bottom:10px}
+.pchips{list-style:none;margin:40px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.pchips a{display:flex;flex-direction:column;gap:6px;height:100%;padding:18px 20px;border:1px solid var(--paper-line);border-radius:10px;background:#fff;font-size:17px;font-weight:600;transition:border-color .2s}
+.pchips a:hover{border-color:var(--accent-ink)}
 .pain{font-size:clamp(18px,1.6vw,22px);color:#d4cfc6;font-weight:300;max-width:54ch}
 .prob .demo{margin-top:44px}
 .k2{display:block;font-size:12.5px;font-weight:600;letter-spacing:.06em;color:var(--accent);margin-bottom:8px}
@@ -414,7 +420,9 @@ footer bdi{direction:ltr}
   .cc-facts{max-width:none;justify-content:flex-start;margin-inline-start:0}
   .cc-body{grid-template-columns:minmax(0,1fr)}
   .cc-col+.cc-col{border-inline-start:0;border-top:1px solid var(--ui-line)}
-  .desk{grid-template-columns:minmax(0,1fr);gap:40px;margin-top:40px}
+  .prob-head{grid-template-columns:minmax(0,1fr);gap:24px}
+  .before{justify-self:start;max-width:none}
+  .pchips{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
   .demo{margin-top:64px}
   .inbox{grid-template-columns:minmax(0,1fr)}
   .srcs{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -512,49 +520,34 @@ footer bdi{direction:ltr}
     <div class="wrap">
       <div class="head2 reveal">
         <div><div class="eyebrow">המצב היום</div><h2 id="h-ch">המידע קיים. העבודה עדיין מסתבכת.</h2></div>
-        <p class="lead">ארבע בעיות שחוזרות כמעט בכל ארגון. בחרו את מה שמוכר לכם, ותראו איך פותרים את זה.</p>
+        <p class="lead">ארבע בעיות שחוזרות כמעט בכל ארגון. בחרו את מה שמוכר לכם:</p>
       </div>
-      <div class="desk">
-        <figure class="reveal">
-          <div class="ui chatlist" aria-hidden="true">
-            <div class="top"><b class="ltr">WhatsApp</b><span>82 הודעות שלא נקראו</span></div>
-            <ul>
-              <li><b>נועה לוי</b><span>אשמח לפרטים על הסדנה</span><i class="badge">3</i></li>
-              <li><b>אבי כהן</b><span>נו, יש עדכון לגבי ההצעה?</span><i class="badge">2</i></li>
-              <li><b>קבוצת הצוות</b><span>מישהו חזר לדנה?</span><i class="badge">46</i></li>
-            </ul>
-          </div>
-          <figcaption><span class="pn">בעיה 01</span><h3><a href="#p1">פניות הולכות לאיבוד <span aria-hidden="true">↓</span></a></h3><p>בין עשרות הודעות, קשה לדעת למי כבר ענו.</p></figcaption>
-        </figure>
-        <figure class="reveal">
-          <div class="ui sheet" aria-hidden="true">
-            <div class="fn"><i>X</i><span>לקוחות_סופי_חדש (2)</span></div>
-            <table><thead><tr><th>שם</th><th>טלפון</th><th>סטטוס</th></tr></thead>
-              <tbody><tr><td>נועה לוי</td><td class="ltr">052-•••</td><td class="q">?</td></tr><tr><td>אבי כהן</td><td></td><td>לבדוק</td></tr><tr><td>נועה ל.</td><td class="ltr">052-•••</td><td>שילמה?</td></tr></tbody></table>
-          </div>
-          <figcaption><span class="pn">בעיה 02</span><h3><a href="#p2">אותה עבודה, שוב ושוב <span aria-hidden="true">↓</span></a></h3><p>מקלידים ומנסחים מחדש, גם כשהמידע כבר קיים.</p></figcaption>
-        </figure>
-        <figure class="reveal">
-          <div class="note" aria-hidden="true">
-            <ul><li>לחזור לנועה!!</li><li>הצעה לאבי, מחר?</li><li><s>לשלוח חשבונית</s></li><li>לבדוק מי שילם</li></ul>
-          </div>
-          <figcaption><span class="pn">בעיה 03</span><h3><a href="#p3">הכול נמצא בראש של מישהו <span aria-hidden="true">↓</span></a></h3><p>הכול עובד, כל עוד מישהו זוכר.</p></figcaption>
-        </figure>
-      </div>
-      <div class="after reveal">
-        <p><span class="pn">בעיה 04</span> יש רעיונות ל־AI ולאוטומציה, אבל לא ברור מאיפה להתחיל.</p>
-        <a href="#check">לבדיקה המהירה <span aria-hidden="true">↓</span></a>
-      </div>
+      <ol class="pchips reveal">
+        <li><a href="#p1"><span class="pn">01</span>פניות הולכות לאיבוד</a></li>
+        <li><a href="#p2"><span class="pn">02</span>אותה עבודה, שוב ושוב</a></li>
+        <li><a href="#p3"><span class="pn">03</span>הכול נמצא בראש של מישהו</a></li>
+        <li><a href="#check"><span class="pn">04</span>לא ברור מאיפה להתחיל</a></li>
+      </ol>
     </div>
   </section>
 
   <section id="demos" class="demos" aria-label="בעיות ופתרונות">
     <div class="wrap">
       <article class="prob reveal" id="p1" aria-labelledby="p1h">
-        <div class="prob-head"><span class="pn">בעיה 01</span><h2 id="p1h">פניות הולכות לאיבוד.</h2><p class="pain">פניות מגיעות מ־WhatsApp, מהמייל ומהטלפון, וקשה לדעת למי כבר ענו.</p></div>
+        <div class="prob-head">
+          <div><span class="pn">בעיה 01</span><h2 id="p1h">פניות הולכות לאיבוד.</h2><p class="pain">פניות מגיעות מ־WhatsApp, מהמייל ומהטלפון, וקשה לדעת למי כבר ענו.</p></div>
+          <figure class="before" aria-hidden="true"><span class="vlab">היום</span><div class="ui chatlist" aria-hidden="true">
+            <div class="top"><b class="ltr">WhatsApp</b><span>82 הודעות שלא נקראו</span></div>
+            <ul>
+              <li><b>נועה לוי</b><span>אשמח לפרטים על הסדנה</span><i class="badge">3</i></li>
+              <li><b>אבי כהן</b><span>נו, יש עדכון לגבי ההצעה?</span><i class="badge">2</i></li>
+              <li><b>קבוצת הצוות</b><span>מישהו חזר לדנה?</span><i class="badge">46</i></li>
+            </ul>
+          </div></figure>
+        </div>
         <div class="demo">
           <div class="txt">
-            <span class="k2">הפתרון</span>
+            <span class="k2">עם הפתרון</span>
             <p class="sol">כל הפניות נכנסות לרשימה אחת, ולכל פנייה מסומן מה המצב שלה. רואים מיד מה עדיין פתוח.</p>
             <dl class="roles">
             <div><dt class="r-sys">המערכת</dt><dd>מרכזת את הפניות ומסמנת מה פתוח</dd></div>
@@ -586,10 +579,17 @@ footer bdi{direction:ltr}
       </article>
 
       <article class="prob reveal" id="p2" aria-labelledby="p2h">
-        <div class="prob-head"><span class="pn">בעיה 02</span><h2 id="p2h">אותה עבודה, שוב ושוב.</h2><p class="pain">הצעות מחיר, מסמכים ועדכונים נכתבים כל פעם מחדש, גם כשהמידע כבר קיים.</p></div>
+        <div class="prob-head">
+          <div><span class="pn">בעיה 02</span><h2 id="p2h">אותה עבודה, שוב ושוב.</h2><p class="pain">הצעות מחיר, מסמכים ועדכונים נכתבים כל פעם מחדש, גם כשהמידע כבר קיים.</p></div>
+          <figure class="before" aria-hidden="true"><span class="vlab">היום</span><div class="ui sheet" aria-hidden="true">
+            <div class="fn"><i>X</i><span>לקוחות_סופי_חדש (2)</span></div>
+            <table><thead><tr><th>שם</th><th>טלפון</th><th>סטטוס</th></tr></thead>
+              <tbody><tr><td>נועה לוי</td><td class="ltr">052-•••</td><td class="q">?</td></tr><tr><td>אבי כהן</td><td></td><td>לבדוק</td></tr><tr><td>נועה ל.</td><td class="ltr">052-•••</td><td>שילמה?</td></tr></tbody></table>
+          </div></figure>
+        </div>
         <div class="demo">
           <div class="txt">
-            <span class="k2">הפתרון</span>
+            <span class="k2">עם הפתרון</span>
             <p class="sol">המערכת מכינה טיוטה מתוך מה שכבר ידוע: פרטי הלקוח, ההזמנה הקודמת והמחירון. אתם בודקים ומאשרים.</p>
             <dl class="roles">
             <div><dt class="r-sys">המערכת</dt><dd>מכינה טיוטה ומתעדת</dd></div>
@@ -612,10 +612,15 @@ footer bdi{direction:ltr}
       </article>
 
       <article class="prob reveal" id="p3" aria-labelledby="p3h">
-        <div class="prob-head"><span class="pn">בעיה 03</span><h2 id="p3h">הכול נמצא בראש של מישהו.</h2><p class="pain">מה מחכה היום? מי לא קיבל תשובה? כל עוד מישהו זוכר, הכול עובד.</p></div>
+        <div class="prob-head">
+          <div><span class="pn">בעיה 03</span><h2 id="p3h">הכול נמצא בראש של מישהו.</h2><p class="pain">מה מחכה היום? מי לא קיבל תשובה? כל עוד מישהו זוכר, הכול עובד.</p></div>
+          <figure class="before" aria-hidden="true"><span class="vlab">היום</span><div class="note" aria-hidden="true">
+            <ul><li>לחזור לנועה!!</li><li>הצעה לאבי, מחר?</li><li><s>לשלוח חשבונית</s></li><li>לבדוק מי שילם</li></ul>
+          </div></figure>
+        </div>
         <div class="demo">
           <div class="txt">
-            <span class="k2">הפתרון</span>
+            <span class="k2">עם הפתרון</span>
             <p class="sol">במקום לזכור, שואלים. עוזר חכם עונה מתוך המידע של העסק ומכין טיוטות. נסו לבחור שאלה.</p>
             <dl class="roles">
             <div><dt class="r-sys">העוזר</dt><dd>מסכם, מזכיר ומנסח טיוטות</dd></div>
