@@ -215,7 +215,20 @@ nav a:hover{color:#fff}
 .f.hit .done{color:#f0c98e;font-weight:600}
 .done{margin-top:4px;font-size:14.5px;color:#d8d3ca}
 .branch{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;font-size:14px;color:#e6e1d8;border:1px dashed var(--line);border-radius:10px;padding:12px 16px}
-.demo-cta{margin-top:72px;font-size:18px}
+.prob{margin-top:96px;padding-top:88px;border-top:1px solid var(--line)}
+.prob:first-child{margin-top:0;padding-top:0;border-top:0}
+.pn{font-size:13px;font-weight:500;letter-spacing:.08em;color:var(--accent)}
+.light .pn{color:var(--accent-ink)}
+.prob-head h2{margin:10px 0 12px}
+.pain{font-size:clamp(18px,1.6vw,22px);color:#d4cfc6;font-weight:300;max-width:54ch}
+.prob .demo{margin-top:44px}
+.k2{display:block;font-size:12.5px;font-weight:600;letter-spacing:.06em;color:var(--accent);margin-bottom:8px}
+.sol{font-size:18px;line-height:1.6;color:var(--text);max-width:40ch}
+.desk figcaption h3{margin-top:6px}
+.desk figcaption h3 a{border-bottom:1px solid rgba(118,89,47,.4);padding-bottom:2px}
+.desk figcaption h3 a:hover{border-color:var(--accent-ink)}
+.after .pn{margin-inline-end:8px}
+.demo-cta{margin-top:88px;font-size:18px}
 .demo-cta a{color:var(--accent);border-bottom:1px solid rgba(200,164,110,.5);padding-bottom:3px}
 
 /* build */
@@ -439,7 +452,7 @@ footer bdi{direction:ltr}
     <nav aria-label="ניווט ראשי">
       <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">תפריט</button>
       <ul id="menu">
-        <li><a href="#demos">דוגמאות</a></li>
+        <li><a href="#challenge">מה פותרים</a></li>
         <li><a href="#check">בדיקה מהירה</a></li>
         <li><a href="#build">מה בונים</a></li>
         <li><a href="#about">אודות</a></li>
@@ -459,7 +472,7 @@ footer bdi{direction:ltr}
         <p class="lead">כל המידע במקום אחד, פחות עבודה ידנית, ועוזר חכם שמכין בשבילכם את העבודה. מהתכנון ועד שזה עובד אצלכם ביום־יום.</p>
         <div class="hero-actions">
           <a class="btn-primary" href="#contact">נדבר על האתגר שלכם</a>
-          <a class="more" href="#demos">כך זה נראה בפועל <span aria-hidden="true">↓</span></a>
+          <a class="more" href="#challenge">אילו בעיות זה פותר <span aria-hidden="true">↓</span></a>
         </div>
       </div>
 
@@ -499,7 +512,7 @@ footer bdi{direction:ltr}
     <div class="wrap">
       <div class="head2 reveal">
         <div><div class="eyebrow">המצב היום</div><h2 id="h-ch">המידע קיים. העבודה עדיין מסתבכת.</h2></div>
-        <p class="lead">נשמע מוכר?</p>
+        <p class="lead">ארבע בעיות שחוזרות כמעט בכל ארגון. בחרו את מה שמוכר לכם, ותראו איך פותרים את זה.</p>
       </div>
       <div class="desk">
         <figure class="reveal">
@@ -511,50 +524,45 @@ footer bdi{direction:ltr}
               <li><b>קבוצת הצוות</b><span>מישהו חזר לדנה?</span><i class="badge">46</i></li>
             </ul>
           </div>
-          <figcaption><h3>פניות הולכות לאיבוד</h3><p>בין עשרות הודעות, קשה לדעת למי כבר ענו.</p></figcaption>
+          <figcaption><span class="pn">בעיה 01</span><h3><a href="#p1">פניות הולכות לאיבוד <span aria-hidden="true">↓</span></a></h3><p>בין עשרות הודעות, קשה לדעת למי כבר ענו.</p></figcaption>
         </figure>
         <figure class="reveal">
           <div class="ui sheet" aria-hidden="true">
-            <div class="fn"><i>X</i><bdi>לקוחות_סופי_חדש (2).xlsx</bdi></div>
+            <div class="fn"><i>X</i><span>לקוחות_סופי_חדש (2)</span></div>
             <table><thead><tr><th>שם</th><th>טלפון</th><th>סטטוס</th></tr></thead>
               <tbody><tr><td>נועה לוי</td><td class="ltr">052-•••</td><td class="q">?</td></tr><tr><td>אבי כהן</td><td></td><td>לבדוק</td></tr><tr><td>נועה ל.</td><td class="ltr">052-•••</td><td>שילמה?</td></tr></tbody></table>
           </div>
-          <figcaption><h3>אותו מידע, בכמה מקומות</h3><p>מקלידים שוב ושוב, ולא ברור איזו גרסה נכונה.</p></figcaption>
+          <figcaption><span class="pn">בעיה 02</span><h3><a href="#p2">אותה עבודה, שוב ושוב <span aria-hidden="true">↓</span></a></h3><p>מקלידים ומנסחים מחדש, גם כשהמידע כבר קיים.</p></figcaption>
         </figure>
         <figure class="reveal">
           <div class="note" aria-hidden="true">
             <ul><li>לחזור לנועה!!</li><li>הצעה לאבי, מחר?</li><li><s>לשלוח חשבונית</s></li><li>לבדוק מי שילם</li></ul>
           </div>
-          <figcaption><h3>המעקב נמצא בראש</h3><p>הכול עובד, כל עוד מישהו זוכר.</p></figcaption>
+          <figcaption><span class="pn">בעיה 03</span><h3><a href="#p3">הכול נמצא בראש של מישהו <span aria-hidden="true">↓</span></a></h3><p>הכול עובד, כל עוד מישהו זוכר.</p></figcaption>
         </figure>
       </div>
       <div class="after reveal">
-        <p>ויש רעיונות ל־AI ולאוטומציה, אבל לא ברור מאיפה מתחילים.</p>
-        <a href="#check">בדיקה מהירה: מאיפה כדאי להתחיל? <span aria-hidden="true">←</span></a>
+        <p><span class="pn">בעיה 04</span> יש רעיונות ל־AI ולאוטומציה, אבל לא ברור מאיפה להתחיל.</p>
+        <a href="#check">לבדיקה המהירה <span aria-hidden="true">↓</span></a>
       </div>
     </div>
   </section>
 
-  <section id="demos" class="demos" aria-labelledby="h-dm">
+  <section id="demos" class="demos" aria-label="בעיות ופתרונות">
     <div class="wrap">
-      <div class="reveal">
-        <div class="eyebrow">דוגמאות</div>
-        <h2 id="h-dm">כך זה עובד בפועל.</h2>
-        <p class="lead">שלוש דוגמאות מיום עבודה רגיל. בכל אחת: מה המערכת עושה, ומה נשאר אצלכם.</p>
-      </div>
-
-      <article class="demo reveal" aria-labelledby="d1">
-        <div class="txt">
-          <span class="n">01</span>
-          <h3 id="d1">כל הפניות ברשימה אחת</h3>
-          <p>פניות מגיעות מ־WhatsApp, מהמייל ומהטלפון. המערכת מרכזת אותן ומסמנת מה עדיין פתוח.</p>
-          <dl class="roles">
+      <article class="prob reveal" id="p1" aria-labelledby="p1h">
+        <div class="prob-head"><span class="pn">בעיה 01</span><h2 id="p1h">פניות הולכות לאיבוד.</h2><p class="pain">פניות מגיעות מ־WhatsApp, מהמייל ומהטלפון, וקשה לדעת למי כבר ענו.</p></div>
+        <div class="demo">
+          <div class="txt">
+            <span class="k2">הפתרון</span>
+            <p class="sol">כל הפניות נכנסות לרשימה אחת, ולכל פנייה מסומן מה המצב שלה. רואים מיד מה עדיין פתוח.</p>
+            <dl class="roles">
             <div><dt class="r-sys">המערכת</dt><dd>מרכזת את הפניות ומסמנת מה פתוח</dd></div>
             <div><dt class="r-you">אתם</dt><dd>מחליטים למי לחזור ומה לענות</dd></div>
           </dl>
-          <span class="tag">דוגמה להמחשה · הנתונים בדויים</span>
-        </div>
-        <div class="stage inbox">
+            <span class="tag">דוגמה להמחשה · הנתונים בדויים</span>
+          </div>
+          <div class="stage inbox">
           <div class="srcs">
             <div><small class="ltr">WhatsApp</small>נועה לוי: אשמח לפרטים על הסדנה</div>
             <div><small>מייל</small>אבי כהן: מחכה להצעה</div>
@@ -573,21 +581,49 @@ footer bdi{direction:ltr}
               </tbody>
             </table>
           </div>
+          </div>
         </div>
       </article>
 
-      <article class="demo reveal" aria-labelledby="d2">
-        <div class="txt">
-          <span class="n">02</span>
-          <h3 id="d2">עוזר שמכין לכם את העבודה</h3>
-          <p>שואלים במילים פשוטות, ומקבלים תשובה מתוך המידע של העסק. נסו לבחור שאלה.</p>
-          <dl class="roles">
+      <article class="prob reveal" id="p2" aria-labelledby="p2h">
+        <div class="prob-head"><span class="pn">בעיה 02</span><h2 id="p2h">אותה עבודה, שוב ושוב.</h2><p class="pain">הצעות מחיר, מסמכים ועדכונים נכתבים כל פעם מחדש, גם כשהמידע כבר קיים.</p></div>
+        <div class="demo">
+          <div class="txt">
+            <span class="k2">הפתרון</span>
+            <p class="sol">המערכת מכינה טיוטה מתוך מה שכבר ידוע: פרטי הלקוח, ההזמנה הקודמת והמחירון. אתם בודקים ומאשרים.</p>
+            <dl class="roles">
+            <div><dt class="r-sys">המערכת</dt><dd>מכינה טיוטה ומתעדת</dd></div>
+            <div><dt class="r-you">אתם</dt><dd>בודקים ומאשרים. שום דבר לא נשלח בלי אישור</dd></div>
+          </dl>
+            <span class="tag">דוגמה להמחשה · הנתונים בדויים</span>
+          </div>
+          <div class="stage">
+          <ol class="flow">
+            <li class="f"><span class="actor a-client">לקוח</span><div><b>1. הלקוח פונה</b><div class="bubble">״שלום, נשמח להצעה לאירוע נוסף, במתכונת דומה לפעם הקודמת.״</div></div></li>
+            <li class="f"><span class="actor a-system">מערכת</span><div><b>2. המערכת מכינה טיוטה</b><div class="dr">הצעת מחיר לאירוע <span>טיוטה לבדיקה</span><br>מבוסס על: כרטיס הלקוח · האירוע הקודם · המחירון</div></div></li>
+            <li class="f"><span class="actor a-human">אתם</span><div><b>3. בודקים ומאשרים</b>
+              <div class="approve" role="group" aria-label="פעולות על הטיוטה (הדמיה)"><button type="button" id="ok">אישור ושליחה</button><button type="button" class="sec" id="edit">עריכת הטיוטה</button></div>
+              <p class="sim" id="simmsg" aria-live="polite"></p></div></li>
+            <li class="f" id="f4"><span class="actor a-system">מערכת</span><div><b>4. נשלח ומתועד</b><p class="done">✓ ההצעה נשלחה ותועדה בכרטיס הלקוח</p></div></li>
+          </ol>
+          <div class="branch"><span class="actor a-system">מערכת</span><span>בקשה להנחה חריגה</span><span aria-hidden="true">←</span><span>מועברת לאישור מנהל</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="prob reveal" id="p3" aria-labelledby="p3h">
+        <div class="prob-head"><span class="pn">בעיה 03</span><h2 id="p3h">הכול נמצא בראש של מישהו.</h2><p class="pain">מה מחכה היום? מי לא קיבל תשובה? כל עוד מישהו זוכר, הכול עובד.</p></div>
+        <div class="demo">
+          <div class="txt">
+            <span class="k2">הפתרון</span>
+            <p class="sol">במקום לזכור, שואלים. עוזר חכם עונה מתוך המידע של העסק ומכין טיוטות. נסו לבחור שאלה.</p>
+            <dl class="roles">
             <div><dt class="r-sys">העוזר</dt><dd>מסכם, מזכיר ומנסח טיוטות</dd></div>
             <div><dt class="r-you">אתם</dt><dd>מחליטים, מתקנים ומאשרים</dd></div>
           </dl>
-          <span class="tag">דוגמה להמחשה · הנתונים בדויים</span>
-        </div>
-        <div class="stage">
+            <span class="tag">דוגמה להמחשה · הנתונים בדויים</span>
+          </div>
+          <div class="stage">
           <div class="ui chat">
             <div class="chat-h"><span class="av" aria-hidden="true">ע</span><div><b>העוזר של העסק</b><small>מחובר למידע של העסק</small></div></div>
             <div class="chat-b" id="chatb" aria-live="polite">
@@ -608,43 +644,20 @@ footer bdi{direction:ltr}
               <button type="button" data-q="2" aria-pressed="false">כמה סדנאות מכרנו החודש?</button>
             </div>
           </div>
+          </div>
         </div>
       </article>
 
-      <article class="demo reveal" aria-labelledby="d3">
-        <div class="txt">
-          <span class="n">03</span>
-          <h3 id="d3">מהבקשה להצעת מחיר</h3>
-          <p>לקוח חוזר מבקש הצעה. המערכת מכינה טיוטה לפי הפעם הקודמת, ואתם בודקים לפני שהיא נשלחת.</p>
-          <dl class="roles">
-            <div><dt class="r-sys">המערכת</dt><dd>מכינה טיוטה ומתעדת</dd></div>
-            <div><dt class="r-you">אתם</dt><dd>בודקים ומאשרים. שום דבר לא נשלח בלי אישור</dd></div>
-          </dl>
-          <span class="tag">דוגמה להמחשה · הנתונים בדויים</span>
-        </div>
-        <div class="stage">
-          <ol class="flow">
-            <li class="f"><span class="actor a-client">לקוח</span><div><b>1. הלקוח פונה</b><div class="bubble">״שלום, נשמח להצעה לאירוע נוסף, במתכונת דומה לפעם הקודמת.״</div></div></li>
-            <li class="f"><span class="actor a-system">מערכת</span><div><b>2. המערכת מכינה טיוטה</b><div class="dr">הצעת מחיר לאירוע <span>טיוטה לבדיקה</span><br>מבוסס על: כרטיס הלקוח · האירוע הקודם · המחירון</div></div></li>
-            <li class="f"><span class="actor a-human">אתם</span><div><b>3. בודקים ומאשרים</b>
-              <div class="approve" role="group" aria-label="פעולות על הטיוטה (הדמיה)"><button type="button" id="ok">אישור ושליחה</button><button type="button" class="sec" id="edit">עריכת הטיוטה</button></div>
-              <p class="sim" id="simmsg" aria-live="polite"></p></div></li>
-            <li class="f" id="f4"><span class="actor a-system">מערכת</span><div><b>4. נשלח ומתועד</b><p class="done">✓ ההצעה נשלחה ותועדה בכרטיס הלקוח</p></div></li>
-          </ol>
-          <div class="branch"><span class="actor a-system">מערכת</span><span>בקשה להנחה חריגה</span><span aria-hidden="true">←</span><span>מועברת לאישור מנהל</span></div>
-        </div>
-      </article>
-
-      <p class="demo-cta reveal"><a href="#contact">יש אצלכם תהליך דומה? נדבר. <span aria-hidden="true">←</span></a></p>
+      <p class="demo-cta reveal"><a href="#contact">יש אצלכם בעיה דומה? נדבר. <span aria-hidden="true">←</span></a></p>
     </div>
   </section>
 
   <section id="check" class="light check" aria-labelledby="h-qz">
     <div class="wrap check-grid">
       <div class="check-intro reveal">
-        <div class="eyebrow">בדיקה מהירה</div>
-        <h2 id="h-qz">מאיפה כדאי להתחיל אצלכם?</h2>
-        <p class="lead">שש שאלות קצרות על הארגון ועל העבודה, ובסופן אפיון ראשוני: אילו כיוונים מתאימים לכם, מה מערכת יכולה לקחת על עצמה, ומה הצעד הראשון.</p>
+        <div class="eyebrow">בעיה 04 · בדיקה מהירה</div>
+        <h2 id="h-qz">לא ברור מאיפה להתחיל.</h2>
+        <p class="lead">יש רעיונות, ולא ברור מה מתאים לכם. שש שאלות קצרות, ובסופן אפיון ראשוני: אילו כיוונים מתאימים, ומה הצעד הראשון.</p>
         <ul class="check-facts">
           <li>כ־2 דקות, בלחיצות בלבד</li>
           <li>בלי פרטים אישיים</li>
